@@ -1,0 +1,19 @@
+# Ignorar las dependencias de Composer
+/vendor/
+
+# Ignorar archivos de Composer
+/composer.lock
+/composer.json
+
+# Ignorar logs
+*.log
+/logs/
+
+# Ignorar archivos de sistema
+.DS_Store
+.idea
+.vscode
+
+# Ignorar directorios de caché y temporales
+/tmp/
+/cache/
