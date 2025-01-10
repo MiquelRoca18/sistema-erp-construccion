@@ -6,9 +6,11 @@ use App\Utils\BaseController;
 
 class ProjectController extends BaseController {
     private $projectService;
+    private $baseController;
 
     public function __construct() {
         $this->projectService = new ProjectService();
+        $this->baseController = new BaseController();
     }
 
     public function get() {
