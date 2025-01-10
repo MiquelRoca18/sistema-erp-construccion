@@ -27,7 +27,7 @@ class EmployeeService extends BaseService {
             return $error;
         }
 
-        $employee = $this->model->getEmployee($employeeId);
+        $employee = $this->model->getByid($employeeId);
         return $this->responseFound($employee, 'Empleado encontrado');
     }
 
@@ -47,7 +47,7 @@ class EmployeeService extends BaseService {
         if ($error) return ['status' => 400, 'message' => $error];
 
         // Crear el empleado
-        $employee = $this->model->createEmployee($data);
+        $employee = $this->model->create($data);
         return ['status' => 201, 'message' => 'Empleado creado correctamente', 'data' => $employee];
     }
 
@@ -72,7 +72,7 @@ class EmployeeService extends BaseService {
         }
 
         // Actualizar el empleado
-        $this->model->updateEmployee($employeeId, $data);
+        $this->model->update($employeeId, $data);
         return ['status' => 200, 'message' => 'Empleado actualizado correctamente', 'data' => $data];
     }
 
@@ -88,7 +88,7 @@ class EmployeeService extends BaseService {
         }
 
         // Eliminar el empleado
-        $deleted = $this->model->deleteEmployee($employeeId);
+        $deleted = $this->model->delete($employeeId);
         return $deleted ? ['status' => 200, 'message' => 'Empleado eliminado correctamente'] : ['status' => 500, 'message' => 'Hubo un problema al eliminar el empleado'];
     }
 }

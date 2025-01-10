@@ -32,7 +32,7 @@ class ProjectService extends BaseService {
             return $error;
         }
 
-        $project = $this->model->getProject($projectId);
+        $project = $this->model->getById($projectId);
         return $this->responseFound($project, 'Proyecto encontrado');
     }
 
@@ -56,7 +56,7 @@ class ProjectService extends BaseService {
         }
 
         // Llamar al modelo para crear el proyecto
-        $projectId = $this->model->createProject($data);
+        $projectId = $this->model->create($data);
         return $projectId ? ['status' => 201, 'message' => 'Proyecto creado exitosamente', 'data' => $projectId] : ['status' => 500, 'message' => 'Error al crear el proyecto'];
     }
 
@@ -77,7 +77,7 @@ class ProjectService extends BaseService {
         }
 
         // Obtener el proyecto actual para validaciones
-        $project = $this->model->getProject($projectId);
+        $project = $this->model->get($projectId);
         $fechaInicioActual = isset($project['fecha_inicio']) ? $project['fecha_inicio'] : null;
         $fechaFinActual = isset($project['fecha_fin']) ? $project['fecha_fin'] : null;
 
@@ -113,7 +113,7 @@ class ProjectService extends BaseService {
         }
 
         // Actualizar el proyecto
-        $this->model->updateProject($projectId, $data);
+        $this->model->update($projectId, $data);
         return ['status' => 200, 'message' => 'Proyecto actualizado correctamente', 'data' => $data];
     }
 
@@ -129,7 +129,7 @@ class ProjectService extends BaseService {
         }
 
         // Eliminar el proyecto
-        $deleted = $this->model->deleteProject($projectId);
+        $deleted = $this->model->delete($projectId);
         return $deleted ? ['status' => 200, 'message' => 'Proyecto eliminado correctamente'] : ['status' => 500, 'message' => 'Hubo un problema al eliminar el proyecto'];
     }
 }

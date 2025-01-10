@@ -25,7 +25,7 @@ class BudgetService extends BaseService {
             return $error;
         }
 
-        $budget = $this->model->getBudget($budgetId);
+        $budget = $this->model->getById($budgetId);
         return $this->responseFound($budget, 'Presupuesto encontrado');
     }
 
