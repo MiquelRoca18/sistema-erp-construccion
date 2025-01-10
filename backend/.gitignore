@@ -1,10 +1,6 @@
 # Ignorar las dependencias de Composer
 /vendor/
 
-# Ignorar archivos de Composer
-/composer.lock
-/composer.json
-
 # Ignorar logs
 *.log
 /logs/
