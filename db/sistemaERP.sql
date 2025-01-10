@@ -113,5 +113,3 @@
 -- (3, 'carlos.lopez', 'hashed_password_carlos', 2), -- Usuario
 -- (4, 'maria.sanchez', 'hashed_password_maria', 2), -- Usuario
 -- (5, 'david.martinez', 'hashed_password_david', 2); -- Usuario
-
-
