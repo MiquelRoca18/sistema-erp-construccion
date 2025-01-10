@@ -3,7 +3,7 @@
 -- USE sistema_erp_construccion;
 
 -- CREATE TABLE empleados(
--- 	empleado_id INT AUTO_INCREMENT PRIMARY KEY,
+-- 	empleados_id INT AUTO_INCREMENT PRIMARY KEY,
 --   	nombre VARCHAR(255) NOT NULL,
 --   	rol VARCHAR(355) NOT NULL,
 --   	fecha_contratacion DATE,
@@ -12,7 +12,7 @@
 -- );
 
 -- CREATE TABLE proyectos(
--- 	proyecto_id INT AUTO_INCREMENT PRIMARY KEY,
+-- 	proyectos_id INT AUTO_INCREMENT PRIMARY KEY,
 --   	responsable_id INT,
 --   	estado ENUM ('pendiente','en progreso','finalizado') DEFAULT 'pendiente',
 --   	nombre_proyecto VARCHAR(255) NOT NULL,
@@ -27,29 +27,29 @@
 --     estado ENUM ('pendiente','en progreso','finalizado') DEFAULT 'pendiente',
 --   	nombre_tarea VARCHAR(255) NOT NULL,
 --   	descripcion text, 
---   	proyecto_id INT,
+--   	proyectos_id INT,
 --   	fecha_inicio DATE,
 --   	fecha_fin DATE,
---   	FOREIGN KEY (proyecto_id) REFERENCES proyectos(proyecto_id)
+--   	FOREIGN KEY (proyectos_id) REFERENCES proyectos(proyectos_id)
 -- );
 
 -- CREATE TABLE presupuestos(
--- 	presupuesto_id INT AUTO_INCREMENT PRIMARY KEY,
---   	proyecto_id INT,
+-- 	presupuestos_id INT AUTO_INCREMENT PRIMARY KEY,
+--   	proyectos_id INT,
 --   	equipos DECIMAL (10, 2) DEFAULT 0,
 --     mano_obra DECIMAL (10, 2) DEFAULT 0,
 --   	materiales DECIMAL (10, 2) DEFAULT 0,
---     FOREIGN KEY (proyecto_id) REFERENCES proyectos(proyecto_id)
+--     FOREIGN KEY (proyectos_id) REFERENCES proyectos(proyectos_id)
 -- );
 
 
 
 -- CREATE TABLE empleados_tareas(
 -- 	tarea_id INT,
---   	empleado_id INT,
---   	PRIMARY KEY (tarea_id, empleado_id),
+--   	empleados_id INT,
+--   	PRIMARY KEY (tarea_id, empleados_id),
 --   	FOREIGN KEY (tarea_id) REFERENCES tareas(tarea_id),
---   	FOREIGN KEY (empleado_id) REFERENCES empleados(empleado_id)
+--   	FOREIGN KEY (empleados_id) REFERENCES empleados(empleado_id)
 -- );
 
 -- CREATE TABLE roles(
@@ -59,11 +59,11 @@
 
 -- CREATE TABLE autenticacion(
 -- 	id_usuario INT AUTO_INCREMENT PRIMARY KEY,
---   	empleado_id INT,
+--   	empleados_id INT,
 --   	username VARCHAR(255) UNIQUE NOT NULL,
 --   	password_hash VARCHAR(255) NOT NULL,
 --   	id_rol INT,
---   	FOREIGN KEY (empleado_id) REFERENCES empleados(empleado_id),
+--   	FOREIGN KEY (empleados_id) REFERENCES empleados(empleado_id),
 --   	FOREIGN KEY (id_rol) REFERENCES roles(id_rol)
 
 -- );
@@ -87,27 +87,27 @@
 -- (3, 'finalizado', 'Urbanización Parque Industrial', '2023-05-15', '2023-11-30', 'Urbanización de la zona industrial en el norte de Xàtiva, con calles, instalaciones y servicios.');
 
 -- -- Insertar tareas
--- INSERT INTO tareas (estado, nombre_tarea, descripcion, proyecto_id, fecha_inicio, fecha_fin) VALUES
+-- INSERT INTO tareas (estado, nombre_tarea, descripcion, proyectos_id, fecha_inicio, fecha_fin) VALUES
 -- ('pendiente', 'Rehabilitación fachada', 'Rehabilitar la fachada principal del edificio de la Casa Ayora.', 1, NULL, NULL),
 -- ('en progreso', 'Instalación de fontanería', 'Instalar sistema de fontanería para las nuevas viviendas del proyecto Xàtiva.', 2, '2024-01-20', NULL),
 -- ('finalizado', 'Construcción de la base de la nave', 'Excavación y cimentación para la construcción de la nave industrial.', 3, '2024-04-10', '2024-05-15');
 
 
 -- -- Insertar presupuestos
--- INSERT INTO presupuestos (proyecto_id, equipos, mano_obra, materiales) VALUES
+-- INSERT INTO presupuestos (proyectos_id, equipos, mano_obra, materiales) VALUES
 -- (1, 15000.00, 25000.00, 10000.00),
 -- (2, 20000.00, 45000.00, 25000.00),
 -- (3, 30000.00, 60000.00, 40000.00);
 
 -- -- Asignar empleados a tareas
--- INSERT INTO empleados_tareas (tarea_id, empleado_id) VALUES
+-- INSERT INTO empleados_tareas (tarea_id, empleados_id) VALUES
 -- (1, 1), -- Juan Pérez (Arquitecto) en la tarea 'Rehabilitación fachada'
 -- (2, 2), -- Ana Gómez (Albañil) en la tarea 'Instalación de fontanería'
 -- (3, 4), -- María Sánchez (Jefe de obra) en la tarea 'Construcción de la base de la nave'
 -- (3, 5); -- David Martínez (Electricista) en la tarea 'Construcción de la base de la nave'
 
 -- -- Insertar autenticación
--- INSERT INTO autenticacion (empleado_id, username, password_hash, id_rol) VALUES
+-- INSERT INTO autenticacion (empleados_id, username, password_hash, id_rol) VALUES
 -- (1, 'juan.perez', 'hashed_password_juan', 1), -- Admin
 -- (2, 'ana.gomez', 'hashed_password_ana', 2), -- Usuario
 -- (3, 'carlos.lopez', 'hashed_password_carlos', 2), -- Usuario
