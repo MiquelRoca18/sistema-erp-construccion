@@ -2,40 +2,33 @@
 namespace App\Service;
 
 use App\Model\Employee;
-use App\Utils\Validator;
+use App\Utils\BaseService;  
 
-class EmployeeService {
-    private $employeeModel;
-    private $validator;
+
+class EmployeeService extends BaseService {
 
     public function __construct() {
-        $this->employeeModel = new Employee();
-        $this->validator = new Validator();
-    }
-    
-    public function getEmployees(){
-        $employees = $this->employeeModel->get();
-
-        if ($employees) {
-            return ['status' => 200, 'message' => 'Empleados encontrados', 'data' => $employees];
-        } else {
-            return ['status' => 404, 'message' => 'No se encontraron empleados'];
-        }
+        parent::__construct(new Employee()); // Pasar el modelo de Empleado
     }
 
-    public function getEmployee($employeeId){
-        //Validar datos enviados
-        if(empty($employeeId)){
-            return ['status' => 400, 'message' => 'El ID del empleado es obligatorio'];
-        }
-        //Validar si existe el empleado
-        if(!$this->employeeModel->exists($employeeId)){
-            return ['status' => 404, 'message' => 'El empleado no existe'];
+    public function getEmployees() {
+        $employees = $this->model->get();
+        return $employees ? $this->responseFound($employees, 'Empleados encontrados') : $this->responseNotFound();
+    }
+
+    public function getEmployee($employeeId) {
+        // Validar ID
+        if ($error = $this->validateId($employeeId)) {
+            return $error;
         }
 
-        // Obtener empleado
-        $employee = $this->employeeModel->getEmployee($employeeId);
-        return ['status' => 200, 'message' => 'Empleado encontrado', 'data' => $employee];
+        // Validar existencia del empleado
+        if ($error = $this->validateExists($employeeId)) {
+            return $error;
+        }
+
+        $employee = $this->model->getEmployee($employeeId);
+        return $this->responseFound($employee, 'Empleado encontrado');
     }
 
     public function createEmployee($data) {
@@ -44,90 +37,59 @@ class EmployeeService {
         if ($error) {
             return ['status' => 400, 'message' => $error];
         }
-    
+
         // Validar correo electrónico
-        if ($error = $this->validator->validateEmail($data->correo)) {
-            return ['status' => 400, 'message' => $error];
-        }
-    
-        // Validar fecha de contratación
-        if (isset($data->fecha_contratacion)) {
-            if ($error = $this->validator->validateDate($data->fecha_contratacion)) {
-                return ['status' => 400, 'message' => $error];
-            }
-        }
-    
+        $error = $this->validator->validateEmail($data->correo);
+        if ($error) return ['status' => 400, 'message' => $error];
+
         // Validar teléfono
-        if ($error = $this->validator->validatePhone($data->telefono)) {
-            return ['status' => 400, 'message' => $error];
-        }
-    
-        // Crear empleado
-        $employee = $this->employeeModel->createEmployee($data);
+        $error = $this->validator->validatePhone($data->telefono);
+        if ($error) return ['status' => 400, 'message' => $error];
+
+        // Crear el empleado
+        $employee = $this->model->createEmployee($data);
         return ['status' => 201, 'message' => 'Empleado creado correctamente', 'data' => $employee];
     }
-    
-    public function updateEmployee($employeeId, $data){
-        // Validar si el ID del empleado es válido
-        if (empty($employeeId)) {
-            return ['status' => 400, 'message' => 'El ID del empleado es obligatorio'];
-        }
-    
-        // Validar si el empleado existe
-        if (!$this->employeeModel->exists($employeeId)) {
-            return ['status' => 404, 'message' => 'El empleado no existe'];
-        }
-    
-        // Validar los datos recibidos (puedes agregar validaciones específicas si es necesario)
-        // Si no hay datos enviados, devolver un error
-        // if (empty((array) $data)) {
-        //     return ['status' => 400, 'message' => 'No se enviaron datos para actualizar'];
-        // }
 
-        // Validar fecha de contratación
-        if (isset($data->fecha_contratacion)) {
-            if ($error = $this->validator->validateDate($data->fecha_contratacion)) {
-                return ['status' => 400, 'message' => $error];
-            }
+    public function updateEmployee($employeeId, $data) {
+        // Validar ID
+        if ($error = $this->validateId($employeeId)) {
+            return $error;
         }
-    
-        // Aquí puedes agregar validaciones específicas para cada campo si lo deseas
-        // Por ejemplo, validar correo, teléfono, etc.
+
+        // Validar existencia del empleado
+        if ($error = $this->validateExists($employeeId)) {
+            return $error;
+        }
+
+        // Validar datos específicos
         if (isset($data->correo) && $error = $this->validator->validateEmail($data->correo)) {
             return ['status' => 400, 'message' => $error];
         }
-    
+
         if (isset($data->telefono) && $error = $this->validator->validatePhone($data->telefono)) {
             return ['status' => 400, 'message' => $error];
         }
-    
-        // Llamar al modelo para actualizar el empleado
-        $this->employeeModel->updateEmployee($employeeId, $data);
 
+        // Actualizar el empleado
+        $this->model->updateEmployee($employeeId, $data);
         return ['status' => 200, 'message' => 'Empleado actualizado correctamente', 'data' => $data];
     }
 
-
     public function deleteEmployee($employeeId) {
-        // Validar que el ID sea proporcionado
-        if (empty($employeeId)) {
-            return ['status' => 400, 'message' => 'El ID del empleado es obligatorio'];
+        // Validar ID
+        if ($error = $this->validateId($employeeId)) {
+            return $error;
         }
-    
-        // Validar si el empleado existe antes de intentar eliminar
-        if (!$this->employeeModel->exists($employeeId)) {
-            return ['status' => 404, 'message' => 'El empleado no existe'];
+
+        // Validar existencia del empleado
+        if ($error = $this->validateExists($employeeId)) {
+            return $error;
         }
-    
-        // Intentar eliminar el empleado
-        $deleted = $this->employeeModel->deleteEmployee($employeeId);
-    
-        if ($deleted) {
-            return ['status' => 200, 'message' => 'Empleado eliminado correctamente'];
-        } else {
-            return ['status' => 500, 'message' => 'Hubo un problema al eliminar el empleado'];
-        }
+
+        // Eliminar el empleado
+        $deleted = $this->model->deleteEmployee($employeeId);
+        return $deleted ? ['status' => 200, 'message' => 'Empleado eliminado correctamente'] : ['status' => 500, 'message' => 'Hubo un problema al eliminar el empleado'];
     }
-    
 }
 ?>
