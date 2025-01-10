@@ -8,7 +8,7 @@ use App\Utils\BaseService;
 class EmployeeService extends BaseService {
 
     public function __construct() {
-        parent::__construct(new Employee()); // Pasar el modelo de Empleado
+        parent::__construct(new Employee());
     }
 
     public function getEmployees() {

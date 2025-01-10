@@ -12,7 +12,7 @@ class ProjectService extends BaseService {
     private $employeeModel;
 
     public function __construct() {
-        parent::__construct(new Project()); // Pasar el modelo de Proyecto
+        parent::__construct(new Project());
         $this->employeeModel = new Employee();
     }
 

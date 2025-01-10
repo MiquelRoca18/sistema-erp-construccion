@@ -10,6 +10,7 @@
     // Usar el namespace correcto
     use App\Controller\EmployeeController;
     use App\Controller\ProjectController;
+    use App\Controller\BudgetController;
     use App\Router;
 
     // Obtener el tipo de solicitud HTTP (GET, POST, DELETE, etc.)
@@ -23,6 +24,7 @@
     // Crear la instancia de los controladores
     $employeeController = new EmployeeController();
     $projectController = new ProjectController();
+    $budgetController = new BudgetController();
 
     // Definir las rutas para los empleados
     $router->addRoute('GET', '/employees', [$employeeController, 'get']);
@@ -37,6 +39,13 @@
     $router->addRoute('POST', '/projects', [$projectController, 'createProject']);
     $router->addRoute('PUT', '/projects/([0-9]+)', [$projectController, 'updateProject']);
     $router->addRoute('DELETE', '/projects/([0-9]+)', [$projectController, 'deleteProject']);
+
+    // Definir las rutas para los proyectos
+    $router->addRoute('GET', '/budgets', [$budgetController, 'get']);
+    $router->addRoute('GET', '/budgets/([0-9]+)', [$budgetController, 'getBudget']);
+    $router->addRoute('POST', '/budgets', [$budgetController, 'createBudget']);
+    $router->addRoute('PUT', '/budgets/([0-9]+)', [$budgetController, 'updateBudget']);
+    $router->addRoute('DELETE', '/budgets/([0-9]+)', [$budgetController, 'deleteBudget']);
 
     // Disparar el despachador de rutas
     $router->dispatch($requestUri, $requestMethod);
