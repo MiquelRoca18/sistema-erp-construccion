@@ -11,6 +11,7 @@
     use App\Controller\EmployeeController;
     use App\Controller\ProjectController;
     use App\Controller\BudgetController;
+    use App\Controller\TaskController;
     use App\Router;
 
     // Obtener el tipo de solicitud HTTP (GET, POST, DELETE, etc.)
@@ -25,6 +26,7 @@
     $employeeController = new EmployeeController();
     $projectController = new ProjectController();
     $budgetController = new BudgetController();
+    $taskController = new TaskController();
 
     // Definir las rutas para los empleados
     $router->addRoute('GET', '/employees', [$employeeController, 'get']);
@@ -46,6 +48,13 @@
     $router->addRoute('POST', '/budgets', [$budgetController, 'createBudget']);
     $router->addRoute('PUT', '/budgets/([0-9]+)', [$budgetController, 'updateBudget']);
     $router->addRoute('DELETE', '/budgets/([0-9]+)', [$budgetController, 'deleteBudget']);
+
+    // Definir las rutas para los proyectos
+    $router->addRoute('GET', '/tasks', [$taskController, 'get']);
+    $router->addRoute('GET', '/tasks/([0-9]+)', [$taskController, 'getTask']);
+    $router->addRoute('POST', '/tasks', [$taskController, 'createTask']);
+    $router->addRoute('PUT', '/tasks/([0-9]+)', [$taskController, 'updateTask']);
+    $router->addRoute('DELETE', '/tasks/([0-9]+)', [$taskController, 'deleteTask']);
 
     // Disparar el despachador de rutas
     $router->dispatch($requestUri, $requestMethod);

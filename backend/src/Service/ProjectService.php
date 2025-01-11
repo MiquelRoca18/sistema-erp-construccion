@@ -3,13 +3,11 @@ namespace App\Service;
 
 use App\Model\Project;
 use App\Model\Employee;
-use App\Utils\BaseService;  
-
-use \DateTime;
-use \Exception;
+use App\Utils\BaseService;
 
 class ProjectService extends BaseService {
     private $employeeModel;
+
 
     public function __construct() {
         parent::__construct(new Project());
@@ -76,40 +74,14 @@ class ProjectService extends BaseService {
             return ['status' => 404, 'message' => 'El responsable no existe'];
         }
 
-        // Obtener el proyecto actual para validaciones
+        // Obtener las fechas actuales del proyecto
         $project = $this->model->get($projectId);
-        $fechaInicioActual = isset($project['fecha_inicio']) ? $project['fecha_inicio'] : null;
-        $fechaFinActual = isset($project['fecha_fin']) ? $project['fecha_fin'] : null;
+        $fechaInicioActual = $project['fecha_inicio'] ?? null;
+        $fechaFinActual = $project['fecha_fin'] ?? null;
 
-        // Validar las fechas
-        try {
-            $fechaInicioActual = $fechaInicioActual ? new DateTime($fechaInicioActual) : null;
-            $fechaFinActual = $fechaFinActual ? new DateTime($fechaFinActual) : null;
-            $fechaActual = new DateTime();
-
-            // Validar fecha_inicio si se proporciona
-            if (isset($data->fecha_inicio)) {
-                $nuevaFechaInicio = new DateTime($data->fecha_inicio);
-
-                if ($fechaFinActual && $nuevaFechaInicio > $fechaFinActual) {
-                    return ['status' => 400, 'message' => 'La fecha de inicio no puede ser posterior a la fecha de finalización'];
-                }
-            }
-
-            // Validar fecha_fin si se proporciona
-            if (isset($data->fecha_fin)) {
-                $nuevaFechaFin = new DateTime($data->fecha_fin);
-
-                if ($fechaInicioActual && $nuevaFechaFin < $fechaInicioActual) {
-                    return ['status' => 400, 'message' => 'La fecha de finalización no puede ser anterior a la fecha de inicio'];
-                }
-
-                if ($nuevaFechaFin > $fechaActual) {
-                    return ['status' => 400, 'message' => 'La fecha de finalización no puede ser posterior a la fecha actual'];
-                }
-            }
-        } catch (Exception $e) {
-            return ['status' => 400, 'message' => 'Formato de fecha inválido'];
+        // Validar fechas usando la función general
+        if ($error = $this->validator->validateDates($data, $fechaInicioActual, $fechaFinActual)) {
+            return ['status' => 400, 'message' => $error];
         }
 
         // Actualizar el proyecto

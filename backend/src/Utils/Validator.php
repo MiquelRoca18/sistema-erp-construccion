@@ -1,6 +1,9 @@
 <?php
 namespace App\Utils;
 
+use DateTime;
+use Exception;
+
 class Validator {
     // Validar datos obligatorios
     public static function validateRequiredFields($fields, $data) {
@@ -51,6 +54,38 @@ class Validator {
         }
         return null;
     }
+
+    public static function validateDates($data, $currentStartDate = null, $currentEndDate = null) {
+        try {
+            $currentStartDate = $currentStartDate ? new DateTime($currentStartDate) : null;
+            $currentEndDate = $currentEndDate ? new DateTime($currentEndDate) : null;
+            $currentDate = new DateTime();
+    
+            // Validar fecha de inicio
+            if (!empty($data->fecha_inicio)) {
+                $newStartDate = new DateTime($data->fecha_inicio);
+                if ($currentEndDate && $newStartDate > $currentEndDate) {
+                    return 'La fecha de inicio no puede ser posterior a la fecha de finalización';
+                }
+            }
+    
+            // Validar fecha de finalización
+            if (!empty($data->fecha_fin)) {
+                $newEndDate = new DateTime($data->fecha_fin);
+                if ($currentStartDate && $newEndDate < $currentStartDate) {
+                    return 'La fecha de finalización no puede ser anterior a la fecha de inicio';
+                }
+                if ($newEndDate > $currentDate) {
+                    return 'La fecha de finalización no puede ser posterior a la fecha actual';
+                }
+            }
+        } catch (Exception $e) {
+            return 'Formato de fecha inválido';
+        }
+    
+        return null;
+    }
+    
     
 }
 
