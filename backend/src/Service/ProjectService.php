@@ -72,7 +72,7 @@ class ProjectService extends BaseService {
         }
 
         // Validar que el responsable exista si se proporciona
-        if (isset($data->responsable_id) && !$this->employeeModel->exists($data->responsable_id)) {
+        if (isset($data->responsables_id) && !$this->employeeModel->exists($data->responsables_id)) {
             return ['status' => 404, 'message' => 'El responsable no existe'];
         }
 

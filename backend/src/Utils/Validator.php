@@ -11,6 +11,16 @@ class Validator {
         }
         return null; // Sin errores
     }
+    public function validateNumbers(array $fields, $data) {
+        foreach ($fields as $field) {
+            // Verificar si el campo existe en $data antes de validarlo
+            if (property_exists($data, $field) && !is_numeric($data->$field)) {
+                return "El campo $field debe ser un número";
+            }
+        }
+        return null;
+    }
+    
 
     // Validar correo electrónico
     public static function validateEmail($email) {

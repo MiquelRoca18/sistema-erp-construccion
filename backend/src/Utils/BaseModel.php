@@ -40,6 +40,8 @@ class BaseModel {
 
     // Crear un nuevo registro
     public function create($data) {
+        $data = (array)$data;
+        
         $columns = implode(', ', array_keys($data));
         $placeholders = ':' . implode(', :', array_keys($data));
         
@@ -53,9 +55,11 @@ class BaseModel {
         $stmt->execute();
         return $this->db->lastInsertId();
     }
+    
 
     // Actualizar un registro
     public function update($id, $data) {
+        $data = (array)$data;
         $fields = [];
         foreach ($data as $key => $value) {
             $fields[] = "$key = :$key";

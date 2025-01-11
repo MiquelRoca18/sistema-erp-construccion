@@ -29,21 +29,57 @@ class BudgetService extends BaseService {
         return $this->responseFound($budget, 'Presupuesto encontrado');
     }
 
-    // public function createBudget($data) {
-    //     return [
-    //         'status' => 201,
-    //         'message' => 'POST budget',
-    //         'data' => []
-    //     ];
-    // }
+    public function createBudget($data) {
+        // Validar campos obligatorios
+        $error = $this->validator->validateRequiredFields(['equipos', 'mano_obra', 'materiales'], $data);
+        if ($error) {
+            return ['status' => 400, 'message' => $error];
+        }
 
-    // public function updateBudget($budgetId, $data) {
-    //     return [
-    //         'status' => 200,
-    //         'message' => 'PUT budget ' . $budgetId,
-    //         'data' => []
-    //     ];
-    // }
+        // Validar si los datos son números
+        $error = $this->validator->validateNumbers(['equipos', 'mano_obra', 'materiales'], $data);
+        if ($error) {
+            return ['status' => 400, 'message' => $error];
+        }
+
+        //Validar si el proyecto existe
+        if (!empty($data->proyectos_id) && !$this->model->exists($data->proyectos_id)) {
+            return ['status' => 404, 'message' => 'El proyecto no existe'];
+        } elseif (empty($data->proyectos_id)) {
+            return ['status' => 400, 'message' => 'El proyecto es obligatorio'];
+        }
+
+        $budget = $this->model->create($data);
+        return $this->responseCreated($budget, 'Presupuesto creado');
+    }
+
+    public function updateBudget($budgetId, $data) {
+        // Validar ID
+        if ($error = $this->validateId($budgetId)) {
+            return $error;
+        }
+
+        // Validar existencia del presupuesto
+        if ($error = $this->validateExists($budgetId)) {
+            return $error;
+        }
+
+        // Validar si los datos son números
+        $error = $this->validator->validateNumbers(['equipos', 'mano_obra', 'materiales'], $data);
+        if ($error) {
+            return ['status' => 400, 'message' => $error];
+        }
+
+        //Validar si el proyecto existe
+        if (!empty($data->proyectos_id) && !$this->model->exists($data->proyectos_id)) {
+            return ['status' => 404, 'message' => 'El proyecto no existe'];
+        } elseif (empty($data->proyectos_id)) {
+            return ['status' => 400, 'message' => 'El proyecto es obligatorio'];
+        }
+
+        $budget = $this->model->update($budgetId, $data);
+        return $budget ? $this->responseUpdated($budget, 'Presupuesto actualizado') : $this->responseError();
+    }
 
     // public function deleteBudget($budgetId) {
     //     return [

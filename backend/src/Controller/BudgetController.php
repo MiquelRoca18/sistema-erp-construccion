@@ -20,13 +20,17 @@ class BudgetController extends BaseController{
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
 
-    // public function createBudget(){
-    //     echo 'POST budget';
-    // }
+    public function createBudget(){
+        $data = $this->getRequestData();
+        $result = $this->budgetService->createBudget($data);
+        $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
+    }
 
-    // public function updateBudget($id){
-    //     echo 'PUT budget ' . $id;
-    // }
+    public function updateBudget($id){
+        $data = $this->getRequestData();
+        $result = $this->budgetService->updateBudget($id, $data);
+        $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);    
+    }
 
     // public function deleteBudget($id){
     //     echo 'DELETE budget ' . $id;
