@@ -32,8 +32,9 @@ class BudgetController extends BaseController{
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);    
     }
 
-    // public function deleteBudget($id){
-    //     echo 'DELETE budget ' . $id;
-    // }
+    public function deleteBudget($id){
+        $result= $this->budgetService->deleteBudget($id);
+        $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
+    }
 }
 ?>

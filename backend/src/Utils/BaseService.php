@@ -20,7 +20,7 @@ abstract class BaseService {
         return null;
     }
 
-    // Validar si el recurso existe (proyecto o empleado)
+    // Validar si el recurso existe
     protected function validateExists($id) {
         if (!$this->model->exists($id)) {
             return ['status' => 404, 'message' => 'El recurso no existe'];

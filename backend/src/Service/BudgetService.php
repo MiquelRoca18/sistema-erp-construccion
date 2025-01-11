@@ -81,12 +81,20 @@ class BudgetService extends BaseService {
         return $budget ? $this->responseUpdated($budget, 'Presupuesto actualizado') : $this->responseError();
     }
 
-    // public function deleteBudget($budgetId) {
-    //     return [
-    //         'status' => 200,
-    //         'message' => 'DELETE budget ' . $budgetId,
-    //         'data' => []
-    //     ];
-    // }
+    public function deleteBudget($budgetId) {
+        // Validar ID
+        if ($error = $this->validateId($budgetId)) {
+            return $error;
+        }
+
+        // Validar existencia del presupuesto
+        if ($error = $this->validateExists($budgetId)) {
+            return $error;
+        }
+
+        $this->model->delete($budgetId);
+        return $this->responseDeleted('Presupuesto eliminado');
+
+    }
 }
 ?>
