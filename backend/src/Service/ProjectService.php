@@ -69,6 +69,11 @@ class ProjectService extends BaseService {
             return $error;
         }
 
+        //Validar estado correcto
+        if(!empty($data->estado) && !in_array($data->estado, ['pendiente', 'en progreso', 'finalizado'])){
+        return ['status' => 400, 'message' => 'El estado no es válido'];
+        }
+
         // Validar que el responsable exista si se proporciona
         if (isset($data->responsables_id) && !$this->employeeModel->exists($data->responsables_id)) {
             return ['status' => 404, 'message' => 'El responsable no existe'];
@@ -85,8 +90,8 @@ class ProjectService extends BaseService {
         }
 
         // Actualizar el proyecto
-        $this->model->update($projectId, $data);
-        return ['status' => 200, 'message' => 'Proyecto actualizado correctamente', 'data' => $data];
+        $result = $this->model->update($projectId, $data);
+        return $result ? $this->responseUpdated('Tarea actualizada') : $this->responseError();
     }
 
     public function deleteProject($projectId) {
@@ -101,8 +106,8 @@ class ProjectService extends BaseService {
         }
 
         // Eliminar el proyecto
-        $deleted = $this->model->delete($projectId);
-        return $deleted ? ['status' => 200, 'message' => 'Proyecto eliminado correctamente'] : ['status' => 500, 'message' => 'Hubo un problema al eliminar el proyecto'];
+        $result = $this->model->delete($projectId);
+        return $result ? $this->responseDeleted('Tarea eliminada') : $this->responseError();   
     }
 }
 ?>

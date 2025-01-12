@@ -72,8 +72,8 @@ class EmployeeService extends BaseService {
         }
 
         // Actualizar el empleado
-        $this->model->update($employeeId, $data);
-        return ['status' => 200, 'message' => 'Empleado actualizado correctamente', 'data' => $data];
+        $result = $this->model->update($employeeId, $data);
+        return $result ? $this->responseUpdated('Tarea actualizada') : $this->responseError();
     }
 
     public function deleteEmployee($employeeId) {
@@ -88,8 +88,8 @@ class EmployeeService extends BaseService {
         }
 
         // Eliminar el empleado
-        $deleted = $this->model->delete($employeeId);
-        return $deleted ? ['status' => 200, 'message' => 'Empleado eliminado correctamente'] : ['status' => 500, 'message' => 'Hubo un problema al eliminar el empleado'];
+        $result = $this->model->delete($employeeId);
+        return $result ? $this->responseDeleted('Tarea eliminada') : $this->responseError();   
     }
 }
 ?>

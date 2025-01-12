@@ -12,23 +12,30 @@ class TaskController extends BaseController{
     }
 
     public function get(){
-        echo 'GET tasks';
+        $result = $this->taskService->getTasks();
+        $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
 
     public function getTask($id){
-        echo 'GET task ' . $id;
+        $result = $this->taskService->getTask($id);
+        $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
 
     public function createTask(){
-        echo 'POST task';
+        $data = $this->getRequestData();
+        $result = $this->taskService->createTask($data);
+        $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
 
     public function updateTask($id){
-        echo 'PUT task ' . $id;
+        $data = $this->getRequestData();
+        $result = $this->taskService->updateTask($id, $data);
+        $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
 
     public function deleteTask($id){
-        echo 'DELETE task ' . $id;
+        $result = $this->taskService->deleteTask($id);
+        $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
 }
 
