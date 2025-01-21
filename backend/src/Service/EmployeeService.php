@@ -3,7 +3,7 @@ namespace App\Service;
 
 use App\Model\Employee;
 use App\Utils\BaseService;  
-
+use App\Model\AuthModel;
 
 class EmployeeService extends BaseService {
 
@@ -38,6 +38,9 @@ class EmployeeService extends BaseService {
             return ['status' => 400, 'message' => $error];
         }
 
+        // Asignar valores predeterminados
+        $data->fecha_contratacion = $data->fecha_contratacion ?? date('Y-m-d');
+
         // Validar correo electrónico
         $error = $this->validator->validateEmail($data->correo);
         if ($error) return ['status' => 400, 'message' => $error];
@@ -48,7 +51,33 @@ class EmployeeService extends BaseService {
 
         // Crear el empleado
         $employee = $this->model->create($data);
-        return ['status' => 201, 'message' => 'Empleado creado correctamente', 'data' => $employee];
+
+        // Obtener el nombre completo y separar en nombre y apellido
+        $nombreCompleto = strtolower($data->nombre);   
+        $nombreArray = explode(' ', $nombreCompleto);  
+
+        $nombre = $nombreArray[0];  
+        $apellido = $nombreArray[1];  
+
+        // Crear nombre de usuario: 'nombre.apellido'
+        $username = $nombre . '.' . $apellido;
+
+        // Crear contraseña: primeras dos letras del nombre + primeras dos del apellido
+        $password = strtolower(substr($nombre, 0, 2)) . strtolower(substr($apellido, 0, 2));
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);  
+
+        // Crear el usuario en la tabla autenticación
+        $authData = [
+            'empleados_id' => $employee,  
+            'username' => $username,      
+            'password_hash' => $password_hash,  
+            'id_rol' => 2      
+        ];
+
+        $authModel = new AuthModel();
+        $authModel->create($authData);
+
+        return ['status' => 201, 'message' => 'Empleado y autenticación creados correctamente', 'data' => $employee];
     }
 
     public function updateEmployee($employeeId, $data) {
