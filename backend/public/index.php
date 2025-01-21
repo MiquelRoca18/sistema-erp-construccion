@@ -7,11 +7,17 @@
     // Cargar el autoload generado por Composer
     require_once __DIR__ . '/../vendor/autoload.php';
 
+    // Cargar las variables de entorno
+    use Dotenv\Dotenv;
+    $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv->load();
+
     // Usar el namespace correcto
     use App\Controller\EmployeeController;
     use App\Controller\ProjectController;
     use App\Controller\BudgetController;
     use App\Controller\TaskController;
+    use App\Controller\AuthController;
     use App\Router;
 
     // Obtener el tipo de solicitud HTTP (GET, POST, DELETE, etc.)
@@ -27,6 +33,7 @@
     $projectController = new ProjectController();
     $budgetController = new BudgetController();
     $taskController = new TaskController();
+    $authController = new AuthController();
 
     // Definir las rutas para los empleados
     $router->addRoute('GET', '/employees', [$employeeController, 'get']);
@@ -55,6 +62,9 @@
     $router->addRoute('POST', '/tasks', [$taskController, 'createTask']);
     $router->addRoute('PUT', '/tasks/([0-9]+)', [$taskController, 'updateTask']);
     $router->addRoute('DELETE', '/tasks/([0-9]+)', [$taskController, 'deleteTask']);
+
+    // Definir las rutas para la autenticación
+    $router->addRoute('POST', '/auth/login', [$authController, 'login']);
 
     // Disparar el despachador de rutas
     $router->dispatch($requestUri, $requestMethod);

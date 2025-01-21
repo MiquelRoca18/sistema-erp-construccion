@@ -104,5 +104,4 @@ class TaskService extends BaseService{
         return $result ? $this->responseDeleted('Tarea eliminada') : $this->responseError();   
     }
 }
-
 ?>
