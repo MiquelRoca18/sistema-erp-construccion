@@ -1,4 +1,4 @@
-CREATE DATABASE sistema_erp_construccion;
+-- CREATE DATABASE sistema_erp_construccion;
 
 -- USE sistema_erp_construccion;
 
