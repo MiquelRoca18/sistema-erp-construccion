@@ -1,4 +1,4 @@
--- CREATE DATABASE sistema_erp_construccion;
+CREATE DATABASE sistema_erp_construccion;
 
 -- USE sistema_erp_construccion;
 
@@ -19,11 +19,11 @@
 --   	fecha_inicio DATE,
 --   	fecha_fin DATE,
 --   	descripcion TEXT,
---   	FOREIGN KEY (responsable_id) REFERENCES empleados(empleado_id)
+--   	FOREIGN KEY (responsable_id) REFERENCES empleados(empleados_id)
 -- );
 
 -- CREATE TABLE tareas(
--- 	tarea_id INT AUTO_INCREMENT PRIMARY KEY,
+-- 	tareas_id INT AUTO_INCREMENT PRIMARY KEY,
 --     estado ENUM ('pendiente','en progreso','finalizado') DEFAULT 'pendiente',
 --   	nombre_tarea VARCHAR(255) NOT NULL,
 --   	descripcion text, 
@@ -45,11 +45,11 @@
 
 
 -- CREATE TABLE empleados_tareas(
--- 	tarea_id INT,
+-- 	tareas_id INT,
 --   	empleados_id INT,
---   	PRIMARY KEY (tarea_id, empleados_id),
---   	FOREIGN KEY (tarea_id) REFERENCES tareas(tarea_id),
---   	FOREIGN KEY (empleados_id) REFERENCES empleados(empleado_id)
+--   	PRIMARY KEY (tareas_id, empleados_id),
+--   	FOREIGN KEY (tareas_id) REFERENCES tareas(tareas_id),
+--   	FOREIGN KEY (empleados_id) REFERENCES empleados(empleados_id)
 -- );
 
 -- CREATE TABLE roles(
@@ -63,7 +63,7 @@
 --     username VARCHAR(255) UNIQUE NOT NULL,
 --     password_hash VARCHAR(255) NOT NULL,
 --     id_rol INT,
---     FOREIGN KEY (empleados_id) REFERENCES empleados(empleado_id) ON DELETE CASCADE,
+--     FOREIGN KEY (empleados_id) REFERENCES empleados(empleados_id) ON DELETE CASCADE,
 --     FOREIGN KEY (id_rol) REFERENCES roles(id_rol)
 -- );
 
@@ -99,7 +99,7 @@
 -- (3, 30000.00, 60000.00, 40000.00);
 
 -- -- Asignar empleados a tareas
--- INSERT INTO empleados_tareas (tarea_id, empleados_id) VALUES
+-- INSERT INTO empleados_tareas (tareas_id, empleados_id) VALUES
 -- (1, 1), -- Juan Pérez (Arquitecto) en la tarea 'Rehabilitación fachada'
 -- (2, 2), -- Ana Gómez (Albañil) en la tarea 'Instalación de fontanería'
 -- (3, 4), -- María Sánchez (Jefe de obra) en la tarea 'Construcción de la base de la nave'
