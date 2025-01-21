@@ -57,15 +57,14 @@
 --   	rol ENUM ('usuario', 'admin') NOT NULL
 -- );
 
--- CREATE TABLE autenticacion(
--- 	id_usuario INT AUTO_INCREMENT PRIMARY KEY,
---   	empleados_id INT,
---   	username VARCHAR(255) UNIQUE NOT NULL,
---   	password_hash VARCHAR(255) NOT NULL,
---   	id_rol INT,
---   	FOREIGN KEY (empleados_id) REFERENCES empleados(empleado_id),
---   	FOREIGN KEY (id_rol) REFERENCES roles(id_rol)
-
+-- CREATE TABLE autenticacion (
+--     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+--     empleados_id INT,
+--     username VARCHAR(255) UNIQUE NOT NULL,
+--     password_hash VARCHAR(255) NOT NULL,
+--     id_rol INT,
+--     FOREIGN KEY (empleados_id) REFERENCES empleados(empleado_id) ON DELETE CASCADE,
+--     FOREIGN KEY (id_rol) REFERENCES roles(id_rol)
 -- );
 
 -- -- Insertar roles
