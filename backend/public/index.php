@@ -65,6 +65,7 @@
 
     // Definir las rutas para la autenticación
     $router->addRoute('POST', '/auth/login', [$authController, 'login']);
+    $router->addRoute('POST', '/auth/logout', [$authController, 'logout']); 
 
     // Disparar el despachador de rutas
     $router->dispatch($requestUri, $requestMethod);

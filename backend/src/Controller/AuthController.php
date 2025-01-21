@@ -16,7 +16,7 @@ class AuthController extends BaseController {
     }
 
     public function logout() {
-        echo 'Logout';
+        $this->sendResponse(200, 'Sesión cerrada con éxito');
     }
 }
 ?>
