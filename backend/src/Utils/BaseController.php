@@ -11,10 +11,18 @@ class BaseController {
      */
     protected function sendResponse($status, $message, $data = null) {
         http_response_code($status);
-        echo json_encode([
-            'message' => $message,
-            'data' => $data
-        ], JSON_UNESCAPED_UNICODE);
+        
+        // Creamos la respuesta base
+        $response = [
+            'message' => $message
+        ];
+
+        // Solo incluimos 'data' si no es null
+        if (!is_null($data)) {
+            $response['data'] = $data;
+        }
+
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
     /**

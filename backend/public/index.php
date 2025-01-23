@@ -18,6 +18,7 @@
     use App\Controller\BudgetController;
     use App\Controller\TaskController;
     use App\Controller\AuthController;
+    use App\Controller\EmployeeTaskController;
     use App\Router;
 
     // Obtener el tipo de solicitud HTTP (GET, POST, DELETE, etc.)
@@ -34,6 +35,7 @@
     $budgetController = new BudgetController();
     $taskController = new TaskController();
     $authController = new AuthController();
+    $employeeTaskController = new EmployeeTaskController();
 
     // Definir las rutas para los empleados
     $router->addRoute('GET', '/employees', [$employeeController, 'get']);
@@ -66,6 +68,12 @@
     // Definir las rutas para la autenticación
     $router->addRoute('POST', '/auth/login', [$authController, 'login']);
     $router->addRoute('POST', '/auth/logout', [$authController, 'logout']); 
+
+    // Definir las rutas para empleados_tareas
+    $router->addRoute('POST', '/employee-tasks', [$employeeTaskController, 'addTaskToEmployee']);
+    $router->addRoute('DELETE', '/employee-tasks', [$employeeTaskController, 'removeTaskFromEmployee']);
+    $router->addRoute('GET', '/employee-tasks/employees/([0-9]+)', [$employeeTaskController, 'getTasksByEmployee']);
+    $router->addRoute('GET', '/employee-tasks/tasks/([0-9]+)', [$employeeTaskController, 'getEmployeesByTask']);
 
     // Disparar el despachador de rutas
     $router->dispatch($requestUri, $requestMethod);
