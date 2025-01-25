@@ -19,27 +19,20 @@
 </template>
 
 <script>
+import employeePhoto from '@/assets/images/employeePhoto.webp';
+
 export default {
   name: "EmployeeProfileComponent",
-  props: {
-    employeePhoto: {
-      type: String,
-      required: true,
-    },
-    employeeName: {
-      type: String,
-      required: true,
-    },
+  data() {
+    return {
+      employeePhoto, // La imagen importada directamente
+      employeeName: "John Doe", // Nombre del empleado
+    };
   },
   methods: {
     logout() {
-      // Lógica de logout
       alert("Cerrando sesión...");
     },
   },
 };
 </script>
-
-<style scoped>
-/* Puedes agregar estilos específicos si Tailwind no cubre todo */
-</style>

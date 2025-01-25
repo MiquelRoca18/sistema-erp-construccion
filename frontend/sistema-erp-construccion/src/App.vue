@@ -1,22 +1,12 @@
 <script setup lang="ts">
-import EmployeeProfileComponent from './components/EmployeeProfileComponent.vue'
+  // Ya no es necesario importar EmployeeProfileComponent, porque ahora se manejará a través de rutas
 </script>
 
 <template>
-  <EmployeeProfileComponent employeeName="Perico" />
+  <!-- Aquí usamos el <router-view /> para que se muestren las vistas basadas en las rutas -->
+  <router-view />
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+/* Estilos globales si los necesitas */
 </style>

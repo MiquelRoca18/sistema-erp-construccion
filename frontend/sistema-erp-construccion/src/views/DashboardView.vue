@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Employee Profile Component -->
-    <EmployeeProfile
+    <EmployeeProfileComponent
       employeePhoto="/path/to/photo.jpg"
       employeeName="Juan Pérez"
     />
@@ -9,11 +9,11 @@
 </template>
 
 <script>
-import EmployeeProfile from "../components/EmployeeProfile.vue";
+import EmployeeProfileComponent from "@/components/EmployeeProfileComponent.vue";
 
 export default {
   components: {
-    EmployeeProfile,
+    EmployeeProfileComponent,
   },
 };
 </script>
