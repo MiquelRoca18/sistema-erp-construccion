@@ -5,7 +5,7 @@
       <div class="mb-4">
         <label for="username" class="block text-sm font-medium text-gray-700">Nombre de usuario</label>
         <input
-          type="username"
+          type="text"
           id="username"
           v-model="username"
           class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -31,21 +31,27 @@
         Ingresar
       </button>
     </form>
+    <p v-if="errorMessage" class="text-red-500 text-sm mt-4">{{ errorMessage }}</p>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { login } from '@/service/authService';
 
 const username = ref('');
 const password = ref('');
+const errorMessage = ref('');
+const router = useRouter();
 
-const handleSubmit = () => {
-  alert('Iniciando sesión con:', username.value, password.value);
-  // Aquí iría la lógica para enviar el login al backend.
+const handleSubmit = async () => {
+  try {
+    const response = await login({ username: username.value, password: password.value });
+    localStorage.setItem('token', response.token); // Guardar el token en el almacenamiento local
+    router.push('/dashboard'); // Redirigir al dashboard
+  } catch (error: any) {
+    errorMessage.value = error.message || 'Ocurrió un error. Por favor, inténtalo de nuevo.';
+  }
 };
 </script>
-
-<style scoped>
-/* No es necesario agregar CSS ya que estamos utilizando Tailwind */
-</style>
