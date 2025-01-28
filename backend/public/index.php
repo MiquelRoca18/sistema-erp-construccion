@@ -5,9 +5,11 @@
     error_reporting(E_ALL);
 
     // Habilitar CORS
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Allow-Origin: http://localhost:5173'); // Permitir solicitudes desde el origen del frontend
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE'); // Métodos HTTP permitidos
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With'); // Encabezados permitidos
+    header('Access-Control-Allow-Credentials: true'); // Permitir envío de credenciales si es necesario
+
     
 
     // Cargar el autoload generado por Composer
@@ -29,6 +31,15 @@
 
     // Obtener el tipo de solicitud HTTP (GET, POST, DELETE, etc.)
     $requestMethod = $_SERVER['REQUEST_METHOD'];
+    if ($requestMethod === 'OPTIONS') {
+        // Responder a la solicitud preflight
+        header('Access-Control-Allow-Origin: http://localhost:5173');
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+        header('Access-Control-Allow-Credentials: true');
+        http_response_code(200); // Respuesta exitosa
+        exit(); // Terminar aquí para solicitudes OPTIONS
+    }
     $scriptName = dirname($_SERVER['SCRIPT_NAME']);
     $requestUri = str_replace($scriptName, '', $_SERVER['REQUEST_URI']);
 
