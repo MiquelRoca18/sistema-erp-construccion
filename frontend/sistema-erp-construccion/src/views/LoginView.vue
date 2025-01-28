@@ -14,11 +14,11 @@
         />
       </div>
       <div class="mb-6">
-        <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+        <label for="password_hash" class="block text-sm font-medium text-gray-700">Contraseña</label>
         <input
-          type="password"
-          id="password"
-          v-model="password"
+          type="password_hash"
+          id="password_hash"
+          v-model="password_hash"
           class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Introduce tu contraseña"
           required
@@ -41,13 +41,13 @@ import { useRouter } from 'vue-router';
 import { login } from '@/service/authService';
 
 const username = ref('');
-const password = ref('');
+const password_hash = ref('');
 const errorMessage = ref('');
 const router = useRouter();
 
 const handleSubmit = async () => {
   try {
-    const response = await login({ username: username.value, password: password.value });
+    const response = await login({ username: username.value, password_hash: password_hash.value });
     localStorage.setItem('token', response.token); // Guardar el token en el almacenamiento local
     router.push('/dashboard'); // Redirigir al dashboard
   } catch (error: any) {

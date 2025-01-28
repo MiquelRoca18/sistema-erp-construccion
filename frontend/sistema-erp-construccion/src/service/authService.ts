@@ -11,8 +11,10 @@ interface LoginResponse {
   };
 }
 
-export const login = async (credentials: { username: string; password: string }): Promise<LoginResponse> => {
+export const login = async (credentials: { username: string; password_hash: string }): Promise<LoginResponse> => {
   try {
+    console.log( credentials)
+    console.log( API_URL)
     const response = await axios.post(`${API_URL}/auth/login`, credentials, {
       headers: {
         'Content-Type': 'application/json',
