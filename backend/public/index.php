@@ -4,19 +4,18 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
-    // Permitir CORS
+    // Permitir CORS en todas las rutas
     header("Access-Control-Allow-Origin: *");
     header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
+    // Si la solicitud es de tipo OPTIONS, responder inmediatamente con un 200
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-        // Asegúrate de que todas las cabeceras necesarias estén presentes en la respuesta.
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
         http_response_code(200);
         exit;
     }
+
+
 
     // Cargar el autoload generado por Composer
     require_once __DIR__ . '/../vendor/autoload.php';
