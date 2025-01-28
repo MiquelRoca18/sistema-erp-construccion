@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /sistema-erp-construccion/frontend/
+RewriteBase /sistema-erp-construccion/frontend/sistema-erp-construccion
 
 # Redirigir todas las peticiones que no sean archivos o directorios existentes a index.html
 RewriteCond %{REQUEST_FILENAME} !-f
