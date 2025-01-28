@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Rutas para el backend
+RewriteCond %{REQUEST_URI} ^/sistema-erp-construccion/backend
+RewriteRule ^backend/(.*)$ backend/public/index.php [L,QSA]
+
+# Rutas para el frontend
+RewriteCond %{REQUEST_URI} !^/sistema-erp-construccion/backend
+RewriteRule ^(.*)$ frontend/public/index.html [L,QSA]

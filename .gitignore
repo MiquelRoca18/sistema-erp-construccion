@@ -16,3 +16,6 @@
 
 # Ignorar archivos de configuración
 .env
+
+/backend/
+/frontend/
