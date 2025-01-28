@@ -4,6 +4,17 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
+    // Permitir CORS
+    header("Access-Control-Allow-Origin: http://localhost"); // Cambia esto por la URL de tu frontend
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+    // Si el método es OPTIONS, devuelve una respuesta vacía (esto es necesario para las pre-solicitudes CORS)
+    if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+        http_response_code(200);
+        exit;
+    }
+
     // Cargar el autoload generado por Composer
     require_once __DIR__ . '/../vendor/autoload.php';
 
