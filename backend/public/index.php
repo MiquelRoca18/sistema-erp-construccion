@@ -5,9 +5,10 @@
     error_reporting(E_ALL);
 
     // Permitir CORS en todas las rutas
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-    header("Access-Control-Allow-Headers: Content-Type, Authorization");
+    header('Access-Control-Allow-Origin: *');
+    header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+    header('content-type: application/json; charset=utf-8');
 
     // Si la solicitud es de tipo OPTIONS, responder inmediatamente con un 200
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
