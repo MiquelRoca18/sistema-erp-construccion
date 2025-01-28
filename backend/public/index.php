@@ -5,13 +5,13 @@
     error_reporting(E_ALL);
 
     // Permitir CORS
-    header("Access-Control-Allow-Origin: http://localhost:5173"); 
+    header("Access-Control-Allow-Origin: http://localhost:5173/"); 
     header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
         // Asegúrate de que todas las cabeceras necesarias estén presentes en la respuesta.
-    header("Access-Control-Allow-Origin: http://localhost:5173");
+    header("Access-Control-Allow-Origin: http://localhost:5173/");
     header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
         http_response_code(200);
