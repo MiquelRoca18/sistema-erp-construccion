@@ -4,16 +4,17 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
+    // Configuración de cabeceras CORS
     header('Access-Control-Allow-Origin: *');
     header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
     header("Allow: GET, POST, OPTIONS, PUT, DELETE");
-    $method = $_SERVER['REQUEST_METHOD'];
-    if($method == "OPTIONS") {
-        die();
+
+    // Si la solicitud es de tipo OPTIONS, responder inmediatamente con un 200 y terminar el script
+    if ($_SERVER['REQUEST_METHOD'] == "OPTIONS") {
+        http_response_code(200);
+        exit;
     }
-
-
 
     // Cargar el autoload generado por Composer
     require_once __DIR__ . '/../vendor/autoload.php';
@@ -62,14 +63,14 @@
     $router->addRoute('PUT', '/projects/([0-9]+)', [$projectController, 'updateProject']);
     $router->addRoute('DELETE', '/projects/([0-9]+)', [$projectController, 'deleteProject']);
 
-    // Definir las rutas para los proyectos
+    // Definir las rutas para los presupuestos
     $router->addRoute('GET', '/budgets', [$budgetController, 'get']);
     $router->addRoute('GET', '/budgets/([0-9]+)', [$budgetController, 'getBudget']);
     $router->addRoute('POST', '/budgets', [$budgetController, 'createBudget']);
     $router->addRoute('PUT', '/budgets/([0-9]+)', [$budgetController, 'updateBudget']);
     $router->addRoute('DELETE', '/budgets/([0-9]+)', [$budgetController, 'deleteBudget']);
 
-    // Definir las rutas para los proyectos
+    // Definir las rutas para las tareas
     $router->addRoute('GET', '/tasks', [$taskController, 'get']);
     $router->addRoute('GET', '/tasks/([0-9]+)', [$taskController, 'getTask']);
     $router->addRoute('POST', '/tasks', [$taskController, 'createTask']);
