@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost/sistema-erp-construccion/backend/public'; // Cambia esto a la URL de tu backend
+const API_URL = 'http://localhost/sistema-erp-construccion/backend/public'; 
 
 interface LoginResponse {
   token: string;
@@ -18,6 +18,7 @@ export const login = async (credentials: { username: string; password: string })
         'Content-Type': 'application/json',
       },
     });
+    console.log(response.data.data);
     return response.data.data; // Accedemos a los datos devueltos
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error de autenticación');
