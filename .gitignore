@@ -15,4 +15,4 @@
 /cache/
 
 # Ignorar archivos de configuración
-.env
+/backend
