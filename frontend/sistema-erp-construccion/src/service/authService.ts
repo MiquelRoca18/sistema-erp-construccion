@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost/sistema-erp-construccion/backend/public'; 
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface LoginResponse {
   token: string;
