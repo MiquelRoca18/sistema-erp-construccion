@@ -6,16 +6,9 @@
 
     // Permitir CORS en todas las rutas
     header('Access-Control-Allow-Origin: *');
-    header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-    header('content-type: application/json; charset=utf-8');
-
-    // Si la solicitud es de tipo OPTIONS, responder inmediatamente con un 200
-    if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-        http_response_code(200);
-        exit;
-    }
-
+    header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+    header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+    header("Allow: GET, POST, OPTIONS, PUT, DELETE");
 
 
     // Cargar el autoload generado por Composer
