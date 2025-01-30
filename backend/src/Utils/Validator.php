@@ -34,18 +34,30 @@ class Validator {
     }
 
     // Validar fecha con coherencia
-    public static function validateDate($date, $minYear = 1900, $maxYear = null) {
+    public static function validateDate($date, $minYear = 1900, $maxDate = null) {
         if (strtotime($date) === false || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
             return "La fecha no es válida. Debe tener el formato YYYY-MM-DD";
         }
-
+    
+        // Obtener el año de la fecha pasada
         $year = (int)date('Y', strtotime($date));
-        $maxYear = $maxYear ?? (int)date('Y');
-        if ($year < $minYear || $year > $maxYear) {
-            return "La fecha debe estar entre $minYear y $maxYear";
+        
+        // Si no se proporciona una fecha máxima, establecerla como mañana
+        $maxDate = $maxDate ?? date('Y-m-d', strtotime('+1 day')); // Fecha de mañana
+    
+        // Comprobar si la fecha está dentro de los límites permitidos
+        if ($year < $minYear) {
+            return "La fecha debe ser mayor o igual a $minYear";
         }
-        return null;
+        
+        // Verificar que la fecha no exceda el día de mañana
+        if (strtotime($date) > strtotime($maxDate)) {
+            return "La fecha debe ser anterior o igual a $maxDate";
+        }
+    
+        return null; // Si todo está bien
     }
+    
 
     // Validar teléfono
     public static function validatePhone($phone) {
