@@ -40,7 +40,7 @@ class Validator {
         }
 
         $year = (int)date('Y', strtotime($date));
-        $maxYear = $maxYear ?? (int)date('Y'); // Año actual por defecto
+        $maxYear = $maxYear ?? (int)date('Y');
         if ($year < $minYear || $year > $maxYear) {
             return "La fecha debe estar entre $minYear y $maxYear";
         }

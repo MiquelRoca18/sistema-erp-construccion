@@ -100,6 +100,17 @@ class EmployeeService extends BaseService {
             return ['status' => 400, 'message' => $error];
         }
 
+         // Obtener las fechas actuales del proyecto
+         $employee = $this->model->get($employeeId);
+         $fechaContratacion = $employee['fecha_inicio'] ?? null;
+ 
+         // Validar fechas usando la función general
+         if (isset($data->fecha_contratacion)) {
+            if ($error = $this->validator->validateDate($data->fecha_contratacion)) {
+                return ['status' => 400, 'message' => $error];
+            }
+        }        
+
         // Actualizar el empleado
         $result = $this->model->update($employeeId, $data);
         return $result ? $this->responseUpdated('Tarea actualizada') : $this->responseError();
