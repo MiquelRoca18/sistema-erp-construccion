@@ -16,7 +16,7 @@
       <div class="mb-6">
         <label for="password_hash" class="block text-sm font-medium text-gray-700">Contraseña</label>
         <input
-          type="password_hash"
+          type="password"
           id="password_hash"
           v-model="password_hash"
           class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -48,10 +48,13 @@ const router = useRouter();
 const handleSubmit = async () => {
   try {
     const response = await login({ username: username.value, password_hash: password_hash.value });
-    localStorage.setItem('token', response.token); // Guardar el token en el almacenamiento local
+    console.log('Respuesta del servidor:', response.user);
+    localStorage.setItem('token', response.token); // Guardar el token
+    localStorage.setItem('user', JSON.stringify(response.user)); // Guardar datos del usuario
     router.push('/dashboard'); // Redirigir al dashboard
-  } catch (error: any) {
+  } catch (error) {
     errorMessage.value = error.message || 'Ocurrió un error. Por favor, inténtalo de nuevo.';
   }
 };
+
 </script>

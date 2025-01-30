@@ -6,7 +6,7 @@
       :src="employeePhoto"
       alt="Employee Photo"
     />
-    <!-- Nombre del empleado -->
+    <!-- Nombre del empleado dinámico -->
     <h2 class="text-xl font-bold text-gray-800 mt-4">{{ employeeName }}</h2>
     <!-- Botón de Logout -->
     <button
@@ -18,21 +18,15 @@
   </div>
 </template>
 
-<script>
-import employeePhoto from '@/assets/images/employeePhoto.webp';
+<script setup>
+defineProps({
+  employeeName: String,
+  employeePhoto: String
+});
 
-export default {
-  name: "EmployeeProfileComponent",
-  data() {
-    return {
-      employeePhoto, // La imagen importada directamente
-      employeeName: "John Doe", // Nombre del empleado
-    };
-  },
-  methods: {
-    logout() {
-      alert("Cerrando sesión...");
-    },
-  },
+const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.location.href = "/"; 
 };
 </script>
