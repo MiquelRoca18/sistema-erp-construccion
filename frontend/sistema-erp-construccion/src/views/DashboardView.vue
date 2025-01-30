@@ -1,10 +1,11 @@
 <template>
   <div>
-    <!-- Componente de Perfil del Empleado -->
-    <EmployeeProfileComponent
-      :employeePhoto="employeePhoto"
-      :employeeName="employeeName"
-    />
+    <router-link :to="`/employee/${employeeId}`">
+      <EmployeeProfileComponent
+        :employeePhoto="employeePhoto"
+        :employeeName="employeeName"
+      />
+    </router-link>
   </div>
 </template>
 
@@ -13,19 +14,17 @@ import { ref, onMounted } from 'vue';
 import { getEmployeeData } from '@/service/authService';
 import EmployeeProfileComponent from "@/components/EmployeeProfileComponent.vue";
 
-const employeeName = ref("Cargando...");
-const employeePhoto = ref("/path/to/photo.jpg"); // Puedes cambiarlo si tienes fotos en el backend
+const employeeId = ref(null);
+const employeeName = ref("Empleado Desconocido");
+const employeePhoto = ref("/src/assets/images/employeePhoto.webp");
 
 onMounted(async () => {
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user")); // Guarda el usuario en login
-  if (user && token) {
-    try {
-      const employeeData = await getEmployeeData(user.empleados_id, token);
-      employeeName.value = employeeData.username || "Empleado Desconocido"; // Ajusta según tu backend
-    } catch (error) {
-      console.error("Error obteniendo datos del empleado:", error);
-    }
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user) {
+    const employeeData = await getEmployeeData(user);
+    employeeId.value = user;
+    employeeName.value = employeeData.nombre || "Empleado Desconocido";
+    employeePhoto.value = employeeData.photo || "/src/assets/images/employeePhoto.webp";
   }
 });
 </script>

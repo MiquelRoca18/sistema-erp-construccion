@@ -1,17 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import DashboardView from '../views/DashboardView.vue';
 import LoginView from '../views/LoginView.vue';
+import EmployeeProfileView from '../views/EmployeeProfileView.vue';
 
 const routes = [
   {
     path: '/',
     name: 'login',
-    component: LoginView, // La vista de login
+    component: LoginView,
   },
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: DashboardView, // La vista de dashboard
+    component: DashboardView,
+  },
+  {
+    path: '/employee/:id', 
+    name: 'employeeProfile',
+    component: EmployeeProfileView,
   },
 ];
 

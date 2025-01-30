@@ -48,9 +48,8 @@ const router = useRouter();
 const handleSubmit = async () => {
   try {
     const response = await login({ username: username.value, password_hash: password_hash.value });
-    console.log('Respuesta del servidor:', response.user);
     localStorage.setItem('token', response.token); // Guardar el token
-    localStorage.setItem('user', JSON.stringify(response.user)); // Guardar datos del usuario
+    localStorage.setItem('user', JSON.stringify(response.empleados_id)); // Guardar datos del usuario
     router.push('/dashboard'); // Redirigir al dashboard
   } catch (error) {
     errorMessage.value = error.message || 'Ocurrió un error. Por favor, inténtalo de nuevo.';

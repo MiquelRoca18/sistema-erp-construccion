@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center bg-white p-6 rounded-lg shadow-md max-w-sm mx-auto">
+  <div class="flex flex-col items-center bg-white p-6 rounded-lg shadow-md max-w-sm mx-auto cursor-pointer">
     <!-- Foto del empleado -->
     <img
       class="w-32 h-32 rounded-full border-4 border-gray-300"
