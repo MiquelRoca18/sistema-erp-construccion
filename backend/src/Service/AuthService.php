@@ -40,7 +40,7 @@ class AuthService extends BaseService {
         // Generar el token JWT
         $token = JWT::encode($payload, $secretKey, 'HS256');
 
-        return ['status' => 200, 'message' => 'Inicio de sesión exitoso', 'data' => ['token' => $token]];
+        return ['status' => 200, 'message' => 'Inicio de sesión exitoso', 'data' =>  ['empleados_id' => $user['id_usuario'], 'token' => $token]];
     }
 }
 ?>
