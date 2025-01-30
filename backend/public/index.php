@@ -9,16 +9,9 @@
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE'); // Métodos HTTP permitidos
     header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With'); // Encabezados permitidos
     header('Access-Control-Allow-Credentials: true'); // Permitir envío de credenciales si es necesario
-
     
-
     // Cargar el autoload generado por Composer
     require_once __DIR__ . '/../vendor/autoload.php';
-
-    // Cargar las variables de entorno
-    use Dotenv\Dotenv;
-    $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-    $dotenv->load();
 
     // Usar el namespace correcto
     use App\Controller\EmployeeController;
@@ -27,7 +20,17 @@
     use App\Controller\TaskController;
     use App\Controller\AuthController;
     use App\Controller\EmployeeTaskController;
+    use App\Config\Database; // Usar la nueva clase Database
     use App\Router;
+
+    // Cargar las variables de entorno
+    try {
+        $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv->load();
+    } catch (Exception $e) {
+        echo 'Error cargando el archivo .env: ' . $e->getMessage();
+        exit();
+    }
 
     // Obtener el tipo de solicitud HTTP (GET, POST, DELETE, etc.)
     $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -40,6 +43,7 @@
         http_response_code(200); // Respuesta exitosa
         exit(); // Terminar aquí para solicitudes OPTIONS
     }
+
     $scriptName = dirname($_SERVER['SCRIPT_NAME']);
     $requestUri = str_replace($scriptName, '', $_SERVER['REQUEST_URI']);
 
@@ -53,6 +57,23 @@
     $taskController = new TaskController();
     $authController = new AuthController();
     $employeeTaskController = new EmployeeTaskController();
+    
+    // Ejecutar la configuración de la base de datos
+    $database = new Database(); // Instancia de la clase Database
+    $pdo = $database->getConnection();
+    
+    // Verificar si la base de datos y las tablas ya existen
+    $sql = "SHOW TABLES LIKE 'empleados'";
+    $stmt = $pdo->query($sql);
+
+    // Si la tabla 'empleados' no existe, creamos la base de datos, las tablas y los datos
+    if ($stmt->rowCount() == 0) {
+        echo "Base de datos o tablas no encontradas. Ahora creadas\n";
+        $database->createTables();
+        $database->insertData();  
+    } else {
+        echo "Base de datos y tablas ya existen. No se realizarán cambios.\n";
+    }
 
     // Definir las rutas para los empleados
     $router->addRoute('GET', '/employees', [$employeeController, 'get']);
