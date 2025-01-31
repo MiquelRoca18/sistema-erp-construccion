@@ -68,11 +68,8 @@
 
     // Si la tabla 'empleados' no existe, creamos la base de datos, las tablas y los datos
     if ($stmt->rowCount() == 0) {
-        echo "Base de datos o tablas no encontradas. Ahora creadas\n";
         $database->createTables();
         $database->insertData();  
-    } else {
-        echo "Base de datos y tablas ya existen. No se realizarán cambios.\n";
     }
 
     // Definir las rutas para los empleados
