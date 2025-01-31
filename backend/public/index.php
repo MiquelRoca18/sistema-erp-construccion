@@ -109,6 +109,7 @@
     $router->addRoute('DELETE', '/employee-tasks', [$employeeTaskController, 'removeTaskFromEmployee']);
     $router->addRoute('GET', '/employee-tasks/employees/([0-9]+)', [$employeeTaskController, 'getTasksByEmployee']);
     $router->addRoute('GET', '/employee-tasks/tasks/([0-9]+)', [$employeeTaskController, 'getEmployeesByTask']);
+    $router->addRoute('GET', '/employee-tasks/pending-tasks/([0-9]+)', [$employeeTaskController, 'getPendingTasksByEmployee']);
 
     // Disparar el despachador de rutas
     $router->dispatch($requestUri, $requestMethod);

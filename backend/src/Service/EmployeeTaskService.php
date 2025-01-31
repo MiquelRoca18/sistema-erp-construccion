@@ -85,5 +85,18 @@ class EmployeeTaskService extends BaseService {
             ? $this->responseFound($employees, 'Empleados asignados encontrados.')
             : $this->responseNotFound();
     }
+
+    // Listar tareas asignadas a un empleado, con estado opcional
+    public function getPendingTasksByEmployee($employeeId, $estado = 'pendiente') {
+        // Verificar si el empleado existe
+        if (!$this->employeeModel->exists($employeeId)) {
+            return $this->responseError("El empleado con ID {$employeeId} no existe.");
+        }
+
+        $tasks = $this->model->getPendingTasksByEmployee($employeeId, $estado);
+        return $tasks
+            ? $this->responseFound($tasks, 'Tareas asignadas encontradas.')
+            : $this->responseNotFound();
+    }
 }
 ?>

@@ -60,5 +60,21 @@ class EmployeeTaskController extends BaseController {
             $this->sendResponse($response['status'], $response['message']);
         }
     }
+
+    // Listar tareas de un empleado, con filtro por estado
+    public function getPendingTasksByEmployee($employeeId) {
+
+        // Obtener el estado desde los parámetros de la URL (por defecto 'pendiente')
+        $estado = isset($_GET['estado']) ? $_GET['estado'] : 'pendiente';
+
+        $response = $this->service->getPendingTasksByEmployee($employeeId, $estado);
+        
+        // Si la respuesta tiene 'data', la pasamos. Si no, solo pasamos el 'message'.
+        if (isset($response['data'])) {
+            $this->sendResponse($response['status'], $response['message'], $response['data']);
+        } else {
+            $this->sendResponse($response['status'], $response['message']);
+        }
+    }
 }
 ?>
