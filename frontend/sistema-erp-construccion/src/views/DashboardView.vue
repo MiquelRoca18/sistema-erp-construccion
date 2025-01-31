@@ -1,21 +1,26 @@
 <template>
-  <div class="flex flex-col items-center bg-white p-6 rounded-lg shadow-md max-w-sm mx-auto cursor-pointer mb-6">
-    <!-- Componente de perfil de empleado -->
-    <router-link :to="`/employee/${employeeId}`" class="w-full">
-      <EmployeeProfileComponent
-        :employeePhoto="employeePhoto"
-        :employeeName="employeeName"
-      />
-    </router-link>
-    <button
-      @click="logout"
-      class="mt-6 px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200"
-    >
-      Logout
-    </button>
-  </div>
-  <div class="flex flex-col items-center bg-white p-6 rounded-lg shadow-md max-w-sm mx-auto cursor-pointer">
-    <EmployeeTasksComponent />
+  <div class="flex justify-center min-h-screen p-6">
+    <div class="flex items-center space-x-8 w-full max-w-7xl min-h-screen p-6">
+      <div class="flex flex-col items-center flex-none w-80 h-80 bg-white p-6 rounded-lg shadow-md cursor-pointer">
+        <router-link :to="`/employee/${employeeId}`" class="w-full">
+          <EmployeeProfileComponent
+            :employeePhoto="employeePhoto"
+            :employeeName="employeeName"
+          />
+        </router-link>
+        <button
+          @click="logout"
+          class="mt-6 px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200"
+        >
+          Logout
+        </button>
+      </div>
+
+      <!-- Componente de tareas (más grande, rectangular) -->
+      <div class="flex-grow bg-white p-6 rounded-lg shadow-md cursor-pointer">
+        <EmployeeTasksComponent />
+      </div>
+    </div>
   </div>
 </template>
 
