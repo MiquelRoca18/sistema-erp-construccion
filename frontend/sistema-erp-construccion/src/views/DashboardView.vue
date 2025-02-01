@@ -1,7 +1,7 @@
 <template>
-  <div class="flex justify-center min-h-screen p-6">
+  <div class="flex justify-center min-h-screen p-6 bg-[#d6d8db]">
     <div class="flex items-center space-x-8 w-full max-w-7xl min-h-screen p-6">
-      <div class="flex flex-col items-center flex-none w-80 h-80 bg-white p-6 rounded-lg shadow-md cursor-pointer">
+      <div class="flex flex-col items-center flex-none w-80 h-80 bg-gray-200 border border-gray-300 p-6 rounded-lg shadow-md cursor-pointer">
         <router-link :to="`/employee/${employeeId}`" class="w-full">
           <EmployeeProfileComponent
             :employeePhoto="employeePhoto"
@@ -16,8 +16,7 @@
         </button>
       </div>
 
-      <!-- Componente de tareas (más grande, rectangular) -->
-      <div class="flex-grow bg-white p-6 rounded-lg shadow-md cursor-pointer">
+      <div class="flex-grow bg-gray-200 border border-gray-300 p-6 rounded-lg shadow-md cursor-pointer">
         <EmployeeTasksComponent />
       </div>
     </div>
