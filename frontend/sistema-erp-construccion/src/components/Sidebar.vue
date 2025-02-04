@@ -14,10 +14,7 @@
           <router-link to="/dashboard" class="block py-2 px-4 rounded hover:bg-gray-300">Dashboard</router-link>
         </li>
         <li>
-          <router-link :to="`/employee/${employeeId}`" class="block py-2 px-4 rounded hover:bg-gray-300">Perfil</router-link>
-        </li>
-        <li>
-          <router-link :to="`/tasks/${employeeId}`" class="block py-2 px-4 rounded hover:bg-gray-300">Tareas</router-link>
+          <router-link :to="`/tasks/${employeeId}`" class="block py-2 px-4 rounded hover:bg-gray-300">Tareas Pendientes</router-link>
         </li>
       </ul>
     </div>

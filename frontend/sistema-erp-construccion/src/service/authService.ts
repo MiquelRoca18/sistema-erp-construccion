@@ -53,3 +53,26 @@ export const updateEmployee = async (employeeId: number, updatedData: any, token
     throw new Error(error.response?.data?.message || 'Error al actualizar los datos del empleado');
   }
 };
+
+export const changePassword = async (
+  employeeId: number,
+  passwordData: { currentPassword: string; newPassword: string },
+  token: string
+) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/employees/${employeeId}/change-password`,
+      passwordData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    return response.data.data; // Devuelve los datos de respuesta si es necesario
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Error al cambiar la contraseña');
+  }
+};
