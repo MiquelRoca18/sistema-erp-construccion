@@ -1,12 +1,19 @@
-<script setup lang="ts">
-  // Ya no es necesario importar EmployeeProfileComponent, porque ahora se manejará a través de rutas
-</script>
-
 <template>
-  <!-- Aquí usamos el <router-view /> para que se muestren las vistas basadas en las rutas -->
-  <router-view />
+  <div class="flex min-h-screen bg-[#d6d8db]">
+    <!-- Sidebar condicional -->
+    <Sidebar 
+      v-if="isAuthenticated" 
+      class="w-64 bg-gray-200 fixed inset-y-0 left-0 p-6"
+    />
+    <!-- Vista principal -->
+    <div :class="['flex-1 p-6 overflow-auto', isAuthenticated ? 'ml-64' : 'ml-0']">
+      <router-view />
+    </div>
+  </div>
 </template>
 
-<style scoped>
-/* Estilos globales si los necesitas */
-</style>
+<script setup>
+import { computed } from 'vue';
+import Sidebar from './components/Sidebar.vue';
+import { isAuthenticated } from '@/service/authStore';
+</script>

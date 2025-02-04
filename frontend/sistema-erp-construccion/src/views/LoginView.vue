@@ -37,11 +37,11 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { login } from '@/service/authService';
+import { login as authLogin } from '@/service/authStore'; // Importar la función login del store
+import { login as apiLogin } from '@/service/authService'; // Importar la función login del servicio API
 
 const username = ref('');
 const password_hash = ref('');
@@ -50,13 +50,15 @@ const router = useRouter();
 
 const handleSubmit = async () => {
   try {
-    const response = await login({ username: username.value, password_hash: password_hash.value });
-    localStorage.setItem('token', response.token); // Guardar el token
-    localStorage.setItem('user', JSON.stringify(response.empleados_id)); // Guardar datos del usuario
-    router.push('/dashboard'); // Redirigir al dashboard
+    const response = await apiLogin({ username: username.value, password_hash: password_hash.value });
+
+    // Usar el store para actualizar el estado de autenticación
+    authLogin({ token: response.token, empleados_id: response.empleados_id });
+
+    // Redirigir al dashboard
+    router.push('/dashboard');
   } catch (error) {
     errorMessage.value = error.message || 'Ocurrió un error. Por favor, inténtalo de nuevo.';
   }
 };
-
 </script>
