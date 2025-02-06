@@ -57,7 +57,7 @@ const handleSubmit = async () => {
 
     // Redirigir al dashboard
     router.push('/dashboard');
-  } catch (error) {
+  } catch (error: any) {
     errorMessage.value = error.message || 'Ocurrió un error. Por favor, inténtalo de nuevo.';
   }
 };

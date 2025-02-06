@@ -1,4 +1,3 @@
-// services/taskService.ts
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -16,20 +15,28 @@ export const getPendingTasks = async (employeeId: any) => {
         'Authorization': `Bearer ${token}`,
       },
     });
-    return response.data.data;
+    return Array.isArray(response.data.data) ? response.data.data : [];
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al obtener tareas pendientes');
   }
 };
 
-// Función para obtener todas las tareas de un empleado
+// Obtener todas las tareas de un empleado
 export const getAllTasks = async (employeeId: any) => {
   try {
     const response = await axios.get(`http://localhost/sistema-erp-construccion/backend/public/employee-tasks/employees/${employeeId}`);
-    return response.data; // Suponiendo que el formato de respuesta es un array de tareas
+    
+    // Aseguramos que siempre se devuelva un array
+    if (response.data && Array.isArray(response.data.data)) {
+      return response.data.data;
+    } else if (Array.isArray(response.data)) {
+      return response.data;
+    } else {
+      console.warn('Formato inesperado en la respuesta de getAllTasks:', response.data);
+      return [];
+    }
   } catch (error) {
     console.error('Error al obtener las tareas:', error);
-    throw error;
+    return []; // Devolver un array vacío en caso de error
   }
 };
-
