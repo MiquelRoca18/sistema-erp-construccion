@@ -40,12 +40,12 @@ class AuthController extends BaseController {
             $data = $this->getRequestData();
     
             // Validar que se proporcionen los datos necesarios
-            if (empty($data->new_password) || empty($data->confirm_password)) {
+            if (empty($data->current_password) || empty($data->new_password) || empty($data->confirm_password)) {
                 $this->sendResponse(400, 'Faltan parámetros obligatorios');
                 return;
             }
     
-            // Verificar que las contraseñas coincidan
+            // Verificar que las contraseñas nuevas coincidan
             if ($data->new_password !== $data->confirm_password) {
                 $this->sendResponse(400, 'Las contraseñas no coinciden');
                 return;

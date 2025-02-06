@@ -49,10 +49,15 @@ class AuthService extends BaseService {
         if (!$user) {
             return ['status' => 404, 'message' => 'Usuario no encontrado'];
         }
-
+    
+        // Verificar que la contraseña actual sea correcta
+        if (!password_verify($data->current_password, $user['password_hash'])) {
+            return ['status' => 401, 'message' => 'Contraseña actual incorrecta'];
+        }
+    
         // Generar el hash de la nueva contraseña
         $newPasswordHash = password_hash($data->new_password, PASSWORD_DEFAULT);
-
+    
         // Actualizar la contraseña en la base de datos
         if ($this->authModel->updatePassword($data->id_usuario, $newPasswordHash)) {
             return ['status' => 200, 'message' => 'Contraseña cambiada con éxito'];
