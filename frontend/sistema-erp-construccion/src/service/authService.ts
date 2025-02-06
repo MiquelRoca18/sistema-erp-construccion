@@ -54,24 +54,28 @@ export const updateEmployee = async (employeeId: number, updatedData: any, token
   }
 };
 
-export const changePassword = async (
-  employeeId: number,
-  passwordData: { currentPassword: string; newPassword: string },
-  token: string
-) => {
-  try {
-    const response = await axios.put(
-      `${API_URL}/employees/${employeeId}/change-password`,
-      passwordData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+interface PasswordData {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
 
-    return response.data.data; // Devuelve los datos de respuesta si es necesario
+export const changePassword = async (passwordData: PasswordData) => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('No se encontró el token de autenticación');
+  }
+
+  try {
+    const response = await axios.post(`${API_URL}/auth/change-password`, passwordData, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Enviar token en el encabezado
+        'Content-Type': 'application/json'
+      }
+    });
+
+    return response.data.message; // Mensaje de éxito
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al cambiar la contraseña');
   }

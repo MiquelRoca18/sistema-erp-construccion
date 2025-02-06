@@ -17,7 +17,7 @@ export const getPendingTasks = async (employeeId: any) => {
       },
     });
     return response.data.data;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al obtener tareas pendientes');
   }
 };

@@ -154,17 +154,18 @@ const changePassword = async () => {
   }
 
   try {
-    await apiChangePassword(employeeId, {
+    await apiChangePassword({
       currentPassword: currentPassword.value,
       newPassword: newPassword.value,
+      confirmPassword: confirmPassword.value // Cambié confirm_password por confirmPassword
     });
+
     alert("Contraseña cambiada con éxito");
-    showChangePasswordModal.value = false; // Cerrar el modal
+    showChangePasswordModal.value = false;
     currentPassword.value = '';
     newPassword.value = '';
     confirmPassword.value = '';
   } catch (error) {
-    console.error("Error al cambiar la contraseña:", error);
     passwordError.value = error.message || "Error al cambiar la contraseña";
   }
 };
