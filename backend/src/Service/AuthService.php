@@ -4,6 +4,8 @@ namespace App\Service;
 use App\Model\AuthModel;
 use App\Utils\BaseService;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key; 
+use Exception;
 
 class AuthService extends BaseService {
     private $authModel;
@@ -43,27 +45,44 @@ class AuthService extends BaseService {
         return ['status' => 200, 'message' => 'Inicio de sesión exitoso', 'data' =>  ['empleados_id' => $user['id_usuario'], 'token' => $token]];
     }
 
-    public function changePassword($data) {
-        // Validar si el usuario existe
-        $user = $this->authModel->getUserById($data->id_usuario);
-        if (!$user) {
-            return ['status' => 404, 'message' => 'Usuario no encontrado'];
+    public function updatePassword($token, $data) {
+        // Verificar que se enviaron las contraseñas correctamente
+        if (empty($data->currentPassword) || empty($data->newPassword) || empty($data->confirmPassword)) {
+            return ['status' => 400, 'message' => 'Todos los campos son obligatorios'];
         }
     
-        // Verificar que la contraseña actual sea correcta
-        if (!password_verify($data->current_password, $user['password_hash'])) {
-            return ['status' => 401, 'message' => 'Contraseña actual incorrecta'];
+        // Verificar que la nueva contraseña y la confirmación coincidan
+        if ($data->newPassword !== $data->confirmPassword) {
+            return ['status' => 400, 'message' => 'Las contraseñas nuevas no coinciden'];
         }
     
-        // Generar el hash de la nueva contraseña
-        $newPasswordHash = password_hash($data->new_password, PASSWORD_DEFAULT);
+        try {
+            // Decodificar el token JWT para obtener el ID del usuario
+            $decoded = JWT::decode($token, new Key($_ENV['SECRET_KEY'], 'HS256'));
+            $userId = $decoded->sub;
     
-        // Actualizar la contraseña en la base de datos
-        if ($this->authModel->updatePassword($data->id_usuario, $newPasswordHash)) {
-            return ['status' => 200, 'message' => 'Contraseña cambiada con éxito'];
-        } else {
-            return ['status' => 500, 'message' => 'Error al cambiar la contraseña'];
+            // Obtener el usuario actual desde la base de datos
+            $user = $this->authModel->getUserById($userId);
+            if (!$user) {
+                return ['status' => 404, 'message' => 'Usuario no encontrado'];
+            }
+    
+            // Verificar que la contraseña actual sea correcta
+            if (!password_verify($data->currentPassword, $user['password_hash'])) {
+                return ['status' => 401, 'message' => 'La contraseña actual es incorrecta'];
+            }
+    
+            // Hashear la nueva contraseña
+            $hashedPassword = password_hash($data->newPassword, PASSWORD_BCRYPT);
+    
+            // Actualizar la contraseña en la base de datos
+            $this->authModel->updatePassword($userId, $hashedPassword);
+    
+            return ['status' => 200, 'message' => 'Contraseña actualizada con éxito'];
+        } catch (Exception $e) {
+            return ['status' => 401, 'message' => 'Token inválido o expirado'];
         }
     }
+    
 }
 ?>

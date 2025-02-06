@@ -21,47 +21,25 @@ class AuthController extends BaseController {
     }
 
     public function changePassword() {
-        // Obtener el token del encabezado Authorization
-        $header = $this->getAuthorizationHeader();
-        if (!$header) {
-            $this->sendResponse(401, 'Token de autorización faltante');
+        // Obtener los datos del cuerpo de la solicitud
+        $data = $this->getRequestData();
+        
+        // Obtener el token JWT del encabezado de autorización
+        $headers = getallheaders();
+        if (!isset($headers['Authorization'])) {
+            $this->sendResponse(401, 'Token de autenticación no proporcionado');
             return;
         }
     
-        try {
-            // Decodificar el token JWT
-            $secretKey = $_ENV['SECRET_KEY'];
-            $decoded = JWT::decode($header, new \Firebase\JWT\Key($secretKey, 'HS256'));
-    
-            // Obtener el ID del usuario del payload del token
-            $userId = $decoded->sub;
-    
-            // Procesar el cambio de contraseña
-            $data = $this->getRequestData();
-    
-            // Validar que se proporcionen los datos necesarios
-            if (empty($data->current_password) || empty($data->new_password) || empty($data->confirm_password)) {
-                $this->sendResponse(400, 'Faltan parámetros obligatorios');
-                return;
-            }
-    
-            // Verificar que las contraseñas nuevas coincidan
-            if ($data->new_password !== $data->confirm_password) {
-                $this->sendResponse(400, 'Las contraseñas no coinciden');
-                return;
-            }
-    
-            // Agregar el ID del usuario al objeto $data
-            $data->id_usuario = $userId;
-    
-            // Delegar la lógica de cambio de contraseña al servicio
-            $result = $this->authService->changePassword($data);
-    
-            // Enviar la respuesta al cliente
-            $this->sendResponse($result['status'], $result['message']);
-        } catch (\Exception $e) {
-            $this->sendResponse(401, 'Token inválido o expirado');
-        }
+        // Extraer el token eliminando "Bearer "
+        $token = str_replace('Bearer ', '', $headers['Authorization']);
+        
+        // Llamar al servicio para actualizar la contraseña
+        $result = $this->authService->updatePassword($token, $data);
+        
+        // Enviar la respuesta correspondiente
+        $this->sendResponse($result['status'], $result['message']);
     }
+    
 }
 ?>

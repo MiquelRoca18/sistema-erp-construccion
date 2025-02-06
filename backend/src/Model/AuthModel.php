@@ -41,6 +41,7 @@ class AuthModel {
         $stmt->execute();
     }
 
+    // Obtener usuario por ID
     public function getUserById($id_usuario) {
         $query = 'SELECT * FROM autenticacion WHERE id_usuario = :id_usuario';
         $stmt = $this->db->prepare($query);
@@ -48,14 +49,16 @@ class AuthModel {
         $stmt->execute();
         return $stmt->fetch();
     }
-    
+
+    // Actualizar contraseña
     public function updatePassword($id_usuario, $newPasswordHash) {
         $query = 'UPDATE autenticacion SET password_hash = :password_hash WHERE id_usuario = :id_usuario';
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':password_hash', $newPasswordHash);
         $stmt->bindValue(':id_usuario', $id_usuario);
-        return $stmt->execute();
+        $stmt->execute();
     }
+
 }
 
 ?>
