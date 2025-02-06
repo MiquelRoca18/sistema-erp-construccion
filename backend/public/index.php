@@ -103,6 +103,7 @@
     // Definir las rutas para la autenticación
     $router->addRoute('POST', '/auth/login', [$authController, 'login']);
     $router->addRoute('POST', '/auth/logout', [$authController, 'logout']); 
+    $router->addRoute('POST', '/auth/change-password', [$authController, 'changePassword']);
 
     // Definir las rutas para empleados_tareas
     $router->addRoute('POST', '/employee-tasks', [$employeeTaskController, 'addTaskToEmployee']);

@@ -42,5 +42,23 @@ class AuthService extends BaseService {
 
         return ['status' => 200, 'message' => 'Inicio de sesión exitoso', 'data' =>  ['empleados_id' => $user['id_usuario'], 'token' => $token]];
     }
+
+    public function changePassword($data) {
+        // Validar si el usuario existe
+        $user = $this->authModel->getUserById($data->id_usuario);
+        if (!$user) {
+            return ['status' => 404, 'message' => 'Usuario no encontrado'];
+        }
+
+        // Generar el hash de la nueva contraseña
+        $newPasswordHash = password_hash($data->new_password, PASSWORD_DEFAULT);
+
+        // Actualizar la contraseña en la base de datos
+        if ($this->authModel->updatePassword($data->id_usuario, $newPasswordHash)) {
+            return ['status' => 200, 'message' => 'Contraseña cambiada con éxito'];
+        } else {
+            return ['status' => 500, 'message' => 'Error al cambiar la contraseña'];
+        }
+    }
 }
 ?>

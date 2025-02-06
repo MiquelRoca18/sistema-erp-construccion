@@ -33,5 +33,25 @@ class BaseController {
     protected function getRequestData() {
         return json_decode(file_get_contents('php://input'));
     }
+
+    protected function getAuthorizationHeader() {
+        // Verificar si el encabezado 'Authorization' está presente
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            return $_SERVER['HTTP_AUTHORIZATION'];
+        }
+    
+        // Para algunos servidores, el encabezado puede estar en mayúsculas/minúsculas diferentes
+        if (function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+            foreach ($headers as $header => $value) {
+                if (strtolower($header) === 'authorization') {
+                    return $value;
+                }
+            }
+        }
+    
+        // Si no se encuentra el encabezado, devolver null
+        return null;
+    }
 }
 ?>
