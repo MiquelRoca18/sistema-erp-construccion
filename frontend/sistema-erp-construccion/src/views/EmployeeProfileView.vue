@@ -1,49 +1,49 @@
 <template>
-  <div class="max-w-2xl mx-auto p-6 bg-gray-200 shadow-lg rounded-lg">
-    <h1 class="text-2xl font-bold text-center mb-4 text-gray-800">Perfil del Empleado</h1>
+  <div class="max-w-2xl mx-auto p-4 md:p-6 bg-gray-200 shadow-lg rounded-lg">
+    <h1 class="text-xl md:text-2xl font-bold text-center mb-3 md:mb-4 text-gray-800">Perfil del Empleado</h1>
 
     <div class="flex flex-col items-center">
-      <img class="w-32 h-32 rounded-full border-4 border-gray-400" :src="employeePhoto" alt="Foto del Empleado" />
-      <h2 class="text-xl font-semibold mt-4 text-gray-900">{{ employee.nombre }}</h2>
-      <p class="text-gray-700">{{ employee.rol }}</p>
+      <img class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-gray-400" :src="employeePhoto" alt="Foto del Empleado" />
+      <h2 class="text-lg md:text-xl font-semibold mt-3 md:mt-4 text-gray-900">{{ employee.nombre }}</h2>
+      <p class="text-gray-700 text-sm md:text-base">{{ employee.rol }}</p>
     </div>
 
-    <div class="mt-6">
-      <h3 class="text-lg font-semibold mb-2 text-gray-800">Detalles</h3>
-      <form @submit.prevent="updateEmployeeData" class="border border-gray-300 rounded-lg p-4 bg-gray-50">
+    <div class="mt-5 md:mt-6">
+      <h3 class="text-md md:text-lg font-semibold mb-2 text-gray-800">Detalles</h3>
+      <form @submit.prevent="updateEmployeeData" class="border border-gray-300 rounded-lg p-3 md:p-4 bg-gray-50">
         <div class="mb-2">
-          <label class="block text-gray-800">Correo:</label>
-          <input v-model="employee.correo" type="email" class="w-full border p-2 rounded-md bg-white" required />
+          <label class="block text-gray-800 text-sm md:text-base">Correo:</label>
+          <input v-model="employee.correo" type="email" class="w-full border p-2 md:p-2.5 rounded-md bg-white text-sm md:text-base" required />
         </div>
         <div class="mb-2">
-          <label class="block text-gray-800">Teléfono:</label>
-          <input v-model="employee.telefono" type="text" class="w-full border p-2 rounded-md bg-white" required />
-          <p v-if="errors.telefono" class="text-red-500 text-sm mt-1">{{ errors.telefono }}</p>
+          <label class="block text-gray-800 text-sm md:text-base">Teléfono:</label>
+          <input v-model="employee.telefono" type="text" class="w-full border p-2 md:p-2.5 rounded-md bg-white text-sm md:text-base" required />
+          <p v-if="errors.telefono" class="text-red-500 text-xs md:text-sm mt-1">{{ errors.telefono }}</p>
         </div>
-        <button type="submit" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+        <button type="submit" class="mt-4 px-3 md:px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm md:text-base">
           Guardar Cambios
         </button>
       </form>
     </div>
 
     <!-- Notificación de éxito -->
-    <div v-if="passwordSuccess" class="mt-4 p-4 bg-green-100 text-green-700 rounded-md shadow-md flex items-center">
+    <div v-if="passwordSuccess" class="mt-4 p-3 md:p-4 bg-green-100 text-green-700 rounded-md shadow-md flex items-center text-sm md:text-base">
       <span class="flex-1">✅ Contraseña cambiada con éxito</span>
-      <button @click="passwordSuccess = false" class="text-gray-500 hover:text-gray-800">&times;</button>
+      <button @click="passwordSuccess = false" class="text-gray-500 hover:text-gray-800 text-lg">&times;</button>
     </div>
 
     <!-- Botones mejorados -->
-    <div class="mt-6 flex flex-col space-y-4">
+    <div class="mt-5 md:mt-6 flex flex-col space-y-3 md:space-y-4">
       <button 
         @click="showChangePasswordModal = true" 
-        class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 w-full"
+        class="px-3 md:px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 w-full text-sm md:text-base"
       >
         Cambiar Contraseña
       </button>
 
       <button 
         @click="goBack" 
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 w-full"
+        class="px-3 md:px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 w-full text-sm md:text-base"
       >
         Volver al Dashboard
       </button>
@@ -51,27 +51,27 @@
 
     <!-- Modal para cambiar la contraseña -->
     <div v-if="showChangePasswordModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-      <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 class="text-lg font-bold mb-4">Cambiar Contraseña</h2>
+      <div class="bg-white p-5 md:p-6 rounded-lg shadow-lg w-80 md:w-96">
+        <h2 class="text-md md:text-lg font-bold mb-3 md:mb-4">Cambiar Contraseña</h2>
         <form @submit.prevent="changePassword">
-          <div class="mb-4">
-            <label class="block text-gray-700">Contraseña actual:</label>
-            <input v-model="currentPassword" type="password" class="w-full border p-2 rounded-md bg-white" required />
+          <div class="mb-3 md:mb-4">
+            <label class="block text-gray-700 text-sm md:text-base">Contraseña actual:</label>
+            <input v-model="currentPassword" type="password" class="w-full border p-2 md:p-2.5 rounded-md bg-white text-sm md:text-base" required />
           </div>
-          <div class="mb-4">
-            <label class="block text-gray-700">Nueva contraseña:</label>
-            <input v-model="newPassword" type="password" class="w-full border p-2 rounded-md bg-white" required />
+          <div class="mb-3 md:mb-4">
+            <label class="block text-gray-700 text-sm md:text-base">Nueva contraseña:</label>
+            <input v-model="newPassword" type="password" class="w-full border p-2 md:p-2.5 rounded-md bg-white text-sm md:text-base" required />
           </div>
-          <div class="mb-4">
-            <label class="block text-gray-700">Confirmar nueva contraseña:</label>
-            <input v-model="confirmPassword" type="password" class="w-full border p-2 rounded-md bg-white" required />
-            <p v-if="passwordError" class="text-red-500 text-sm mt-1">{{ passwordError }}</p>
+          <div class="mb-3 md:mb-4">
+            <label class="block text-gray-700 text-sm md:text-base">Confirmar nueva contraseña:</label>
+            <input v-model="confirmPassword" type="password" class="w-full border p-2 md:p-2.5 rounded-md bg-white text-sm md:text-base" required />
+            <p v-if="passwordError" class="text-red-500 text-xs md:text-sm mt-1">{{ passwordError }}</p>
           </div>
           <div class="flex justify-end">
-            <button @click="showChangePasswordModal = false" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md mr-2">
+            <button @click="showChangePasswordModal = false" class="px-3 md:px-4 py-2 bg-gray-300 text-gray-700 rounded-md mr-2 text-sm md:text-base">
               Cancelar
             </button>
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            <button type="submit" class="px-3 md:px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm md:text-base">
               Cambiar
             </button>
           </div>
@@ -81,6 +81,7 @@
 
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue';

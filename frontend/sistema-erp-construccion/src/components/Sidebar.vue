@@ -23,7 +23,7 @@
         </li>
         <li>
           <router-link :to="`/tasks/${employeeId}`" class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition">
-            📝 Tareas
+            📝 Tareas Pendientes
           </router-link>
         </li>
       </ul>
