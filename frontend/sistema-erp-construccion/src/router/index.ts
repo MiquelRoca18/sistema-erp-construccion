@@ -4,7 +4,6 @@ import LoginView from '../views/LoginView.vue';
 import DashboardView from '../views/DashboardView.vue';
 import EmployeeProfileView from '../views/EmployeeProfileView.vue';
 import TasksView from '../views/TasksView.vue';
-import TaskDetailsView from '../views/TaskDetailsView.vue';
 import { logout } from '@/service/authStore'; // Importar la función logout del store
 
 const routes = [
@@ -27,12 +26,7 @@ const routes = [
     path: '/tasks/:id',
     name: 'tasksView',
     component: TasksView,
-  },
-  {
-    path: '/task-details/:taskId',
-    name: 'taskDetails',
-    component: TaskDetailsView,
-  },
+  }
 ];
 
 const router = createRouter({

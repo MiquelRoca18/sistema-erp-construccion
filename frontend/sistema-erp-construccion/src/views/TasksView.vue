@@ -1,42 +1,64 @@
 <template>
   <div class="w-full h-full flex flex-col justify-center px-4 md:px-6 min-h-screen">
-    <!-- Contenedor de filtros (Ajustado para móviles) -->
-    <div class="bg-white border border-gray-300 rounded-lg shadow-lg p-4 md:p-6 mx-auto mb-3 md:mb-4 w-full max-w-5xl">
-      <h2 class="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4 text-center md:text-left">Filtrar Tareas</h2>
-      <div class="flex flex-wrap gap-3 md:gap-4 justify-between">
-        <select v-model="selectedProject" class="p-2.5 border border-gray-300 rounded-md w-full sm:w-auto text-sm">
-          <option value="">Todos los proyectos</option>
-          <option v-for="project in projects" :key="project.id" :value="project.id">
-            {{ project.nombre }}
-          </option>
-        </select>
-
-        <!-- Nuevo filtro por Estado -->
-        <select v-model="selectedStatus" class="p-2.5 border border-gray-300 rounded-md w-full sm:w-auto text-sm">
-          <option value="">Todos los estados</option>
-          <option v-for="status in availableStatuses" :key="status" :value="status">
-            {{ status }}
-          </option>
-        </select>
-
-        <!-- Nuevo filtro por Tipo de Tarea: Mis tareas / Tareas de otros -->
-        <select v-model="selectedTaskType" class="p-2.5 border border-gray-300 rounded-md w-full sm:w-auto text-sm">
-          <option value="mis">Mis tareas</option>
-          <option value="otros">Tareas de otros</option>
-        </select>
-
-        <input v-model="startDate" type="date" class="p-2.5 border border-gray-300 rounded-md w-full sm:w-auto text-sm" />
-        <input v-model="endDate" type="date" class="p-2.5 border border-gray-300 rounded-md w-full sm:w-auto text-sm" />
-        <button @click="applyFilters" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 w-full sm:w-auto text-sm md:text-base">
-          Filtrar
-        </button>
-      </div>
+    <!-- Panel desplegable de Filtros utilizando <details> -->
+    <div class="mx-auto w-full max-w-5xl mb-4">
+      <details class="bg-white border border-gray-300 rounded-lg shadow-lg">
+        <summary class="cursor-pointer px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-t-md select-none flex items-center justify-between">
+          <span class="text-lg font-semibold">Filtrar Tareas</span>
+          <!-- Ícono que rota al abrir/cerrar -->
+          <svg class="w-4 h-4 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </summary>
+        <div class="px-4 py-4 md:px-6 md:py-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Filtro de Proyecto -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Proyecto</label>
+              <select v-model="selectedProject" @change="resetPagination" class="w-full p-2.5 border border-gray-300 rounded-md text-sm">
+                <option value="">Todos los proyectos</option>
+                <option v-for="project in uniqueProjects" :key="project.id" :value="project.id">
+                  {{ project.nombre }}
+                </option>
+              </select>
+            </div>
+            <!-- Filtro de Estado -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+              <select v-model="selectedStatus" @change="resetPagination" class="w-full p-2.5 border border-gray-300 rounded-md text-sm">
+                <option value="">Todos los estados</option>
+                <option v-for="status in availableStatuses" :key="status" :value="status">
+                  {{ status }}
+                </option>
+              </select>
+            </div>
+            <!-- Filtro de Tipo de Tarea -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Tarea</label>
+              <select v-model="selectedTaskType" @change="resetPagination" class="w-full p-2.5 border border-gray-300 rounded-md text-sm">
+                <option value="mis">Mis tareas</option>
+                <option value="otros">Tareas de otros</option>
+              </select>
+            </div>
+            <!-- Filtro de Fecha de Inicio -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Inicio</label>
+              <input v-model="startDate" @change="resetPagination" type="date" class="w-full p-2.5 border border-gray-300 rounded-md text-sm" />
+            </div>
+            <!-- Filtro de Fecha Fin -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Fecha Fin</label>
+              <input v-model="endDate" @change="resetPagination" type="date" class="w-full p-2.5 border border-gray-300 rounded-md text-sm" />
+            </div>
+          </div>
+        </div>
+      </details>
     </div>
 
     <!-- Contenedor de la lista de tareas -->
     <div class="bg-white border border-gray-300 rounded-lg shadow-lg p-6 mx-auto w-full max-w-5xl flex flex-col min-h-[600px]">
       <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Lista de Tareas</h2>
-      
+
       <div v-if="loading" class="text-center text-lg text-gray-500 flex-grow flex items-center justify-center">
         Cargando tareas...
       </div>
@@ -47,44 +69,68 @@
         No hay tareas disponibles.
       </div>
 
-      <!-- Diseño adaptable con espacios rellenados -->
-      <div 
-        v-else 
-        class="grid gap-5 flex-grow"
-        :class="{
-          'grid-cols-1 grid-rows-3': isMobile,
-          'grid-cols-1 md:grid-rows-4': isTablet,
-          'grid-cols-2 md:grid-rows-3': isLaptop,
-          'grid-cols-2 md:grid-rows-3': isDesktop
-        }"
-      >
-      <div
-        v-for="task in paginatedTasks"
-        :key="task.tareas_id"
-        class="bg-gray-50 hover:bg-gray-100 p-4 rounded-lg shadow-sm transition duration-200 ease-in-out cursor-pointer border border-gray-300"
-        @click="viewTaskDetails(task.tareas_id)"
-      >
-        <h3 class="text-md font-semibold text-gray-800 truncate">{{ task.nombre_tarea }}</h3>
-        <p class="text-sm text-gray-500 truncate">Proyecto: {{ task.nombre_proyecto }}</p> 
-        <p class="text-sm text-gray-500">Estado: {{ task.estado }}</p>
-      </div>
+      <!-- Grid adaptable para las tareas -->
+      <div v-else class="grid gap-5 flex-grow" :class="(isMobile || isTablet) ? 'grid-cols-1 grid-rows-3' : 'grid-cols-2 grid-rows-3'">
+        <!-- Tarjeta de tarea con nuevo diseño -->
+        <div
+          v-for="task in paginatedTasks"
+          :key="task.tareas_id"
+          class="relative bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition duration-300 cursor-pointer overflow-hidden"
+          @click="openTaskModal(task)"
+        >
+          <!-- Encabezado -->
+          <div class="px-6 py-4 border-b border-gray-100">
+            <div class="flex justify-between items-center">
+              <h3 class="font-bold text-lg text-gray-800 truncate">
+                {{ task.nombre_tarea }}
+              </h3>
+              <span
+                class="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+                :class="{
+                  'bg-yellow-100 text-yellow-800': task.estado === 'en progreso',
+                  'bg-green-100 text-green-800': task.estado === 'finalizado',
+                  'bg-blue-100 text-blue-800': task.estado !== 'en progreso' && task.estado !== 'finalizado'
+                }"
+              >
+                {{ task.estado }}
+              </span>
+            </div>
+          </div>
+          <!-- Cuerpo -->
+          <div class="px-6 py-4">
+            <p class="text-sm text-gray-600 mb-2">
+              <strong>Proyecto:</strong> {{ task.nombre_proyecto }}
+            </p>
+            <div class="flex justify-between text-xs text-gray-500">
+              <p><strong>Inicio:</strong> {{ task.fecha_inicio }}</p>
+              <p><strong>Fin:</strong> {{ task.fecha_fin }}</p>
+            </div>
+          </div>
+        </div>
 
-
-        <!-- Espacios vacíos rellenados para mantener el tamaño -->
+        <!-- Espacios vacíos para completar el grid -->
         <div v-for="n in emptySlots" :key="'empty-'+n" class="p-4 opacity-0"></div>
       </div>
 
-      <!-- Paginación siempre en el fondo -->
+      <!-- Paginación -->
       <div class="flex justify-center mt-4" v-if="totalPages > 1">
-        <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 mx-1 bg-gray-400 text-white rounded-md hover:bg-gray-500 disabled:opacity-50">
+        <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 mx-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
           Anterior
         </button>
         <span class="px-4 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
-        <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 mx-1 bg-gray-400 text-white rounded-md hover:bg-gray-500 disabled:opacity-50">
+        <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 mx-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
           Siguiente
         </button>
       </div>
     </div>
+
+    <!-- Modal de detalles de la tarea -->
+    <TaskDetailModal
+      v-if="selectedTask"
+      :task="selectedTask"
+      @close="selectedTask = null"
+      @update="handleTaskUpdate"
+    />
   </div>
 </template>
 
@@ -92,53 +138,65 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getAllTasks } from '@/service/taskService';
+import TaskDetailModal from '@/components/TaskDetailModal.vue';
 
 const tasks = ref([]);
-const projects = ref([]);
 const loading = ref(true);
 const error = ref('');
 const router = useRouter();
 const employeeId = router.currentRoute.value.params.id;
 
-// Filtros existentes
+// Variables para los filtros
 const selectedProject = ref('');
+const selectedStatus = ref('');
+const selectedTaskType = ref('mis');
 const startDate = ref('');
 const endDate = ref('');
 
-// NUEVOS FILTROS
-// Filtro por estado
-const selectedStatus = ref('');
-// Filtro para seleccionar entre "Mis tareas" y "Tareas de otros"
-const selectedTaskType = ref('mis'); // Valor por defecto: "Mis tareas"
+// Variable para la tarea seleccionada (para el modal)
+const selectedTask = ref(null);
 
-// Computed para obtener dinámicamente los estados disponibles de las tareas
+// Paginación
+const currentPage = ref(1);
+const resetPagination = () => {
+  currentPage.value = 1;
+};
+
+// Obtener proyectos únicos a partir de las tareas
+const uniqueProjects = computed(() => {
+  const projectMap = new Map();
+  tasks.value.forEach(task => {
+    if (task.proyectos_id && task.nombre_proyecto) {
+      projectMap.set(task.proyectos_id, task.nombre_proyecto);
+    }
+  });
+  return Array.from(projectMap, ([id, nombre]) => ({ id, nombre }));
+});
+
+// Estados disponibles: se añade forzadamente "en progreso" y "finalizado"
 const availableStatuses = computed(() => {
   const statusesSet = new Set();
   tasks.value.forEach(task => {
     if (task.estado) statusesSet.add(task.estado);
   });
+  statusesSet.add("en progreso");
+  statusesSet.add("finalizado");
   return Array.from(statusesSet);
 });
 
-// Detectar tamaño de pantalla para diseño responsive
+// Diseño responsive
 const screenWidth = ref(window.innerWidth);
-const columns = computed(() => (isMobile.value ? 1 : isTablet.value ? 1 : 2));
-const rows = computed(() => (isMobile.value ? 3 : isTablet.value ? 4 : 3));
-
 const isMobile = computed(() => screenWidth.value < 640);
 const isTablet = computed(() => screenWidth.value >= 640 && screenWidth.value < 1024);
 const isLaptop = computed(() => screenWidth.value >= 1024 && screenWidth.value < 1440);
 const isDesktop = computed(() => screenWidth.value >= 1440);
-
-// Paginación adaptada al número de tareas visibles
-const currentPage = ref(1);
-const itemsPerPage = computed(() => columns.value * rows.value);
+const isOneColumn = computed(() => isMobile.value || isTablet.value);
+const itemsPerPage = computed(() => (isOneColumn.value ? 3 : 6));
 
 // Obtener todas las tareas
 const fetchAllTasks = async () => {
   try {
-    const response = await getAllTasks(employeeId); 
-    console.log(response);
+    const response = await getAllTasks(employeeId);
     tasks.value = response;
   } catch (err) {
     error.value = err.message || 'Error al obtener las tareas.';
@@ -147,58 +205,78 @@ const fetchAllTasks = async () => {
   }
 };
 
-// Filtrar tareas (se mantienen los filtros existentes y se ajusta el filtro de "Mis tareas" / "Tareas de otros")
-// NOTA: getAllTasks ya devuelve las tareas propias del empleado, por lo que cuando se seleccione "Mis tareas"
-//       se muestran todas las tareas obtenidas. Solo se filtra adicionalmente cuando se seleccione "Tareas de otros".
+// Filtrar tareas
 const filteredTasks = computed(() => {
   return tasks.value.filter(task => {
-    const matchesProject =
-      !selectedProject.value || task.proyecto_id === selectedProject.value;
-    const matchesStartDate =
-      !startDate.value || new Date(task.fecha_inicio) >= new Date(startDate.value);
-    const matchesEndDate =
-      !endDate.value || new Date(task.fecha_fin) <= new Date(endDate.value);
-    const matchesStatus =
-      !selectedStatus.value || task.estado === selectedStatus.value;
-    
-    // Si se selecciona "Tareas de otros", se filtran aquellas cuyo empleado_id NO es el del empleado
-    const matchesTaskType =
-      selectedTaskType.value === 'otros'
-        ? task.empleado_id !== employeeId
-        : true; // "Mis tareas": no se filtra, pues getAllTasks ya muestra las tareas propias
-
-    return matchesProject && matchesStartDate && matchesEndDate && matchesStatus && matchesTaskType;
+    const matchesProject = !selectedProject.value || task.proyectos_id == selectedProject.value;
+    const matchesStatus = !selectedStatus.value || task.estado === selectedStatus.value;
+    const matchesTaskType = selectedTaskType.value === 'otros' ? task.empleado_id !== employeeId : true;
+    const matchesStartDate = !startDate.value || new Date(task.fecha_inicio) >= new Date(startDate.value);
+    const matchesEndDate = !endDate.value || new Date(task.fecha_fin) <= new Date(endDate.value);
+    return matchesProject && matchesStatus && matchesTaskType && matchesStartDate && matchesEndDate;
   });
 });
 
-// Paginación
 const totalPages = computed(() => Math.ceil(filteredTasks.value.length / itemsPerPage.value));
-const paginatedTasks = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value;
-  return filteredTasks.value.slice(start, start + itemsPerPage.value);
-});
 
-// Cálculo preciso de espacios vacíos
-const emptySlots = computed(() => {
-  const totalSlots = columns.value * rows.value;
-  return totalSlots - paginatedTasks.value.length;
-});
+const paginatedTasks = computed(() =>
+  filteredTasks.value.slice(
+    (currentPage.value - 1) * itemsPerPage.value,
+    currentPage.value * itemsPerPage.value
+  )
+);
 
-const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++; };
-const prevPage = () => { if (currentPage.value > 1) currentPage.value--; };
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) currentPage.value++;
+};
 
-const applyFilters = () => {
-  currentPage.value = 1;
+const prevPage = () => {
+  if (currentPage.value > 1) currentPage.value--;
+};
+
+// Función para abrir el modal con la tarea seleccionada
+const openTaskModal = (task) => {
+  selectedTask.value = task;
+};
+
+// Función para manejar la actualización de la tarea desde el modal
+const handleTaskUpdate = (updatedTask) => {
+  // Aquí podrías llamar a un servicio para actualizar la tarea en el backend.
+  // También podrías actualizar la lista de tareas localmente:
+  const index = tasks.value.findIndex((t) => t.tareas_id === updatedTask.tareas_id);
+  if (index !== -1) {
+    tasks.value[index] = updatedTask;
+  }
+  // Cierra el modal
+  selectedTask.value = null;
 };
 
 const viewTaskDetails = (taskId) => {
-  router.push(`/task-details/${taskId}`);
+  // Si prefieres la navegación a otra vista, puedes usar router.push
+  // router.push({ name: 'TaskDetails', params: { id: taskId } });
+  // En este ejemplo, usamos el modal, así que no se utiliza.
 };
 
-onMounted(() => {
-  fetchAllTasks();
-  window.addEventListener("resize", () => {
-    screenWidth.value = window.innerWidth;
-  });
+const emptySlots = computed(() => {
+  const count = itemsPerPage.value - paginatedTasks.value.length;
+  return count > 0 ? Array.from({ length: count }, (_, i) => i + 1) : [];
 });
+
+const updateScreenWidth = () => {
+  screenWidth.value = window.innerWidth;
+};
+window.addEventListener('resize', updateScreenWidth);
+
+onMounted(fetchAllTasks);
 </script>
+
+<style>
+/* Rota el ícono del <summary> al abrir/cerrar */
+details[open] summary svg {
+  transform: rotate(180deg);
+}
+/* Elimina el marcador por defecto del summary en algunos navegadores */
+summary::-webkit-details-marker {
+  display: none;
+}
+</style>

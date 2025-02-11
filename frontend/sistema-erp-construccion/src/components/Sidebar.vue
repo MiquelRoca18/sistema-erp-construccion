@@ -1,3 +1,4 @@
+<!-- Sidebar.vue -->
 <template>
   <div>
     <!-- Sidebar (ahora aparece desde la derecha en móviles) -->
@@ -8,7 +9,11 @@
     >
       <!-- Sección del usuario -->
       <div class="p-6 flex flex-col items-center border-b border-gray-300">
-        <router-link :to="`/employee/${employeeId}`" class="flex flex-col items-center gap-3 hover:bg-gray-200 transition py-3 px-4 rounded-lg">
+        <router-link 
+          :to="`/employee/${employeeId}`" 
+          class="flex flex-col items-center gap-3 hover:bg-gray-200 transition py-3 px-4 rounded-lg"
+          @click="closeSidebar"
+        >
           <img :src="employeePhoto" alt="Perfil" class="w-16 h-16 rounded-full border-4 border-gray-400 shadow-md">
           <span class="text-lg font-semibold text-gray-900">{{ employeeName }}</span>
         </router-link>
@@ -17,12 +22,20 @@
       <!-- Navegación -->
       <ul class="p-4 flex flex-col gap-4">
         <li>
-          <router-link to="/dashboard" class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition">
+          <router-link 
+            to="/dashboard" 
+            class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
+            @click="closeSidebar"
+          >
             📊 Dashboard
           </router-link>
         </li>
         <li>
-          <router-link :to="`/tasks/${employeeId}`" class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition">
+          <router-link 
+            :to="`/tasks/${employeeId}`" 
+            class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
+            @click="closeSidebar"
+          >
             📝 Tareas Pendientes
           </router-link>
         </li>
@@ -38,13 +51,14 @@
   </div>
 </template>
 
-
-
 <script setup>
 import { ref, onMounted } from 'vue';
 import { getEmployeeData } from '@/service/authService';
 
+// Define las propiedades y eventos
 const props = defineProps(['sidebarOpen']);
+const emit = defineEmits(['toggleSidebar']);
+
 const employeeId = ref(null);
 const employeeName = ref("Empleado Desconocido");
 const employeePhoto = ref("/src/assets/images/employeePhoto.webp");
@@ -63,4 +77,12 @@ onMounted(async () => {
     }
   }
 });
+
+// Función para cerrar el sidebar en dispositivos pequeños
+const closeSidebar = () => {
+  // Si la ventana es menor a 1024px (por ejemplo, dispositivos móviles y tablet en modo vertical), se cierra el sidebar.
+  if (window.innerWidth < 1024) {
+    emit('toggleSidebar');
+  }
+};
 </script>
