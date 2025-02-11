@@ -40,3 +40,20 @@ export const getAllTasks = async (employeeId: any) => {
     return []; // Devolver un array vacío en caso de error
   }
 };
+
+export const updateTask = async (taskId: number, data: any) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No se encontró el token.');
+    }
+    const response = await axios.put(`${API_URL}/tasks/${taskId}`, data, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Error al actualizar la tarea');
+  }
+};

@@ -1,11 +1,10 @@
 <template>
   <div class="w-full h-full flex flex-col justify-center px-4 md:px-6 min-h-screen">
-    <!-- Panel desplegable de Filtros utilizando <details> -->
+    <!-- Panel de Filtros -->
     <div class="mx-auto w-full max-w-5xl mb-4">
       <details class="bg-white border border-gray-300 rounded-lg shadow-lg">
         <summary class="cursor-pointer px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-t-md select-none flex items-center justify-between">
           <span class="text-lg font-semibold">Filtrar Tareas</span>
-          <!-- Ícono que rota al abrir/cerrar -->
           <svg class="w-4 h-4 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
@@ -55,7 +54,7 @@
       </details>
     </div>
 
-    <!-- Contenedor de la lista de tareas -->
+    <!-- Lista de Tareas -->
     <div class="bg-white border border-gray-300 rounded-lg shadow-lg p-6 mx-auto w-full max-w-5xl flex flex-col min-h-[600px]">
       <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Lista de Tareas</h2>
 
@@ -69,9 +68,8 @@
         No hay tareas disponibles.
       </div>
 
-      <!-- Grid adaptable para las tareas -->
+      <!-- Grid de Tareas -->
       <div v-else class="grid gap-5 flex-grow" :class="(isMobile || isTablet) ? 'grid-cols-1 grid-rows-3' : 'grid-cols-2 grid-rows-3'">
-        <!-- Tarjeta de tarea con nuevo diseño -->
         <div
           v-for="task in paginatedTasks"
           :key="task.tareas_id"
@@ -124,7 +122,7 @@
       </div>
     </div>
 
-    <!-- Modal de detalles de la tarea -->
+    <!-- Modal de Detalle de Tarea -->
     <TaskDetailModal
       v-if="selectedTask"
       :task="selectedTask"
@@ -135,16 +133,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, computed, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { getAllTasks } from '@/service/taskService';
 import TaskDetailModal from '@/components/TaskDetailModal.vue';
+
+const router = useRouter();
+const route = useRoute();
+const employeeId = ref(router.currentRoute.value.params.id);
 
 const tasks = ref([]);
 const loading = ref(true);
 const error = ref('');
-const router = useRouter();
-const employeeId = router.currentRoute.value.params.id;
 
 // Variables para los filtros
 const selectedProject = ref('');
@@ -153,7 +153,7 @@ const selectedTaskType = ref('mis');
 const startDate = ref('');
 const endDate = ref('');
 
-// Variable para la tarea seleccionada (para el modal)
+// Tarea seleccionada para el modal
 const selectedTask = ref(null);
 
 // Paginación
@@ -162,7 +162,7 @@ const resetPagination = () => {
   currentPage.value = 1;
 };
 
-// Obtener proyectos únicos a partir de las tareas
+// Obtener proyectos únicos
 const uniqueProjects = computed(() => {
   const projectMap = new Map();
   tasks.value.forEach(task => {
@@ -173,7 +173,7 @@ const uniqueProjects = computed(() => {
   return Array.from(projectMap, ([id, nombre]) => ({ id, nombre }));
 });
 
-// Estados disponibles: se añade forzadamente "en progreso" y "finalizado"
+// Estados disponibles (agregando "en progreso" y "finalizado")
 const availableStatuses = computed(() => {
   const statusesSet = new Set();
   tasks.value.forEach(task => {
@@ -193,10 +193,40 @@ const isDesktop = computed(() => screenWidth.value >= 1440);
 const isOneColumn = computed(() => isMobile.value || isTablet.value);
 const itemsPerPage = computed(() => (isOneColumn.value ? 3 : 6));
 
+// Sincronizar los filtros con la URL
+watch(
+  [selectedProject, selectedStatus, selectedTaskType, startDate, endDate],
+  ([newProject, newStatus, newTaskType, newStartDate, newEndDate]) => {
+    router.replace({
+      query: {
+        ...route.query,
+        project: newProject || undefined,
+        status: newStatus || undefined,
+        taskType: newTaskType || undefined,
+        startDate: newStartDate || undefined,
+        endDate: newEndDate || undefined,
+      },
+    });
+  },
+  { deep: true }
+);
+
+// Aplicar automáticamente el filtro "pendiente" si se pasa en la query
+watch(
+  () => route.query.status,
+  (newStatus) => {
+    if (newStatus === 'pendiente') {
+      selectedStatus.value = 'pendiente';
+      resetPagination();
+    }
+  },
+  { immediate: true }
+);
+
 // Obtener todas las tareas
 const fetchAllTasks = async () => {
   try {
-    const response = await getAllTasks(employeeId);
+    const response = await getAllTasks(employeeId.value);
     tasks.value = response;
   } catch (err) {
     error.value = err.message || 'Error al obtener las tareas.';
@@ -210,7 +240,7 @@ const filteredTasks = computed(() => {
   return tasks.value.filter(task => {
     const matchesProject = !selectedProject.value || task.proyectos_id == selectedProject.value;
     const matchesStatus = !selectedStatus.value || task.estado === selectedStatus.value;
-    const matchesTaskType = selectedTaskType.value === 'otros' ? task.empleado_id !== employeeId : true;
+    const matchesTaskType = selectedTaskType.value === 'otros' ? task.empleado_id !== employeeId.value : true;
     const matchesStartDate = !startDate.value || new Date(task.fecha_inicio) >= new Date(startDate.value);
     const matchesEndDate = !endDate.value || new Date(task.fecha_fin) <= new Date(endDate.value);
     return matchesProject && matchesStatus && matchesTaskType && matchesStartDate && matchesEndDate;
@@ -234,33 +264,19 @@ const prevPage = () => {
   if (currentPage.value > 1) currentPage.value--;
 };
 
-// Función para abrir el modal con la tarea seleccionada
+// Abrir modal con la tarea seleccionada
 const openTaskModal = (task) => {
   selectedTask.value = task;
 };
 
-// Función para manejar la actualización de la tarea desde el modal
+// Manejar actualización de tarea desde el modal
 const handleTaskUpdate = (updatedTask) => {
-  // Aquí podrías llamar a un servicio para actualizar la tarea en el backend.
-  // También podrías actualizar la lista de tareas localmente:
-  const index = tasks.value.findIndex((t) => t.tareas_id === updatedTask.tareas_id);
+  const index = tasks.value.findIndex(t => t.tareas_id === updatedTask.tareas_id);
   if (index !== -1) {
     tasks.value[index] = updatedTask;
   }
-  // Cierra el modal
   selectedTask.value = null;
 };
-
-const viewTaskDetails = (taskId) => {
-  // Si prefieres la navegación a otra vista, puedes usar router.push
-  // router.push({ name: 'TaskDetails', params: { id: taskId } });
-  // En este ejemplo, usamos el modal, así que no se utiliza.
-};
-
-const emptySlots = computed(() => {
-  const count = itemsPerPage.value - paginatedTasks.value.length;
-  return count > 0 ? Array.from({ length: count }, (_, i) => i + 1) : [];
-});
 
 const updateScreenWidth = () => {
   screenWidth.value = window.innerWidth;

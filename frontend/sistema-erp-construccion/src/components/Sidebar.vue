@@ -31,8 +31,9 @@
           </router-link>
         </li>
         <li>
+          <!-- Enlace modificado para incluir el query parameter status=pendiente -->
           <router-link 
-            :to="`/tasks/${employeeId}`" 
+            :to="{ path: `/tasks/${employeeId}`, query: { status: 'pendiente' } }" 
             class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
             @click="closeSidebar"
           >
@@ -55,7 +56,6 @@
 import { ref, onMounted } from 'vue';
 import { getEmployeeData } from '@/service/authService';
 
-// Define las propiedades y eventos
 const props = defineProps(['sidebarOpen']);
 const emit = defineEmits(['toggleSidebar']);
 
@@ -80,7 +80,6 @@ onMounted(async () => {
 
 // Función para cerrar el sidebar en dispositivos pequeños
 const closeSidebar = () => {
-  // Si la ventana es menor a 1024px (por ejemplo, dispositivos móviles y tablet en modo vertical), se cierra el sidebar.
   if (window.innerWidth < 1024) {
     emit('toggleSidebar');
   }
