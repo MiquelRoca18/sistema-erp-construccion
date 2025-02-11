@@ -53,40 +53,43 @@ class TaskService extends BaseService{
     }
 
     public function updateTask($id, $data){
-        //Validar ID
+        // Validar ID
         if($error = $this->validateId($id)){
             return $error;
         }
-
-        //Validar existencia de la tarea
+    
+        // Validar existencia de la tarea
         if($error = $this->validateExists($id)){
             return $error;
         }
-
-        //Validar que el proyecto exista
-        if(!$this->model->exists($data->proyectos_id)){
-            return ['status' => 404, 'message' => 'El proyecto no existe'];
+    
+        // Validar que el proyecto exista, solo si se envía proyectos_id en la solicitud
+        if(isset($data->proyectos_id)) {
+            if(!$this->model->exists($data->proyectos_id)){
+                return ['status' => 404, 'message' => 'El proyecto no existe'];
+            }
         }
-
-        //Validar estado correcto
+    
+        // Validar estado correcto
         if(!empty($data->estado) && !in_array($data->estado, ['pendiente', 'en progreso', 'finalizado'])){
             return ['status' => 400, 'message' => 'El estado no es válido'];
         }
-
-        //Obtener las fechas actuales de la tarea
+    
+        // Obtener las fechas actuales de la tarea
         $task = $this->model->get($id);
         $fechaInicioActual = $task['fecha_inicio'] ?? null;
         $fechaFinActual = $task['fecha_fin'] ?? null;
-
+    
         // Validar fechas usando la función general
         if ($error = $this->validator->validateDates($data, $fechaInicioActual, $fechaFinActual)) {
             return ['status' => 400, 'message' => $error];
         }
-
-        //Llamar al modelo para actualizar la tarea
+    
+        // Llamar al modelo para actualizar la tarea
         $result = $this->model->update($id, $data);
         return $result ? $this->responseUpdated('Tarea actualizada') : $this->responseError();
     }
+    
 
     public function deleteTask($id){
         //Validar ID
