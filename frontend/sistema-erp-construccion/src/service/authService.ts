@@ -80,3 +80,4 @@ export const changePassword = async (passwordData: PasswordData) => {
     throw new Error(error.response?.data?.message || 'Error al cambiar la contraseña');
   }
 };
+

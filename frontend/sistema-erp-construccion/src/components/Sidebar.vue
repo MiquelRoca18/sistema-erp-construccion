@@ -1,13 +1,13 @@
 <template>
   <div>
-    <!-- Sidebar -->
+    <!-- Sidebar (ahora aparece desde la derecha en móviles) -->
     <div 
-      class="fixed top-0 left-0 h-full w-64 bg-gray-100 text-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-40 border-r border-gray-300 
-             md:relative md:translate-x-0 md:flex md:flex-col"
-      :class="{ '-translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
+      class="fixed top-0 right-0 h-full w-64 bg-gray-100 text-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-40 border-l border-r border-gray-300 
+             lg:relative lg:translate-x-0 lg:flex lg:flex-col"
+      :class="{ 'translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
     >
       <!-- Sección del usuario -->
-      <div class="p-6 flex flex-col items-center border-b border-gray-300 ">
+      <div class="p-6 flex flex-col items-center border-b border-gray-300">
         <router-link :to="`/employee/${employeeId}`" class="flex flex-col items-center gap-3 hover:bg-gray-200 transition py-3 px-4 rounded-lg">
           <img :src="employeePhoto" alt="Perfil" class="w-16 h-16 rounded-full border-4 border-gray-400 shadow-md">
           <span class="text-lg font-semibold text-gray-900">{{ employeeName }}</span>
@@ -32,11 +32,13 @@
     <!-- Fondo oscuro para cerrar el menú en móviles -->
     <div 
       v-if="sidebarOpen" 
-      class="fixed inset-0 bg-black/50 md:hidden z-30"
+      class="fixed inset-0 bg-black/50 lg:hidden z-30"
       @click="$emit('toggleSidebar')"
     ></div>
   </div>
 </template>
+
+
 
 <script setup>
 import { ref, onMounted } from 'vue';

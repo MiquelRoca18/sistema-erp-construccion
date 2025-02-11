@@ -41,15 +41,11 @@
         return;
       }
   
-      console.log('Task ID desde la ruta:', taskId); // Agregar log para verificar taskId
       const response = await getPendingTasks(user);  
-      console.log('Respuesta de getPendingTasks:', response);  // Verifica qué datos se obtienen de la API
   
       // Asegúrate de que taskId sea del mismo tipo que tareas_id
       const filteredTask = response.find(task => String(task.tareas_id) === String(taskId)); // Convertimos ambos a string para evitar problemas de tipo
-  
-      console.log('Tarea filtrada:', filteredTask);  // Verifica la tarea filtrada
-  
+    
       taskDetails.value = filteredTask;
     } catch (err) {
       error.value = 'Error al obtener los detalles de la tarea.';

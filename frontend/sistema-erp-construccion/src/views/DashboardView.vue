@@ -1,8 +1,9 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen p-4 bg-gray-100">
-    <div class="flex flex-col items-center md:flex-row gap-6 w-full max-w-5xl">
+  <div class="w-full flex items-center justify-center min-h-screen ">
+    <div class="flex flex-col items-center md:flex-row p-4 gap-6 w-full max-w-5xl">
       
-      <div class="flex flex-col bg-white border border-gray-300 p-4 rounded-lg shadow-md h-[275px] md:w-1/3">
+      <!-- Sección de Perfil del Empleado (Ahora más grande en móviles) -->
+      <div class="flex flex-col bg-white border border-gray-300 p-4 rounded-lg shadow-md h-[300px] w-full md:w-1/3">
         <div class="flex flex-grow items-center justify-center w-full h-full">
           <router-link :to="`/employee/${employeeId}`">
             <EmployeeProfileComponent
@@ -19,7 +20,8 @@
         </button>
       </div>
 
-      <div class="flex flex-col bg-white border border-gray-300 p-4 rounded-lg shadow-md h-[350px] md:w-2/3">
+      <!-- Sección de Tareas Pendientes -->
+      <div class="flex flex-col bg-white border border-gray-300 p-4 rounded-lg shadow-md h-[380px] w-full md:w-2/3">
         <router-link :to="`/tasks/${employeeId}`" class="h-full">
           <EmployeeTasksComponent />
         </router-link>
@@ -28,6 +30,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from 'vue';
