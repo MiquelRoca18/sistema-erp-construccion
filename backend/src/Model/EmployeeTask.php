@@ -48,16 +48,20 @@ class EmployeeTask {
         return $stmt->execute();
     }
 
-    // Obtener tareas asignadas a un empleado
+    // Obtener tareas asignadas a un empleado con el nombre del proyecto
     public function getTasksByEmployee($empleados_id) {
-        $query = 'SELECT t.* FROM tareas t 
-                  INNER JOIN ' . $this->table . ' et ON t.tareas_id = et.tareas_id
-                  WHERE et.empleados_id = :empleados_id';
+        $query = 'SELECT t.*, p.nombre_proyecto 
+                FROM tareas t 
+                INNER JOIN empleados_tareas et ON t.tareas_id = et.tareas_id
+                INNER JOIN proyectos p ON t.proyectos_id = p.proyectos_id
+                WHERE et.empleados_id = :empleados_id';
+
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':empleados_id', $empleados_id, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+
 
     // Obtener empleados asignados a una tarea
     public function getEmployeesByTask($tareas_id) {
