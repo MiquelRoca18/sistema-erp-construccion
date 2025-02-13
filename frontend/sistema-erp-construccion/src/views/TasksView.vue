@@ -34,7 +34,7 @@
             <!-- Filtro de Tipo de Tarea -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Tarea</label>
-              <select v-model="selectedTaskType" @change="resetPagination" class="w-full p-2.5 border border-gray-300 rounded-md text-sm">
+              <select v-model="selectedTaskType" @change="fetchTasks" class="w-full p-2.5 border border-gray-300 rounded-md text-sm">
                 <option value="mis">Mis tareas</option>
                 <option value="otros">Tareas de otros</option>
               </select>
@@ -42,12 +42,12 @@
             <!-- Filtro de Fecha de Inicio -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Inicio</label>
-              <input v-model="startDate" @change="resetPagination" type="date" class="w-full p-2.5 border border-gray-300 rounded-md text-sm" />
+              <input v-model="startDate" @change="fetchTasks" type="date" class="w-full p-2.5 border border-gray-300 rounded-md text-sm" />
             </div>
             <!-- Filtro de Fecha Fin -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Fecha Fin</label>
-              <input v-model="endDate" @change="resetPagination" type="date" class="w-full p-2.5 border border-gray-300 rounded-md text-sm" />
+              <input v-model="endDate" @change="fetchTasks" type="date" class="w-full p-2.5 border border-gray-300 rounded-md text-sm" />
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { getAllTasks } from '@/service/taskService';
+import { getAllTasks, getTasksByResponsible } from '@/service/taskService';
 import TaskDetailModal from '@/components/TaskDetailModal.vue';
 
 const router = useRouter();
@@ -149,7 +149,7 @@ const error = ref('');
 // Variables para los filtros
 const selectedProject = ref('');
 const selectedStatus = ref('');
-const selectedTaskType = ref('mis');
+const selectedTaskType = ref('mis'); // Por defecto "mis tareas"
 const startDate = ref('');
 const endDate = ref('');
 
@@ -162,7 +162,7 @@ const resetPagination = () => {
   currentPage.value = 1;
 };
 
-// Obtener proyectos únicos
+// Función para obtener proyectos únicos
 const uniqueProjects = computed(() => {
   const projectMap = new Map();
   tasks.value.forEach(task => {
@@ -173,7 +173,7 @@ const uniqueProjects = computed(() => {
   return Array.from(projectMap, ([id, nombre]) => ({ id, nombre }));
 });
 
-// Estados disponibles (agregando "en progreso" y "finalizado")
+// Estados disponibles (incluyendo "en progreso" y "finalizado")
 const availableStatuses = computed(() => {
   const statusesSet = new Set();
   tasks.value.forEach(task => {
@@ -188,8 +188,6 @@ const availableStatuses = computed(() => {
 const screenWidth = ref(window.innerWidth);
 const isMobile = computed(() => screenWidth.value < 640);
 const isTablet = computed(() => screenWidth.value >= 640 && screenWidth.value < 1024);
-const isLaptop = computed(() => screenWidth.value >= 1024 && screenWidth.value < 1440);
-const isDesktop = computed(() => screenWidth.value >= 1440);
 const isOneColumn = computed(() => isMobile.value || isTablet.value);
 const itemsPerPage = computed(() => (isOneColumn.value ? 3 : 6));
 
@@ -223,24 +221,37 @@ watch(
   { immediate: true }
 );
 
-// Obtener todas las tareas
-const fetchAllTasks = async () => {
+// Función para obtener tareas según el filtro de tipo
+const fetchTasks = async () => {
+  loading.value = true;
   try {
-    const response = await getAllTasks(employeeId.value);
+    let response;
+    if (selectedTaskType.value === 'otros') {
+      // Llamar al endpoint para obtener tareas de proyectos en los que el empleado es responsable
+      response = await getTasksByResponsible(employeeId.value);
+    } else {
+      // Llamar al endpoint para obtener las tareas asignadas al empleado ("mis tareas")
+      response = await getAllTasks(employeeId.value);
+    }
     tasks.value = response;
   } catch (err) {
     error.value = err.message || 'Error al obtener las tareas.';
   } finally {
     loading.value = false;
   }
+  resetPagination();
 };
 
-// Filtrar tareas
+onMounted(fetchTasks);
+
+// Filtrar tareas (filtro local adicional en la vista)
 const filteredTasks = computed(() => {
   return tasks.value.filter(task => {
     const matchesProject = !selectedProject.value || task.proyectos_id == selectedProject.value;
     const matchesStatus = !selectedStatus.value || task.estado === selectedStatus.value;
-    const matchesTaskType = selectedTaskType.value === 'otros' ? task.empleado_id !== employeeId.value : true;
+    const matchesTaskType = selectedTaskType.value === 'otros'
+      ? true // Cuando es "otros", ya hemos obtenido los datos desde el backend
+      : true;
     const matchesStartDate = !startDate.value || new Date(task.fecha_inicio) >= new Date(startDate.value);
     const matchesEndDate = !endDate.value || new Date(task.fecha_fin) <= new Date(endDate.value);
     return matchesProject && matchesStatus && matchesTaskType && matchesStartDate && matchesEndDate;
@@ -282,8 +293,6 @@ const updateScreenWidth = () => {
   screenWidth.value = window.innerWidth;
 };
 window.addEventListener('resize', updateScreenWidth);
-
-onMounted(fetchAllTasks);
 </script>
 
 <style>
