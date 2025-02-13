@@ -99,6 +99,7 @@
     $router->addRoute('POST', '/tasks', [$taskController, 'createTask']);
     $router->addRoute('PUT', '/tasks/([0-9]+)', [$taskController, 'updateTask']);
     $router->addRoute('DELETE', '/tasks/([0-9]+)', [$taskController, 'deleteTask']);
+    
 
     // Definir las rutas para la autenticación
     $router->addRoute('POST', '/auth/login', [$authController, 'login']);
@@ -111,6 +112,7 @@
     $router->addRoute('GET', '/employee-tasks/employees/([0-9]+)', [$employeeTaskController, 'getTasksByEmployee']);
     $router->addRoute('GET', '/employee-tasks/tasks/([0-9]+)', [$employeeTaskController, 'getEmployeesByTask']);
     $router->addRoute('GET', '/employee-tasks/pending-tasks/([0-9]+)', [$employeeTaskController, 'getPendingTasksByEmployee']);
+    $router->addRoute('GET', '/employee-tasks/responsible/([0-9]+)', [$employeeTaskController, 'getTasksByResponsible']);
 
     // Disparar el despachador de rutas
     $router->dispatch($requestUri, $requestMethod);

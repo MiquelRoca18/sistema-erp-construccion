@@ -98,5 +98,16 @@ class EmployeeTaskService extends BaseService {
             ? $this->responseFound($tasks, 'Tareas asignadas encontradas.')
             : $this->responseNotFound();
     }
+
+    public function getTasksByResponsible($employeeId) {
+        // Verificar si el empleado existe
+        if (!$this->employeeModel->exists($employeeId)) {
+            return $this->responseError("El empleado con ID {$employeeId} no existe.");
+        }
+        $tasks = $this->model->getTasksByResponsible($employeeId);
+        return $tasks
+            ? $this->responseFound($tasks, 'Tareas del responsable encontradas.')
+            : $this->responseNotFound();
+    }
 }
 ?>

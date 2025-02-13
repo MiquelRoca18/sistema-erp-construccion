@@ -106,5 +106,7 @@ class TaskService extends BaseService{
         $result = $this->model->delete($id);
         return $result ? $this->responseDeleted('Tarea eliminada') : $this->responseError();   
     }
+
+    
 }
 ?>

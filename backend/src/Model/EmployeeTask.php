@@ -91,5 +91,17 @@ class EmployeeTask {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
     
+    public function getTasksByResponsible($employeeId) {
+        $query = "
+            SELECT t.tareas_id, t.estado, t.nombre_tarea, t.descripcion, t.proyectos_id, t.fecha_inicio, t.fecha_fin, p.nombre_proyecto
+            FROM tareas t
+            INNER JOIN proyectos p ON t.proyectos_id = p.proyectos_id
+            WHERE p.responsable_id = :employeeId
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':employeeId', $employeeId, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }
 ?>

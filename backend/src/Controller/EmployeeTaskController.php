@@ -76,5 +76,14 @@ class EmployeeTaskController extends BaseController {
             $this->sendResponse($response['status'], $response['message']);
         }
     }
+    
+    public function getTasksByResponsible($employeeId) {
+        $response = $this->service->getTasksByResponsible($employeeId);
+        if (isset($response['data'])) {
+            $this->sendResponse($response['status'], $response['message'], $response['data']);
+        } else {
+            $this->sendResponse($response['status'], $response['message']);
+        }
+    }
 }
 ?>
