@@ -51,6 +51,9 @@ export const updateTask = async (taskId: number, data: any) => {
     });
     return response.data;
   } catch (error: any) {
+    console.log('Data:', error.response?.data);
+
+    console.log('Error message:', error.response?.data?.message);
     throw new Error(error.response?.data?.message || 'Error al actualizar la tarea');
   }
 };
