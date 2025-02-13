@@ -15,7 +15,7 @@
           </svg>
         </button>
       </div>
-
+      
       <!-- Mostrar mensaje de error si existe -->
       <div v-if="errorMessage" class="mb-4 p-2 bg-red-100 text-red-700 rounded">
         {{ errorMessage }}
@@ -82,14 +82,17 @@
           </div>
         </div>
   
-        <!-- 5. Empleado asignado (editable) -->
+        <!-- 5. Empleado asignado (editable con select) -->
         <div>
           <label class="block text-sm font-medium text-gray-600">Asignado a</label>
-          <input
-            type="text"
-            v-model="updatedNombreEmpleado"
+          <select
+            v-model="selectedEmployeeId"
             class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          />
+          >
+            <option v-for="emp in employees" :key="emp.empleados_id" :value="emp.empleados_id">
+              {{ emp.nombre }}
+            </option>
+          </select>
         </div>
       </div>
   
@@ -107,9 +110,10 @@
 </template>
   
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { updateTask as updateTaskService } from '@/service/taskService';
 import { updateTaskAssignment } from '@/service/taskService';
+import { getEmployees } from '@/service/employeeService';
 
 const props = defineProps({
   task: {
@@ -119,16 +123,31 @@ const props = defineProps({
 });
 const emit = defineEmits(['close', 'update']);
 
-// Variables para los campos editables
 const updatedNombreTarea = ref(props.task.nombre_tarea);
 const updatedStatus = ref(props.task.estado);
 const updatedDescripcion = ref(props.task.descripcion);
 const updatedFechaInicio = ref(props.task.fecha_inicio);
 const updatedFechaFin = ref(props.task.fecha_fin);
-const updatedNombreEmpleado = ref(props.task.nombre_empleado);
 
-// Variable para almacenar el mensaje de error
+// Inicializar el select con el empleado asignado. Si la tarea no trae empleados_id, intentamos buscarlo por nombre.
+const selectedEmployeeId = ref(props.task.empleados_id);
+const employees = ref([]);
 const errorMessage = ref('');
+
+onMounted(async () => {
+  try {
+    employees.value = await getEmployees();
+    // Si la tarea no tiene empleados_id pero tiene nombre_empleado, buscarlo en la lista de empleados
+    if (!props.task.empleados_id && props.task.nombre_empleado) {
+      const emp = employees.value.find(e => e.nombre === props.task.nombre_empleado);
+      if (emp) {
+        selectedEmployeeId.value = emp.empleados_id;
+      }
+    }
+  } catch (error) {
+    console.error("Error al obtener empleados:", error);
+  }
+});
 
 watch(() => props.task, (newTask) => {
   updatedNombreTarea.value = newTask.nombre_tarea;
@@ -136,8 +155,15 @@ watch(() => props.task, (newTask) => {
   updatedDescripcion.value = newTask.descripcion;
   updatedFechaInicio.value = newTask.fecha_inicio;
   updatedFechaFin.value = newTask.fecha_fin;
-  updatedNombreEmpleado.value = newTask.nombre_empleado;
-  // Reiniciar el mensaje de error cuando se cambia la tarea
+  // Actualizar el valor del select
+  if (newTask.empleados_id) {
+    selectedEmployeeId.value = newTask.empleados_id;
+  } else if (newTask.nombre_empleado) {
+    const emp = employees.value.find(e => e.nombre === newTask.nombre_empleado);
+    if (emp) {
+      selectedEmployeeId.value = emp.empleados_id;
+    }
+  }
   errorMessage.value = '';
 });
 
@@ -147,9 +173,7 @@ const close = () => {
 
 const updateTask = async () => {
   try {
-    // Reiniciar mensaje de error
     errorMessage.value = '';
-    // Actualizar la tabla tareas (sin el campo de empleado)
     const taskData = {
       nombre_tarea: updatedNombreTarea.value,
       estado: updatedStatus.value,
@@ -159,12 +183,15 @@ const updateTask = async () => {
     };
     await updateTaskService(props.task.tareas_id, taskData);
     
-    // Actualizar la asignación si ha cambiado
-    if (updatedNombreEmpleado.value !== props.task.nombre_empleado) {
-      await updateTaskAssignment(props.task.tareas_id, updatedNombreEmpleado.value);
+    if (selectedEmployeeId.value !== props.task.empleados_id) {
+      await updateTaskAssignment(props.task.tareas_id, selectedEmployeeId.value);
     }
     
-    const updatedTask = { ...props.task, ...taskData, nombre_empleado: updatedNombreEmpleado.value };
+    const updatedTask = { ...props.task, ...taskData, empleados_id: selectedEmployeeId.value };
+    const emp = employees.value.find(e => e.empleados_id === selectedEmployeeId.value);
+    if (emp) {
+      updatedTask.nombre_empleado = emp.nombre;
+    }
     emit('update', updatedTask);
     close();
   } catch (error) {
