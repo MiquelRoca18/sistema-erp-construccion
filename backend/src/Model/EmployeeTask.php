@@ -93,9 +93,20 @@ class EmployeeTask {
     
     public function getTasksByResponsible($employeeId) {
         $query = "
-            SELECT t.tareas_id, t.estado, t.nombre_tarea, t.descripcion, t.proyectos_id, t.fecha_inicio, t.fecha_fin, p.nombre_proyecto
+            SELECT 
+                t.tareas_id, 
+                t.estado, 
+                t.nombre_tarea, 
+                t.descripcion, 
+                t.proyectos_id, 
+                t.fecha_inicio, 
+                t.fecha_fin, 
+                p.nombre_proyecto,
+                e.nombre AS nombre_empleado
             FROM tareas t
             INNER JOIN proyectos p ON t.proyectos_id = p.proyectos_id
+            INNER JOIN empleados_tareas et ON t.tareas_id = et.tareas_id
+            INNER JOIN empleados e ON et.empleados_id = e.empleados_id
             WHERE p.responsable_id = :employeeId
         ";
         $stmt = $this->db->prepare($query);
@@ -103,5 +114,6 @@ class EmployeeTask {
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+    
 }
 ?>
