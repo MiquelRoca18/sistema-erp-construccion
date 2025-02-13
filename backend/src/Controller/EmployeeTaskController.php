@@ -85,5 +85,15 @@ class EmployeeTaskController extends BaseController {
             $this->sendResponse($response['status'], $response['message']);
         }
     }
+
+    public function updateAssignment($taskId) {
+        $data = $this->getRequestData();
+        if (empty($data->old_empleados_id) || empty($data->new_empleados_id)) {
+            $this->sendResponse(400, "Los campos old_empleados_id y new_empleados_id son obligatorios.");
+            return;
+        }
+        $response = $this->service->updateAssignment($taskId, $data->old_empleados_id, $data->new_empleados_id);
+        $this->sendResponse($response['status'], $response['message'], $response['data'] ?? null);
+    }    
 }
 ?>

@@ -114,6 +114,17 @@ class EmployeeTask {
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
-    
+
+    public function updateAssignment($taskId, $oldEmployeeId, $newEmployeeId) {
+        $query = "UPDATE " . $this->table . " 
+                  SET empleados_id = :newEmployeeId 
+                  WHERE tareas_id = :taskId 
+                    AND empleados_id = :oldEmployeeId";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':newEmployeeId', $newEmployeeId, \PDO::PARAM_INT);
+        $stmt->bindParam(':taskId', $taskId, \PDO::PARAM_INT);
+        $stmt->bindParam(':oldEmployeeId', $oldEmployeeId, \PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }
 ?>

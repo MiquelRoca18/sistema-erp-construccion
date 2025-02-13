@@ -109,5 +109,20 @@ class EmployeeTaskService extends BaseService {
             ? $this->responseFound($tasks, 'Tareas del responsable encontradas.')
             : $this->responseNotFound();
     }
+
+    public function updateAssignment($taskId, $oldEmployeeId, $newEmployeeId) {
+        // Verificar que el nuevo empleado existe
+        if (!$this->employeeModel->exists($newEmployeeId)) {
+            return $this->responseError("El empleado con ID {$newEmployeeId} no existe.");
+        }
+        // Verificar que la relación con el empleado a cambiar exista
+        if (!$this->model->relationExists($oldEmployeeId, $taskId)) {
+            return $this->responseError("La asignación para el empleado con ID {$oldEmployeeId} no existe para esta tarea.");
+        }
+        $result = $this->model->updateAssignment($taskId, $oldEmployeeId, $newEmployeeId);
+        return $result 
+            ? $this->responseUpdated("Asignación actualizada exitosamente.")
+            : $this->responseError("No se pudo actualizar la asignación.");
+    }    
 }
 ?>
