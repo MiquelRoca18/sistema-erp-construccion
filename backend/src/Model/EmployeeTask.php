@@ -102,6 +102,7 @@ class EmployeeTask {
                 t.fecha_inicio, 
                 t.fecha_fin, 
                 p.nombre_proyecto,
+                et.empleados_id,
                 e.nombre AS nombre_empleado
             FROM tareas t
             INNER JOIN proyectos p ON t.proyectos_id = p.proyectos_id
@@ -113,7 +114,7 @@ class EmployeeTask {
         $stmt->bindParam(':employeeId', $employeeId, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
+    }    
 
     public function updateAssignment($taskId, $oldEmployeeId, $newEmployeeId) {
         $query = "UPDATE " . $this->table . " 
