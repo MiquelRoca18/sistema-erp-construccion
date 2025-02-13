@@ -69,24 +69,28 @@ class Validator {
 
     public static function validateDates($data, $currentStartDate = null, $currentEndDate = null) {
         try {
-            $currentStartDate = $currentStartDate ? new DateTime($currentStartDate) : null;
-            $currentEndDate = $currentEndDate ? new DateTime($currentEndDate) : null;
             $currentDate = new DateTime();
     
-            // Validar fecha de inicio
-            if (!empty($data->fecha_inicio)) {
-                $newStartDate = new DateTime($data->fecha_inicio);
-                if ($currentEndDate && $newStartDate > $currentEndDate) {
+            // Si se envía la fecha en la solicitud y no está vacía, usarla; de lo contrario, usar el valor actual
+            $start = (isset($data->fecha_inicio) && trim($data->fecha_inicio) !== '')
+                ? trim($data->fecha_inicio)
+                : $currentStartDate;
+            $end = (isset($data->fecha_fin) && trim($data->fecha_fin) !== '')
+                ? trim($data->fecha_fin)
+                : $currentEndDate;
+            
+            // Si ambos valores están definidos, compararlos
+            if ($start && $end) {
+                $newStartDate = new DateTime($start);
+                $newEndDate = new DateTime($end);
+                if ($newStartDate > $newEndDate) {
                     return 'La fecha de inicio no puede ser posterior a la fecha de finalización';
                 }
             }
-    
-            // Validar fecha de finalización
-            if (!empty($data->fecha_fin)) {
-                $newEndDate = new DateTime($data->fecha_fin);
-                if ($currentStartDate && $newEndDate < $currentStartDate) {
-                    return 'La fecha de finalización no puede ser anterior a la fecha de inicio';
-                }
+            
+            // Si la fecha de finalización (nueva o la existente) está definida, comprobar que no sea posterior a la fecha actual
+            if ($end) {
+                $newEndDate = new DateTime($end);
                 if ($newEndDate > $currentDate) {
                     return 'La fecha de finalización no puede ser posterior a la fecha actual';
                 }
@@ -94,10 +98,9 @@ class Validator {
         } catch (Exception $e) {
             return 'Formato de fecha inválido';
         }
-    
+        
         return null;
-    }
-    
+    }    
     
 }
 

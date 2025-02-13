@@ -75,10 +75,24 @@ class TaskService extends BaseService{
             return ['status' => 400, 'message' => 'El estado no es válido'];
         }
     
-        // Obtener las fechas actuales de la tarea
-        $task = $this->model->get($id);
-        $fechaInicioActual = $task['fecha_inicio'] ?? null;
-        $fechaFinActual = $task['fecha_fin'] ?? null;
+        // Obtener las fechas actuales de la tarea desde la base de datos
+        $task = $this->model->getById($id);
+        $fechaInicioActual = (array_key_exists('fecha_inicio', $task) && !empty($task['fecha_inicio'])) ? $task['fecha_inicio'] : null;
+        $fechaFinActual = (array_key_exists('fecha_fin', $task) && !empty($task['fecha_fin'])) ? $task['fecha_fin'] : null;
+
+        echo "Fecha Inicio Input: ".$data->fecha_inicio."\n";
+        echo "Fecha Final Input: ".$data->fecha_fin."\n";
+        echo "Fecha Inicio Base Datos: ".$fechaInicioActual."\n";
+        echo "Fecha Final Base Datos: ".$fechaFinActual."\n";
+    
+        // Si no se envía la fecha de inicio, asignar el valor actual
+        if(!isset($data->fecha_inicio) || empty($data->fecha_inicio)){
+            $data->fecha_inicio = $fechaInicioActual;
+        }
+        // Si no se envía la fecha de fin, asignar el valor actual
+        if(!isset($data->fecha_fin) || empty($data->fecha_fin)){
+            $data->fecha_fin = $fechaFinActual;
+        }
     
         // Validar fechas usando la función general
         if ($error = $this->validator->validateDates($data, $fechaInicioActual, $fechaFinActual)) {
@@ -89,6 +103,7 @@ class TaskService extends BaseService{
         $result = $this->model->update($id, $data);
         return $result ? $this->responseUpdated('Tarea actualizada') : $this->responseError();
     }
+    
     
 
     public function deleteTask($id){
