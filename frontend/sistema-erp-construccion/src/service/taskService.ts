@@ -75,31 +75,23 @@ export const getTasksByResponsible = async (employeeId: any) => {
   }
 };
 
-export const updateTaskAssignment = async (taskId: number, newEmployeeName: string) => {
+export const updateTaskAssignment = async (taskId: number, oldEmployeeId: number, newEmployeeId: number) => {
   try {
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('No se encontró el token.');
     }
-    // Buscar el empleado por nombre (se asume que existe este endpoint)
-    const responseEmp = await axios.get(`${API_URL}/employees/by-name/${encodeURIComponent(newEmployeeName)}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-    const employee = responseEmp.data.data;
-    if (!employee || !employee.empleados_id) {
-      throw new Error('Empleado no encontrado');
-    }
-    const newEmployeeId = employee.empleados_id;
-    // Actualizar la asignación de la tarea. Se asume que existe un endpoint PUT para esto.
-    const response = await axios.put(`${API_URL}/employee-tasks/assignment/${taskId}`, { empleados_id: newEmployeeId }, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+    const response = await axios.put(`${API_URL}/employee-tasks/assignment/${taskId}`, 
+      { old_empleados_id: oldEmployeeId, new_empleados_id: newEmployeeId },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al actualizar la asignación de la tarea');
   }
 };
+
