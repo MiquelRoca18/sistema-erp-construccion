@@ -1,10 +1,12 @@
 <template>
-  <div class="w-full flex items-center justify-center min-h-screen">
-    <div class="flex flex-col items-center md:flex-row p-4 gap-6 w-full max-w-5xl">
+  <div class="min-h-screen flex flex-col justify-center items-center p-6 gap-6 w-full">
+    
+    <!-- Fila superior: Perfil + Gráfica -->
+    <div class="flex flex-col md:flex-row w-full max-w-3xl gap-6">
       
-      <!-- Sección de Perfil del Empleado -->
-      <div class="flex flex-col bg-white border border-gray-300 p-4 rounded-lg shadow-md h-[300px] w-full md:w-1/3">
-        <div class="flex flex-grow items-center justify-center w-full h-full">
+      <!-- Columna Perfil -->
+      <div class="flex flex-col bg-white/90 border border-gray-200 rounded-xl shadow-lg w-full md:w-2/5 p-4">
+        <div class="flex-grow flex flex-col items-center justify-center">
           <router-link :to="`/employee/${employeeId}`">
             <EmployeeProfileComponent
               :employeePhoto="employeePhoto"
@@ -14,21 +16,30 @@
         </div>
         <button
           @click="logout"
-          class="mt-auto px-5 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200 w-full"
+          class="mt-4 px-5 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200 w-full"
         >
           Logout
         </button>
       </div>
-
-      <!-- Sección de Tareas Pendientes -->
-      <div class="flex flex-col bg-white border border-gray-300 p-4 rounded-lg shadow-md h-[380px] w-full md:w-2/3">
-        <!-- Navega a TasksView con query parameter para filtrar por "pendiente" -->
-        <router-link :to="pendingTasksLink" class="h-full">
-          <EmployeeTasksComponent />
+      
+      <!-- Columna Gráfica (solo se renderiza si employeeId existe) -->
+      <div 
+        v-if="employeeId"
+        class="flex flex-col bg-white/90 border border-gray-200 rounded-xl shadow-lg w-full md:w-3/5 p-4"
+      >
+        <router-link :to="{ path: `/tasks/${employeeId}` }" class="block">
+          <EmployeeTasksGraph :employeeId="employeeId" />
         </router-link>
       </div>
-    
     </div>
+    
+    <!-- Fila inferior: Tareas Pendientes -->
+    <div class="bg-white/90 border border-gray-200 rounded-xl shadow-lg w-full max-w-3xl p-4 h-80 md:h-96">
+      <router-link :to="pendingTasksLink" class="block h-full">
+        <EmployeeTasksComponent />
+      </router-link>
+    </div>
+    
   </div>
 </template>
 
@@ -39,6 +50,7 @@ import { getEmployeeData } from '@/service/authService';
 import { logout as authLogout } from '@/service/authStore';
 import EmployeeProfileComponent from "@/components/EmployeeProfileComponent.vue";
 import EmployeeTasksComponent from "@/components/EmployeeTasksComponent.vue";
+import EmployeeTasksGraph from "@/components/EmployeeTasksGraph.vue";
 
 const router = useRouter();
 const employeeId = ref(null);
@@ -49,7 +61,8 @@ onMounted(async () => {
   const user = JSON.parse(localStorage.getItem("user"));
   if (user) {
     const employeeData = await getEmployeeData(user, localStorage.getItem('token'));
-    employeeId.value = user;
+    // Asigna el valor de 'empleados_id' proveniente del backend
+    employeeId.value = employeeData.empleados_id; 
     employeeName.value = employeeData.nombre || "Empleado Desconocido";
     employeePhoto.value = employeeData.photo || "/src/assets/images/employeePhoto.webp";
   } else {
@@ -65,7 +78,6 @@ const logout = () => {
   router.push('/');
 };
 
-// Construir el enlace para navegar a TasksView filtrando por "pendiente"
 const pendingTasksLink = computed(() => {
   return {
     path: `/tasks/${employeeId.value}`,

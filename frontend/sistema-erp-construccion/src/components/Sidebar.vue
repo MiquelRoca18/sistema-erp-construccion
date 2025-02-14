@@ -31,13 +31,21 @@
           </router-link>
         </li>
         <li>
-          <!-- Enlace modificado para incluir el query parameter status=pendiente -->
           <router-link 
             :to="{ path: `/tasks/${employeeId}`, query: { status: 'pendiente' } }" 
             class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
             @click="closeSidebar"
           >
             📝 Tareas Pendientes
+          </router-link>
+        </li>
+        <li>
+          <router-link 
+            :to="{ path: `/tasks/${employeeId}` }" 
+            class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
+            @click="closeSidebar"
+          >
+            📋 Tareas Generales
           </router-link>
         </li>
       </ul>
@@ -69,7 +77,7 @@ onMounted(async () => {
     try {
       const token = localStorage.getItem('token');
       const employeeData = await getEmployeeData(user, token);
-      employeeId.value = user;
+      employeeId.value = employeeData.empleados_id;
       employeeName.value = employeeData.nombre || "Empleado Desconocido";
       employeePhoto.value = employeeData.photo || "/src/assets/images/employeePhoto.webp";
     } catch (error) {

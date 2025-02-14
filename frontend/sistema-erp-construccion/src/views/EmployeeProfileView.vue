@@ -1,6 +1,6 @@
 <template>
   <div class="h-full flex flex-col justify-center w-full min-h-screen max-w-2xl mx-auto md:p-6">
-    <div class="p-4 bg-white border border-gray-300 shadow-md rounded-lg">
+    <div class="p-4 bg-white  shadow-md rounded-lg">
       <h1 class="text-xl md:text-2xl font-bold text-center mb-3 md:mb-4 text-gray-800">Perfil del Empleado</h1>
 
       <div class="flex flex-col items-center">

@@ -55,7 +55,7 @@
     </div>
 
     <!-- Lista de Tareas -->
-    <div class="bg-white border border-gray-300 rounded-lg shadow-lg p-6 mx-auto w-full max-w-5xl flex flex-col min-h-[600px]">
+    <div class="bg-white  rounded-lg shadow-lg p-6 mx-auto w-full max-w-5xl flex flex-col min-h-[600px]">
       <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Lista de Tareas</h2>
 
       <div v-if="loading" class="text-center text-lg text-gray-500 flex-grow flex items-center justify-center">
