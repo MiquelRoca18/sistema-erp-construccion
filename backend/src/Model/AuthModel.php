@@ -1,6 +1,7 @@
 <?php
 namespace App\Model;
 use App\Config\Database;
+use PDO;
 
 class AuthModel {
     private $db;
@@ -12,11 +13,16 @@ class AuthModel {
 
     // Obtener usuario por nombre de usuario
     public function getUserByUsername($username) {
-        $query = 'SELECT * FROM autenticacion WHERE username = :username';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':username', $username);
+        // Se realiza el JOIN para obtener el rol (admin o usuario)
+        $stmt = $this->db->prepare("
+            SELECT a.*, r.rol AS role 
+            FROM autenticacion a 
+            JOIN roles r ON a.id_rol = r.id_rol 
+            WHERE a.username = :username
+        ");
+        $stmt->bindParam(':username', $username);
         $stmt->execute();
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     // Crear un usuario en la tabla autenticación
