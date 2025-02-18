@@ -4,11 +4,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 interface LoginResponse {
   token: string;
-  user: {
-    id: number;
-    username: string;
-    email?: string;
-  };
+  empleados_id: number;
+  rol: string;
 }
 
 export const login = async (credentials: { username: string; password_hash: string }): Promise<LoginResponse> => {
@@ -70,14 +67,13 @@ export const changePassword = async (passwordData: PasswordData) => {
   try {
     const response = await axios.post(`${API_URL}/auth/change-password`, passwordData, {
       headers: {
-        Authorization: `Bearer ${token}`, // Enviar token en el encabezado
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
     });
 
-    return response.data.message; // Mensaje de éxito
+    return response.data.message;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al cambiar la contraseña');
   }
 };
-

@@ -40,8 +40,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { login as authLogin } from '@/service/authStore'; // Importar la función login del store
-import { login as apiLogin } from '@/service/authService'; // Importar la función login del servicio API
+import { login as authLogin } from '@/service/authStore'; // Función del store actualizada
+import { login as apiLogin } from '@/service/authService'; // Servicio API
 
 const username = ref('');
 const password_hash = ref('');
@@ -52,8 +52,8 @@ const handleSubmit = async () => {
   try {
     const response = await apiLogin({ username: username.value, password_hash: password_hash.value });
 
-    // Usar el store para actualizar el estado de autenticación
-    authLogin({ token: response.token, empleados_id: response.empleados_id });
+    // Actualizamos el store incluyendo el rol (response.rol)
+    authLogin({ token: response.token, empleados_id: response.empleados_id, rol: response.rol });
 
     // Redirigir al dashboard
     router.push('/dashboard');

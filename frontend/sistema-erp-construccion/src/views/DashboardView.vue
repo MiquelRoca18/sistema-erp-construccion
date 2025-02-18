@@ -1,6 +1,9 @@
 <template>
   <div class="min-h-screen flex flex-col justify-center items-center p-6 gap-6 w-full">
     
+    <!-- Mostrar el rol del usuario -->
+    <p class="text-xl font-bold">Rol: {{ userRole || 'No definido' }}</p>
+    
     <!-- Fila superior: Perfil + Gráfica -->
     <div class="flex flex-col md:flex-row w-full max-w-3xl gap-6">
       
@@ -34,11 +37,11 @@
     </div>
     
     <!-- Fila inferior: Tareas Pendientes -->
-    <div class="bg-white/90 border border-gray-200 rounded-xl shadow-lg w-full max-w-3xl p-4 h-80 md:h-96">
-      <router-link :to="pendingTasksLink" class="block h-full">
-        <EmployeeTasksComponent />
-      </router-link>
-    </div>
+    <div class="bg-white/90 border border-gray-200 rounded-xl shadow-lg w-full max-w-3xl p-4">
+  <router-link :to="pendingTasksLink" class="block">
+    <EmployeeTasksComponent />
+  </router-link>
+</div>
     
   </div>
 </template>
@@ -47,7 +50,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getEmployeeData } from '@/service/authService';
-import { logout as authLogout } from '@/service/authStore';
+import { logout as authLogout, userRole } from '@/service/authStore';
 import EmployeeProfileComponent from "@/components/EmployeeProfileComponent.vue";
 import EmployeeTasksComponent from "@/components/EmployeeTasksComponent.vue";
 import EmployeeTasksGraph from "@/components/EmployeeTasksGraph.vue";
@@ -61,7 +64,7 @@ onMounted(async () => {
   const user = JSON.parse(localStorage.getItem("user"));
   if (user) {
     const employeeData = await getEmployeeData(user, localStorage.getItem('token'));
-    // Asigna el valor de 'empleados_id' proveniente del backend
+    // Asignamos los datos del empleado obtenidos del backend
     employeeId.value = employeeData.empleados_id; 
     employeeName.value = employeeData.nombre || "Empleado Desconocido";
     employeePhoto.value = employeeData.photo || "/src/assets/images/employeePhoto.webp";
