@@ -154,8 +154,8 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getAllTasks, getTasksByResponsible } from '@/service/taskService';
-import TaskDetailModal from '@/components/TaskDetailModal.vue';
-import TaskDetailModalOthers from '@/components/TaskDetailModalOthers.vue';
+import TaskDetailModal from '@/components/normalUser/TaskDetailModal.vue';
+import TaskDetailModalOthers from '@/components/normalUser/TaskDetailModalOthers.vue';
 
 const router = useRouter();
 const route = useRoute();

@@ -1,4 +1,3 @@
-<!-- Sidebar.vue -->
 <template>
   <div>
     <!-- Sidebar (aparece desde la derecha en móviles y está fijo en pantallas grandes) -->
@@ -81,15 +80,6 @@
               </li>
               <li>
                 <router-link 
-                  to="/admin-tasks" 
-                  class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
-                  @click="closeSidebar"
-                >
-                  📝 Tareas
-                </router-link>
-              </li>
-              <li>
-                <router-link 
                   to="/employees" 
                   class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
                   @click="closeSidebar"
@@ -108,11 +98,29 @@
               </li>
               <li>
                 <router-link 
+                  to="/tasks-admin" 
+                  class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
+                  @click="closeSidebar"
+                >
+                  📝 Tareas Generales
+                </router-link>
+              </li>
+              <li>
+                <router-link 
                   to="/budgets" 
                   class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
                   @click="closeSidebar"
                 >
                   💰 Presupuestos
+                </router-link>
+              </li>
+              <li>
+                <router-link 
+                  to="/roles" 
+                  class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
+                  @click="closeSidebar"
+                >
+                  🔑 Roles y Usuarios
                 </router-link>
               </li>
             </ul>
@@ -221,4 +229,3 @@ const isAdmin = computed(() => {
   return userRole.value === 'admin';
 });
 </script>
-

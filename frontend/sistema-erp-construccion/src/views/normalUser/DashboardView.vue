@@ -51,9 +51,9 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getEmployeeData } from '@/service/authService';
 import { logout as authLogout, userRole } from '@/service/authStore';
-import EmployeeProfileComponent from "@/components/EmployeeProfileComponent.vue";
-import EmployeeTasksComponent from "@/components/EmployeeTasksComponent.vue";
-import EmployeeTasksGraph from "@/components/EmployeeTasksGraph.vue";
+import EmployeeProfileComponent from "@/components/normalUser/EmployeeProfileComponent.vue";
+import EmployeeTasksComponent from "@/components/normalUser/EmployeeTasksComponent.vue";
+import EmployeeTasksGraph from "@/components/normalUser/EmployeeTasksGraph.vue";
 
 const router = useRouter();
 const employeeId = ref(null);
