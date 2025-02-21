@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/employees" class="block">
+  <router-link to="/employees-admin" class="block">
     <div class="p-6 bg-gradient-to-r from-sky-100 to-sky-200 rounded-lg shadow-lg transform transition hover:scale-105">
       <div class="flex items-center justify-between">
         <div>

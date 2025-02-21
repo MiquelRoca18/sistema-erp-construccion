@@ -1,9 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col justify-center items-center p-6 gap-6 w-full">
     
-    <!-- Mostrar el rol del usuario -->
-    <p class="text-xl font-bold">Rol: {{ userRole || 'No definido' }}</p>
-    
     <!-- Fila superior: Perfil + Gráfica -->
     <div class="flex flex-col md:flex-row w-full max-w-3xl gap-6">
       

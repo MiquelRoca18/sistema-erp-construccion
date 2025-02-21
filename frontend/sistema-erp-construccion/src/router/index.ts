@@ -1,10 +1,11 @@
-// router/index.ts
 import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '../views/LoginView.vue';
 import DashboardView from '../views/normalUser/DashboardView.vue';
 import EmployeeProfileView from '../views/normalUser/EmployeeProfileView.vue';
 import TasksView from '../views/normalUser/TasksView.vue';
 import DashboardAdminView from '../views/adminUser/DashboardAdminView.vue';
+import EmployeeManagementView from '../views/adminUser/EmployeeManagementView.vue'; // Nueva vista
+
 import { logout } from '@/service/authStore';
 
 const routes = [
@@ -35,29 +36,9 @@ const routes = [
     component: DashboardAdminView,
   },
   {
-    path: '/employees',
+    path: '/employees-admin',
     name: 'employeesAdmin',
-    component: { template: '<div>Placeholder: Gestión de Empleados</div>' },
-  },
-  {
-    path: '/projects',
-    name: 'projectsAdmin',
-    component: { template: '<div>Placeholder: Gestión de Proyectos</div>' },
-  },
-  {
-    path: '/tasks-admin',
-    name: 'tasksAdmin',
-    component: { template: '<div>Placeholder: Gestión de Tareas</div>' },
-  },
-  {
-    path: '/budgets',
-    name: 'budgetsAdmin',
-    component: { template: '<div>Placeholder: Gestión de Presupuestos</div>' },
-  },
-  {
-    path: '/roles',
-    name: 'rolesAdmin',
-    component: { template: '<div>Placeholder: Gestión de Roles y Usuarios</div>' },
+    component: EmployeeManagementView,
   },
 ];
 
