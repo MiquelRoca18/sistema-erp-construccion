@@ -80,7 +80,7 @@
               </li>
               <li>
                 <router-link 
-                  to="/employees" 
+                  to="/employees-admin" 
                   class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
                   @click="closeSidebar"
                 >

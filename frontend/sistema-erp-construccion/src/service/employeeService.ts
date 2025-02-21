@@ -36,3 +36,35 @@ export const createEmployee = async (employeeData: {
     throw new Error(error.response?.data?.message || 'Error al crear empleado');
   }
 };
+
+export const updateEmployee = async (employeeId: number, data: any) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No se encontró el token.');
+    }
+    const response = await axios.put(`${API_URL}/employees/${employeeId}`, data, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Error al actualizar empleado');
+  }
+};
+
+export const deleteEmployee = async (employeeId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No se encontró el token.');
+    const response = await axios.delete(`${API_URL}/employees/${employeeId}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    return response.data.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Error al eliminar empleado');
+  }
+};
+
