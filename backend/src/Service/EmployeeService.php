@@ -48,6 +48,20 @@ class EmployeeService extends BaseService {
             ];
         }
     
+        // Comprobar que no existe ya un empleado con ese nombre (ignorando mayúsculas/minúsculas)
+        $nombreInput = strtolower($nombreLimpio);
+        $existingEmployees = $this->model->get();
+        if ($existingEmployees) {
+            foreach ($existingEmployees as $existing) {
+                if (strtolower(trim($existing['nombre'])) === $nombreInput) {
+                    return [
+                        'status' => 400, 
+                        'message' => 'Ya existe un empleado con ese nombre.'
+                    ];
+                }
+            }
+        }
+    
         // Asignar valores predeterminados si no se envía fecha de contratación
         $data->fecha_contratacion = $data->fecha_contratacion ?? date('Y-m-d');
     
@@ -67,7 +81,6 @@ class EmployeeService extends BaseService {
         $fechaContratacion = strtotime($data->fecha_contratacion);
         $hoy = strtotime(date('Y-m-d'));
         $limite = strtotime('-10 years');
-    
         if ($fechaContratacion > $hoy) {
             return ['status' => 400, 'message' => 'La fecha de contratación no puede ser futura.'];
         }
@@ -78,14 +91,14 @@ class EmployeeService extends BaseService {
         // Crear el empleado
         $employee = $this->model->create($data);
     
-        // Procesar nombre: ya tenemos dos palabras garantizadas en $nombreArray
+        // Procesar el nombre: ya tenemos dos palabras garantizadas en $nombreArray
         $nombre = $nombreArray[0];
         $apellido = $nombreArray[1];
     
         // Crear nombre de usuario en minúsculas: 'nombre.apellido'
         $username = strtolower($nombre . '.' . $apellido);
     
-        // Crear contraseña: primeras dos letras del nombre + primeras dos del apellido, en minúsculas
+        // Crear contraseña: primeras dos letras del nombre + primeras dos del apellido (minúsculas)
         $password = strtolower(substr($nombre, 0, 2)) . strtolower(substr($apellido, 0, 2));
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
     
@@ -103,42 +116,75 @@ class EmployeeService extends BaseService {
         return ['status' => 201, 'message' => 'Empleado y autenticación creados correctamente', 'data' => $employee];
     }
     
-
     public function updateEmployee($employeeId, $data) {
         // Validar ID
         if ($error = $this->validateId($employeeId)) {
             return $error;
         }
-
+    
         // Validar existencia del empleado
         if ($error = $this->validateExists($employeeId)) {
             return $error;
         }
-
-        // Validar datos específicos
+    
+        // Validar datos específicos: correo y teléfono
         if (isset($data->correo) && $error = $this->validator->validateEmail($data->correo)) {
             return ['status' => 400, 'message' => $error];
         }
-
         if (isset($data->telefono) && $error = $this->validator->validatePhone($data->telefono)) {
             return ['status' => 400, 'message' => $error];
         }
-
-         // Obtener las fechas actuales del proyecto
-         $employee = $this->model->get($employeeId);
-         $fechaContratacion = $employee['fecha_inicio'] ?? null;
- 
-         // Validar fechas usando la función general
-         if (isset($data->fecha_contratacion)) {
+    
+        // Validar nombre si se actualiza
+        if (isset($data->nombre)) {
+            $nombreLimpio = trim($data->nombre);
+            $nombreArray = preg_split('/\s+/', $nombreLimpio);
+            if (count($nombreArray) !== 2) {
+                return [
+                    'status' => 400,
+                    'message' => 'El nombre debe contener exactamente dos palabras (nombre y apellido) separadas por un solo espacio. Ejemplo: "lola flores".'
+                ];
+            }
+            // Convertir a minúsculas para la comparación
+            $nombreInput = strtolower($nombreLimpio);
+            // Obtener todos los empleados
+            $allEmployees = $this->model->get();
+            if ($allEmployees) {
+                foreach ($allEmployees as $existing) {
+                    // Excluir el empleado actual de la comprobación
+                    if ($existing['empleados_id'] != $employeeId && strtolower(trim($existing['nombre'])) === $nombreInput) {
+                        return [
+                            'status' => 400,
+                            'message' => 'Ya existe otro empleado con ese nombre.'
+                        ];
+                    }
+                }
+            }
+        }
+    
+        // Validar fecha de contratación si se actualiza
+        if (isset($data->fecha_contratacion)) {
+            // Validar formato de fecha con la función general
             if ($error = $this->validator->validateDate($data->fecha_contratacion)) {
                 return ['status' => 400, 'message' => $error];
             }
-        }        
-
+            $fechaContratacion = strtotime($data->fecha_contratacion);
+            $hoy = strtotime(date('Y-m-d'));
+            $limite = strtotime('-10 years'); // Permitir fechas hasta 10 años en el pasado
+    
+            if ($fechaContratacion > $hoy) {
+                return ['status' => 400, 'message' => 'La fecha de contratación no puede ser futura.'];
+            }
+            if ($fechaContratacion < $limite) {
+                return ['status' => 400, 'message' => 'La fecha de contratación es demasiado antigua.'];
+            }
+        }
+    
         // Actualizar el empleado
         $result = $this->model->update($employeeId, $data);
-        return $result ? $this->responseUpdated('Tarea actualizada') : $this->responseError();
+        return $result ? $this->responseUpdated('Empleado actualizado') : $this->responseError();
     }
+    
 
     public function deleteEmployee($employeeId) {
         // Validar ID
