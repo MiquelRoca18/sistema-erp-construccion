@@ -37,48 +37,72 @@ class EmployeeService extends BaseService {
         if ($error) {
             return ['status' => 400, 'message' => $error];
         }
-
-        // Asignar valores predeterminados
+    
+        // Validar que el nombre contenga exactamente dos palabras separadas por un espacio
+        $nombreLimpio = trim($data->nombre);
+        $nombreArray = preg_split('/\s+/', $nombreLimpio);
+        if (count($nombreArray) !== 2) {
+            return [
+                'status' => 400, 
+                'message' => 'El nombre debe contener exactamente dos palabras (nombre y apellido) separadas por un solo espacio. Ejemplo: "lola flores".'
+            ];
+        }
+    
+        // Asignar valores predeterminados si no se envía fecha de contratación
         $data->fecha_contratacion = $data->fecha_contratacion ?? date('Y-m-d');
-
+    
         // Validar correo electrónico
         $error = $this->validator->validateEmail($data->correo);
-        if ($error) return ['status' => 400, 'message' => $error];
-
+        if ($error) {
+            return ['status' => 400, 'message' => $error];
+        }
+    
         // Validar teléfono
         $error = $this->validator->validatePhone($data->telefono);
-        if ($error) return ['status' => 400, 'message' => $error];
-
+        if ($error) {
+            return ['status' => 400, 'message' => $error];
+        }
+    
+        // Validar fecha de contratación: permitir fechas desde hoy hasta 10 años en el pasado
+        $fechaContratacion = strtotime($data->fecha_contratacion);
+        $hoy = strtotime(date('Y-m-d'));
+        $limite = strtotime('-10 years');
+    
+        if ($fechaContratacion > $hoy) {
+            return ['status' => 400, 'message' => 'La fecha de contratación no puede ser futura.'];
+        }
+        if ($fechaContratacion < $limite) {
+            return ['status' => 400, 'message' => 'La fecha de contratación es demasiado antigua.'];
+        }
+    
         // Crear el empleado
         $employee = $this->model->create($data);
-
-        // Obtener el nombre completo y separar en nombre y apellido
-        $nombreCompleto = strtolower($data->nombre);   
-        $nombreArray = explode(' ', $nombreCompleto);  
-
-        $nombre = $nombreArray[0];  
-        $apellido = $nombreArray[1];  
-
-        // Crear nombre de usuario: 'nombre.apellido'
-        $username = $nombre . '.' . $apellido;
-
-        // Crear contraseña: primeras dos letras del nombre + primeras dos del apellido
+    
+        // Procesar nombre: ya tenemos dos palabras garantizadas en $nombreArray
+        $nombre = $nombreArray[0];
+        $apellido = $nombreArray[1];
+    
+        // Crear nombre de usuario en minúsculas: 'nombre.apellido'
+        $username = strtolower($nombre . '.' . $apellido);
+    
+        // Crear contraseña: primeras dos letras del nombre + primeras dos del apellido, en minúsculas
         $password = strtolower(substr($nombre, 0, 2)) . strtolower(substr($apellido, 0, 2));
-        $password_hash = password_hash($password, PASSWORD_DEFAULT);  
-
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+    
         // Crear el usuario en la tabla autenticación
         $authData = [
-            'empleados_id' => $employee,  
-            'username' => $username,      
-            'password_hash' => $password_hash,  
-            'id_rol' => 2      
+            'empleados_id' => $employee,
+            'username' => $username,
+            'password_hash' => $password_hash,
+            'id_rol' => 2
         ];
-
+    
         $authModel = new AuthModel();
         $authModel->create($authData);
-
+    
         return ['status' => 201, 'message' => 'Empleado y autenticación creados correctamente', 'data' => $employee];
     }
+    
 
     public function updateEmployee($employeeId, $data) {
         // Validar ID
