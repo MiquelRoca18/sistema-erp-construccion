@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen p-8">
+  <div class="flex flex-col justify-center items-center min-h-screen p-8">
     <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-lg">
       <!-- Encabezado y acción -->
       <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
@@ -29,22 +29,24 @@
         <div
           v-for="employee in paginatedEmployees"
           :key="employee.empleados_id"
-          class="bg-white p-4 rounded-lg shadow mb-4"
+          class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer hover:bg-gray-100 transition"
+          @click="openViewModal(employee)"
         >
           <div class="flex justify-between items-center">
             <div>
               <p class="text-lg font-bold">ID: {{ employee.empleados_id }}</p>
               <p class="text-base">{{ employee.nombre }}</p>
             </div>
+            <!-- Botones: Editar y Eliminar, evitando la propagación del clic -->
             <div class="flex space-x-2">
               <button
-                @click="openEditModal(employee)"
+                @click.stop="openEditModal(employee)"
                 class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm"
               >
                 Editar
               </button>
               <button
-                @click="openDeleteModal(employee)"
+                @click.stop="openDeleteModal(employee)"
                 class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm"
               >
                 Eliminar
@@ -55,7 +57,7 @@
         <div v-if="paginatedEmployees.length === 0" class="text-center text-gray-500">
           No se encontraron empleados.
         </div>
-        <!-- Divs vacíos para mantener el espacio de 5 elementos -->
+        <!-- Divs vacíos para mantener espacio de 5 elementos -->
         <div v-for="n in missingRows" :key="'empty-' + n" class="h-16"></div>
       </div>
 
@@ -76,7 +78,8 @@
             <tr
               v-for="employee in paginatedEmployees"
               :key="employee.empleados_id"
-              class="bg-white shadow rounded-lg hover:bg-gray-50 transition-colors"
+              class="bg-white shadow rounded-lg transition-colors cursor-pointer hover:bg-gray-50"
+              @click="openViewModal(employee)"
             >
               <td class="px-6 py-4">{{ employee.empleados_id }}</td>
               <td class="px-6 py-4">{{ employee.nombre }}</td>
@@ -84,7 +87,7 @@
               <td class="px-6 py-4 hidden xl:table-cell">{{ employee.telefono }}</td>
               <td class="px-6 py-4 hidden xl:table-cell">{{ employee.correo }}</td>
               <td class="px-6 py-4">
-                <div class="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                <div class="flex flex-col sm:flex-row gap-1 sm:gap-2" @click.stop>
                   <button
                     @click="openEditModal(employee)"
                     class="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-xs sm:text-sm"
@@ -117,24 +120,41 @@
         </table>
       </div>
 
-      <!-- Paginación -->
-      <div v-if="totalPages > 1" class="mt-6 flex justify-center space-x-4">
-        <button
-          @click="prevPage"
+      <!-- Paginación Premium -->
+      <div v-if="totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
+        <!-- Botón Anterior -->
+        <button 
+          @click="prevPage" 
           :disabled="currentPage === 1"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition"
         >
-          Anterior
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
         </button>
-        <span class="px-4 py-2 text-gray-700">
-          Página {{ currentPage }} de {{ totalPages }}
-        </span>
-        <button
-          @click="nextPage"
+
+        <!-- Botones Numerados -->
+        <div class="flex space-x-2">
+          <button 
+            v-for="page in pages" 
+            :key="page" 
+            @click="goToPage(page)" 
+            class="w-10 h-10 rounded-full border border-blue-600 text-blue-600 flex items-center justify-center transition hover:bg-blue-600 hover:text-white"
+            :class="{'bg-blue-600 text-white': page === currentPage}"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <!-- Botón Siguiente -->
+        <button 
+          @click="nextPage" 
           :disabled="currentPage === totalPages"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 transition"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition"
         >
-          Siguiente
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
         </button>
       </div>
 
@@ -212,9 +232,7 @@ const filteredEmployees = computed(() => {
   );
 });
 
-const totalPages = computed(() => {
-  return Math.ceil(filteredEmployees.value.length / pageSize);
-});
+const totalPages = computed(() => Math.ceil(filteredEmployees.value.length / pageSize));
 
 const paginatedEmployees = computed(() => {
   const start = (currentPage.value - 1) * pageSize;
@@ -227,16 +245,31 @@ const missingRows = computed(() => {
   return missing > 0 ? missing : 0;
 });
 
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
+// Paginación Premium: limitar a 5 números de página
+const pages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  } else if (current <= 3) {
+    return [1, 2, 3, 4, 5];
+  } else if (current >= total - 2) {
+    return [total - 4, total - 3, total - 2, total - 1, total];
+  } else {
+    return [current - 2, current - 1, current, current + 1, current + 2];
   }
+});
+
+const prevPage = () => {
+  if (currentPage.value > 1) currentPage.value--;
 };
 
 const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
+  if (currentPage.value < totalPages.value) currentPage.value++;
+};
+
+const goToPage = (page: number) => {
+  currentPage.value = page;
 };
 
 const openModal = () => {
@@ -245,10 +278,6 @@ const openModal = () => {
 
 const closeModal = () => {
   showModal.value = false;
-};
-
-const createEmployee = () => {
-  openModal();
 };
 
 const openEditModal = (employee: any) => {
@@ -278,10 +307,6 @@ const deleteEmployeeConfirmed = async () => {
     employeeToDelete.value = null;
   }
 };
-
-const deleteEmployee = (employee: any) => {
-  openDeleteModal(employee);
-};
 </script>
 
 <style scoped>
@@ -298,5 +323,10 @@ tbody tr {
 }
 tbody tr td {
   border: none;
+}
+
+/* Forzar hover en filas */
+tbody tr:hover {
+  background-color: #f7fafc;
 }
 </style>

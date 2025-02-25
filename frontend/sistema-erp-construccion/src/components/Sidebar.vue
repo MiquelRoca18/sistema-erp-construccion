@@ -114,15 +114,6 @@
                   💰 Presupuestos
                 </router-link>
               </li>
-              <li>
-                <router-link 
-                  to="/roles" 
-                  class="block py-3 px-4 rounded-lg hover:bg-gray-200 transition"
-                  @click="closeSidebar"
-                >
-                  🔑 Roles y Usuarios
-                </router-link>
-              </li>
             </ul>
           </div>
         </template>

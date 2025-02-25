@@ -55,7 +55,7 @@
     </div>
 
     <!-- Lista de Tareas -->
-    <div class="bg-white  rounded-lg shadow-lg p-6 mx-auto w-full max-w-5xl flex flex-col min-h-[600px]">
+    <div class="bg-white rounded-lg shadow-lg p-6 mx-auto w-full max-w-5xl flex flex-col min-h-[600px]">
       <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Lista de Tareas</h2>
 
       <div v-if="loading" class="text-center text-lg text-gray-500 flex-grow flex items-center justify-center">
@@ -120,14 +120,41 @@
         <div v-for="n in emptySlots" :key="'empty-'+n" class="p-4 opacity-0"></div>
       </div>
 
-      <!-- Paginación -->
-      <div class="flex justify-center mt-4" v-if="totalPages > 1">
-        <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 mx-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
-          Anterior
+      <!-- Paginación Premium -->
+      <div v-if="totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
+        <!-- Botón Anterior -->
+        <button 
+          @click="prevPage" 
+          :disabled="currentPage === 1"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
         </button>
-        <span class="px-4 py-2">Página {{ currentPage }} de {{ totalPages }}</span>
-        <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 mx-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
-          Siguiente
+  
+        <!-- Botones Numerados -->
+        <div class="flex space-x-2">
+          <button 
+            v-for="page in pages" 
+            :key="page" 
+            @click="goToPage(page)" 
+            class="w-10 h-10 rounded-full border border-blue-600 text-blue-600 flex items-center justify-center transition hover:bg-blue-600 hover:text-white"
+            :class="{'bg-blue-600 text-white': page === currentPage}"
+          >
+            {{ page }}
+          </button>
+        </div>
+  
+        <!-- Botón Siguiente -->
+        <button 
+          @click="nextPage" 
+          :disabled="currentPage === totalPages"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
         </button>
       </div>
     </div>
@@ -267,8 +294,25 @@ const paginatedTasks = computed(() =>
   )
 );
 
+// Paginación Premium: limitar a 5 números de página
+const pages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  } else if (current <= 3) {
+    return [1, 2, 3, 4, 5];
+  } else if (current >= total - 2) {
+    return [total - 4, total - 3, total - 2, total - 1, total];
+  } else {
+    return [current - 2, current - 1, current, current + 1, current + 2];
+  }
+});
+
 const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++; };
 const prevPage = () => { if (currentPage.value > 1) currentPage.value--; };
+
+const goToPage = (page) => { currentPage.value = page; };
 
 const openTaskModal = (task) => { selectedTask.value = task; };
 
