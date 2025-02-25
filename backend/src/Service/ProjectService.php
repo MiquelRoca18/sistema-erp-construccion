@@ -15,8 +15,11 @@ class ProjectService extends BaseService {
     }
 
     public function getProjects() {
-        $projects = $this->model->get();
-        return $projects ? $this->responseFound($projects, 'Proyectos encontrados') : $this->responseNotFound();
+        // Se utiliza el nuevo método del modelo que hace el JOIN
+        $projects = $this->model->getProjectsWithResponsable();
+        return $projects 
+            ? $this->responseFound($projects, 'Proyectos encontrados') 
+            : $this->responseNotFound();
     }
 
     public function getProject($projectId) {

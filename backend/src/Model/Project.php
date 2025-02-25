@@ -14,5 +14,14 @@ class Project extends BaseModel {
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+    
+    public function getProjectsWithResponsable() {
+        $query = "SELECT p.*, e.nombre AS responsable_nombre 
+                  FROM " . $this->table . " p 
+                  LEFT JOIN empleados e ON p.responsable_id = e.empleados_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }
 ?>
