@@ -11,7 +11,7 @@ class TaskService extends BaseService{
     }
 
     public function getTasks(){
-        $tasks = $this->model->get();
+        $tasks = $this->model->getTasksWithEmployee();
         return $tasks ? $this->responseFound($tasks, 'Tareas encontradas') : $this->responseNotFound();
     }
 
