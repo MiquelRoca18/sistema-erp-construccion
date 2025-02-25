@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Obtener las tareas pendientes
@@ -38,6 +37,7 @@ export const getAllTasks = async (employeeId: any) => {
   }
 };
 
+// Actualizar una tarea
 export const updateTask = async (taskId: number, data: any) => {
   try {
     const token = localStorage.getItem('token');
@@ -52,12 +52,12 @@ export const updateTask = async (taskId: number, data: any) => {
     return response.data;
   } catch (error: any) {
     console.log('Data:', error.response?.data);
-
     console.log('Error message:', error.response?.data?.message);
     throw new Error(error.response?.data?.message || 'Error al actualizar la tarea');
   }
 };
 
+// Obtener tareas por responsable
 export const getTasksByResponsible = async (employeeId: any) => {
   try {
     const token = localStorage.getItem('token');
@@ -75,6 +75,7 @@ export const getTasksByResponsible = async (employeeId: any) => {
   }
 };
 
+// Actualizar la asignación de una tarea
 export const updateTaskAssignment = async (taskId: number, oldEmployeeId: number, newEmployeeId: number) => {
   try {
     const token = localStorage.getItem('token');
@@ -95,12 +96,16 @@ export const updateTaskAssignment = async (taskId: number, oldEmployeeId: number
   }
 };
 
+// Obtener todas las tareas de la empresa (incluye el nombre del empleado y del proyecto)
 export const getAllCompanyTasks = async () => {
   try {
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('No se encontró el token.');
     }
+    // La ruta /tasks devuelve tareas con JOIN que incluye:
+    // - empleado_nombre: Nombres de los empleados asignados (concatenados)
+    // - nombre_proyecto: Nombre del proyecto asociado a la tarea
     const response = await axios.get(`${API_URL}/tasks`, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -109,5 +114,41 @@ export const getAllCompanyTasks = async () => {
     return Array.isArray(response.data.data) ? response.data.data : [];
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al obtener tareas');
+  }
+};
+
+// Crear una tarea
+export const createTask = async (data: any) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No se encontró el token.');
+    }
+    const response = await axios.post(`${API_URL}/tasks`, data, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Error al crear la tarea');
+  }
+};
+
+// Eliminar una tarea
+export const deleteTask = async (taskId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No se encontró el token.');
+    }
+    const response = await axios.delete(`${API_URL}/tasks/${taskId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Error al eliminar la tarea');
   }
 };

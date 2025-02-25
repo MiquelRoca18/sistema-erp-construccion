@@ -29,7 +29,7 @@
         <div
           v-for="employee in paginatedEmployees"
           :key="employee.empleados_id"
-          class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer hover:bg-gray-100 transition"
+          class="bg-white p-4 rounded-lg shadow mb-4"
           @click="openViewModal(employee)"
         >
           <div class="flex justify-between items-center">
@@ -78,7 +78,7 @@
             <tr
               v-for="employee in paginatedEmployees"
               :key="employee.empleados_id"
-              class="bg-white shadow rounded-lg transition-colors cursor-pointer hover:bg-gray-50"
+              class="bg-white shadow rounded-lg"
               @click="openViewModal(employee)"
             >
               <td class="px-6 py-4">{{ employee.empleados_id }}</td>
@@ -323,10 +323,5 @@ tbody tr {
 }
 tbody tr td {
   border: none;
-}
-
-/* Forzar hover en filas */
-tbody tr:hover {
-  background-color: #f7fafc;
 }
 </style>

@@ -6,6 +6,7 @@ import TasksView from '../views/normalUser/TasksView.vue';
 import DashboardAdminView from '../views/adminUser/DashboardAdminView.vue';
 import EmployeeManagementView from '../views/adminUser/EmployeeManagementView.vue';
 import ProjectManagementView from '../views/adminUser/ProjectManagementView.vue'; // Vista de proyectos
+import TasksManagementView from '../views/adminUser/TasksManagementView.vue';
 
 import { logout } from '@/service/authStore';
 
@@ -45,6 +46,11 @@ const routes = [
     path: '/projects',
     name: 'projects',
     component: ProjectManagementView,
+  },
+  {
+    path: '/tasks-admin',
+    name: 'tasksAdmin',
+    component: TasksManagementView,
   },
 ];
 
