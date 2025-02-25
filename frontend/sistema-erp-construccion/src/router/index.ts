@@ -4,7 +4,8 @@ import DashboardView from '../views/normalUser/DashboardView.vue';
 import EmployeeProfileView from '../views/normalUser/EmployeeProfileView.vue';
 import TasksView from '../views/normalUser/TasksView.vue';
 import DashboardAdminView from '../views/adminUser/DashboardAdminView.vue';
-import EmployeeManagementView from '../views/adminUser/EmployeeManagementView.vue'; // Nueva vista
+import EmployeeManagementView from '../views/adminUser/EmployeeManagementView.vue';
+import ProjectManagementView from '../views/adminUser/ProjectManagementView.vue'; // Vista de proyectos
 
 import { logout } from '@/service/authStore';
 
@@ -39,6 +40,11 @@ const routes = [
     path: '/employees-admin',
     name: 'employeesAdmin',
     component: EmployeeManagementView,
+  },
+  {
+    path: '/projects',
+    name: 'projects',
+    component: ProjectManagementView,
   },
 ];
 
