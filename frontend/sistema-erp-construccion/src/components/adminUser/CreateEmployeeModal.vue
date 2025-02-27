@@ -1,8 +1,15 @@
 <template>
-  <div class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 sm:w-full max-w-md">
-      <h2 class="text-2xl font-bold mb-4">Crear Nuevo Empleado</h2>
-      <form @submit.prevent="handleSubmit">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 bg-opacity-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300">
+      <!-- Encabezado con degradado azul -->
+      <div class="bg-gradient-to-r from-blue-500 to-blue-400 p-4 rounded-t-2xl">
+        <div class="flex justify-between items-center">
+          <h2 class="text-white text-2xl font-bold">Crear Nuevo Empleado</h2>
+          <button @click="closeModal" class="text-white text-3xl leading-none hover:text-gray-200">&times;</button>
+        </div>
+      </div>
+      <!-- Formulario -->
+      <form @submit.prevent="handleSubmit" class="p-6 space-y-6">
         <div class="mb-4">
           <label class="block text-gray-700">Nombre</label>
           <input
@@ -48,22 +55,16 @@
             class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
-        <!-- Mostrar error de forma elegante -->
-        <div v-if="errorMessage" class="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded-lg">
+        <!-- Mensaje de error -->
+        <div v-if="errorMessage" class="p-2 bg-red-100 border border-red-300 rounded-md text-red-700 text-xs">
           {{ errorMessage }}
         </div>
-        <div class="flex justify-end space-x-2">
-          <button
-            type="button"
-            @click="closeModal"
-            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
-          >
+        <!-- Botones de acción -->
+        <div class="flex justify-end space-x-4">
+          <button type="button" @click="closeModal" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition text-sm">
             Cancelar
           </button>
-          <button
-            type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm">
             Crear
           </button>
         </div>
@@ -93,7 +94,7 @@ const closeModal = () => {
 };
 
 const handleSubmit = async () => {
-  errorMessage.value = ''; // reiniciar error antes de intentar enviar
+  errorMessage.value = '';
   try {
     await createEmployee(form.value);
     emit('created');

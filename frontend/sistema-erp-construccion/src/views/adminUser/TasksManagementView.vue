@@ -252,7 +252,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { getAllCompanyTasks, deleteTask } from '@/service/taskService';
 import CreateTaskModal from '@/components/adminUser/CreateTaskModal.vue';
 import EditTaskModal from '@/components/adminUser/EditTaskModal.vue';
@@ -279,6 +279,11 @@ const filter = ref({
   state: '',
   employee: ''
 });
+
+// Cada vez que se modifiquen los filtros se resetea la página actual a 1
+watch(filter, () => {
+  currentPage.value = 1;
+}, { deep: true });
 
 const toggleFilter = () => {
   showFilter.value = !showFilter.value;
@@ -450,6 +455,7 @@ const openAssignModal = (task: any) => {
 const closeAssignModal = () => {
   taskToAssign.value = null;
 };
+
 </script>
 
 <style scoped>

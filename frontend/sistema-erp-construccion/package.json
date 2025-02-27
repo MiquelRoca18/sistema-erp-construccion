@@ -17,6 +17,8 @@
     "vue-router": "^4.0.13"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.0.9",
+    "@tailwindcss/postcss": "^4.0.9",
     "@types/axios": "^0.9.36",
     "@types/node": "^22.10.10",
     "@types/vue-router": "^2.0.0",

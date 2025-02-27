@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 bg-opacity-50">
     <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300">
       <!-- Encabezado con degradado -->
       <div class="bg-gradient-to-r from-orange-500 to-orange-400 p-4 rounded-t-2xl">
