@@ -102,21 +102,43 @@ class TaskService extends BaseService{
     
 
     public function deleteTask($id){
-        //Validar ID
+        // Validar ID
         if($error = $this->validateId($id)){
             return $error;
         }
-
-        //Validar existencia de la tarea
+    
+        // Validar existencia de la tarea
         if($error = $this->validateExists($id)){
             return $error;
         }
-
-        //Llamar al modelo para eliminar la tarea
+    
+        // Eliminar asociaciones de la tarea en empleados_tareas
+        $assocDeleted = $this->deleteTaskAssociations($id);
+        if(!$assocDeleted){
+            return $this->responseError('No se pudo eliminar las asociaciones de la tarea.');
+        }
+    
+        // Llamar al modelo para eliminar la tarea
         $result = $this->model->delete($id);
         return $result ? $this->responseDeleted('Tarea eliminada') : $this->responseError();   
     }
-
     
+    /**
+     * Elimina todas las asociaciones en la tabla empleados_tareas para la tarea dada.
+     */
+    private function deleteTaskAssociations($taskId) {
+        try {
+             // Creamos una nueva conexión a la base de datos
+             $db = (new \App\Config\Database())->getConnection();
+             $query = "DELETE FROM empleados_tareas WHERE tareas_id = :id";
+             $stmt = $db->prepare($query);
+             $stmt->bindParam(':id', $taskId, \PDO::PARAM_INT);
+             $stmt->execute();
+             return true;
+        } catch (\PDOException $e) {
+             // Puedes registrar el error si lo consideras necesario.
+             return false;
+        }
+    }    
 }
 ?>
