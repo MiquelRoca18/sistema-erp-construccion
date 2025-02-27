@@ -97,9 +97,7 @@ class TaskService extends BaseService{
         // Llamar al modelo para actualizar la tarea
         $result = $this->model->update($id, $data);
         return $result ? $this->responseUpdated('Tarea actualizada') : $this->responseError();
-    }
-    
-    
+    }    
 
     public function deleteTask($id){
         // Validar ID
@@ -107,9 +105,9 @@ class TaskService extends BaseService{
             return $error;
         }
     
-        // Validar existencia de la tarea
-        if($error = $this->validateExists($id)){
-            return $error;
+        // Si la tarea no existe, consideramos que ya está eliminada y retornamos éxito.
+        if(!$this->model->exists($id)){
+             return $this->responseDeleted('La tarea ya no existe');
         }
     
         // Eliminar asociaciones de la tarea en empleados_tareas
@@ -128,7 +126,6 @@ class TaskService extends BaseService{
      */
     private function deleteTaskAssociations($taskId) {
         try {
-             // Creamos una nueva conexión a la base de datos
              $db = (new \App\Config\Database())->getConnection();
              $query = "DELETE FROM empleados_tareas WHERE tareas_id = :id";
              $stmt = $db->prepare($query);
@@ -136,9 +133,9 @@ class TaskService extends BaseService{
              $stmt->execute();
              return true;
         } catch (\PDOException $e) {
-             // Puedes registrar el error si lo consideras necesario.
              return false;
         }
-    }    
+    }
+    
 }
 ?>
