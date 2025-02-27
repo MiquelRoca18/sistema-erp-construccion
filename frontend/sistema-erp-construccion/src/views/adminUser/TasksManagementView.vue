@@ -124,8 +124,8 @@
             <tr class="bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800">
               <th class="px-6 py-3 text-left font-semibold">ID</th>
               <th class="px-6 py-3 text-left font-semibold">Tarea</th>
-              <th class="px-6 py-3 text-left font-semibold">Estado</th>
-              <th class="px-6 py-3 text-left font-semibold">Proyecto</th>
+              <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell">Estado</th>
+              <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell">Proyecto</th>
               <th class="px-6 py-3 text-left font-semibold">Empleado(s)</th>
               <th class="px-6 py-3 text-left font-semibold">Acciones</th>
             </tr>
@@ -139,8 +139,8 @@
             >
               <td class="px-6 py-4">{{ task.tareas_id }}</td>
               <td class="px-6 py-4">{{ task.nombre_tarea }}</td>
-              <td class="px-6 py-4">{{ task.estado }}</td>
-              <td class="px-6 py-4">{{ task.nombre_proyecto }}</td>
+              <td class="px-6 py-4 hidden xl:table-cell">{{ task.estado }}</td>
+              <td class="px-6 py-4 hidden xl:table-cell">{{ task.nombre_proyecto }}</td>
               <td class="px-6 py-4">{{ task.empleado_nombre }}</td>
               <td class="px-6 py-4">
                 <div class="flex flex-col sm:flex-row gap-1 sm:gap-2" @click.stop>

@@ -51,8 +51,6 @@ export const updateTask = async (taskId: number, data: any) => {
     });
     return response.data;
   } catch (error: any) {
-    console.log('Data:', error.response?.data);
-    console.log('Error message:', error.response?.data?.message);
     throw new Error(error.response?.data?.message || 'Error al actualizar la tarea');
   }
 };
@@ -103,9 +101,6 @@ export const getAllCompanyTasks = async () => {
     if (!token) {
       throw new Error('No se encontró el token.');
     }
-    // La ruta /tasks devuelve tareas con JOIN que incluye:
-    // - empleado_nombre: Nombres de los empleados asignados (concatenados)
-    // - nombre_proyecto: Nombre del proyecto asociado a la tarea
     const response = await axios.get(`${API_URL}/tasks`, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -150,5 +145,49 @@ export const deleteTask = async (taskId: number) => {
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al eliminar la tarea');
+  }
+};
+
+// Añadir un empleado a la tarea
+export const addEmployeeToTask = async (employeeId: number, taskId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No se encontró el token.');
+    }
+    const response = await axios.post(`${API_URL}/employee-tasks`, {
+      empleados_id: employeeId,
+      tareas_id: taskId,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Error al agregar empleado a la tarea');
+  }
+};
+
+// Remover un empleado de la tarea
+export const removeEmployeeFromTask = async (employeeId: number, taskId: number) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No se encontró el token.');
+    }
+    // En axios, para enviar un payload en una solicitud DELETE se incluye en la propiedad "data"
+    const response = await axios.delete(`${API_URL}/employee-tasks`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      data: {
+        empleados_id: employeeId,
+        tareas_id: taskId,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Error al eliminar empleado de la tarea');
   }
 };

@@ -34,7 +34,7 @@
         >
           <div class="flex justify-between items-center">
             <div>
-              <p class="text-lg font-bold">ID: {{ employee.empleados_id }}</p>
+              <!-- Se elimina la línea que muestra el ID -->
               <p class="text-base">{{ employee.nombre }}</p>
             </div>
             <!-- Botones: Editar y Eliminar, evitando la propagación del clic -->

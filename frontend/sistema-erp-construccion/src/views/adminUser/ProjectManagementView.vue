@@ -33,7 +33,6 @@
           @click="openViewModal(project)"
         >
           <div>
-            <p class="text-lg font-bold">ID: {{ project.proyectos_id }}</p>
             <p class="text-base font-semibold">{{ project.nombre_proyecto }}</p>
             <p class="text-sm text-gray-600">Estado: {{ project.estado }}</p>
           </div>
@@ -68,8 +67,8 @@
               <th class="px-6 py-3 text-left font-semibold">ID</th>
               <th class="px-6 py-3 text-left font-semibold">Nombre</th>
               <th class="px-6 py-3 text-left font-semibold hidden lg:table-cell">Estado</th>
-              <th class="px-6 py-3 text-left font-semibold hidden lg:table-cell whitespace-nowrap">Inicio</th>
-              <th class="px-6 py-3 text-left font-semibold hidden lg:table-cell whitespace-nowrap">Fin</th>
+              <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell whitespace-nowrap">Inicio</th>
+              <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell whitespace-nowrap">Fin</th>
               <th class="px-6 py-3 text-left font-semibold">Acciones</th>
             </tr>
           </thead>
@@ -83,8 +82,8 @@
               <td class="px-6 py-4">{{ project.proyectos_id }}</td>
               <td class="px-6 py-4">{{ project.nombre_proyecto }}</td>
               <td class="px-6 py-4 hidden lg:table-cell">{{ project.estado }}</td>
-              <td class="px-6 py-4 hidden lg:table-cell whitespace-nowrap">{{ project.fecha_inicio }}</td>
-              <td class="px-6 py-4 hidden lg:table-cell whitespace-nowrap">{{ project.fecha_fin }}</td>
+              <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap">{{ project.fecha_inicio }}</td>
+              <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap">{{ project.fecha_fin }}</td>
               <td class="px-6 py-4">
                 <div class="flex flex-col md:flex-row gap-1 md:gap-2" @click.stop>
                   <button

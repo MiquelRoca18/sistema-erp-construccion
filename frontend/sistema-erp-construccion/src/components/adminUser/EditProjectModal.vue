@@ -153,7 +153,6 @@ const closeModal = () => {
 const handleSubmit = async () => {
   errorMessage.value = '';
   try {
-    console.log(form.value);
     await updateProject(props.project.proyectos_id, form.value);
     emit('updated');
     closeModal();
