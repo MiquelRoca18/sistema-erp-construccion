@@ -10,7 +10,7 @@ class BudgetService extends BaseService {
     }
 
     public function getBudgets() {
-        $budgets = $this->model->get();
+        $budgets = $this->model->getBudgetsWithDetails();
         return $budgets ? $this->responseFound($budgets, 'Presupuestos encontrados') : $this->responseNotFound();
     }
 
