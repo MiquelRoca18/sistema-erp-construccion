@@ -1,16 +1,12 @@
-// tailwind.config.js
+// tailwind.config.js (ESM)
 export default {
-  darkMode: 'class',
+  darkMode: 'class', // activa dark mode basado en la clase "dark"
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx,vue}",
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        customRed: '#FF0000',
-      },
-    },
+    extend: {},
   },
   plugins: [],
-};
+}
