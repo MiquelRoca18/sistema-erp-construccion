@@ -9,6 +9,7 @@ import ProjectManagementView from '../views/adminUser/ProjectManagementView.vue'
 import TasksManagementView from '../views/adminUser/TasksManagementView.vue';
 
 import { logout } from '@/service/authStore';
+import BudgetManagementView from '../views/adminUser/BudgetManagementView.vue';
 
 const routes = [
   {
@@ -51,6 +52,12 @@ const routes = [
     path: '/tasks-admin',
     name: 'tasksAdmin',
     component: TasksManagementView,
+  },
+  ,
+  {
+    path: '/budgets',
+    name: 'budgets',
+    component: BudgetManagementView,
   },
 ];
 
