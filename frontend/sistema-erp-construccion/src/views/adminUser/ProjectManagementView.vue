@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col justify-center items-center min-h-screen p-8">
-    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+  <div class="flex flex-col justify-center items-center min-h-screen p-8 transition-colors duration-300">
+    <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
       <!-- Encabezado y acción -->
       <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-800 text-center sm:text-left mb-4 sm:mb-0">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center sm:text-left mb-4 sm:mb-0 transition-colors duration-300">
           Gestión de Proyectos
         </h1>
         <button
           @click="openCreateModal"
-          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300"
         >
           Nuevo Proyecto
         </button>
@@ -20,7 +20,7 @@
           type="text"
           v-model="searchTerm"
           placeholder="Buscar por nombre de proyecto..."
-          class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400 dark:focus:ring-green-500 transition-colors duration-300"
         />
       </div>
   
@@ -29,30 +29,30 @@
         <div
           v-for="project in paginatedProjects"
           :key="project.proyectos_id"
-          class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer hover:bg-gray-100 transition"
+          class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors duration-300"
           @click="openViewModal(project)"
         >
           <div>
-            <p class="text-base font-semibold">{{ project.nombre_proyecto }}</p>
-            <p class="text-sm text-gray-600">Estado: {{ project.estado }}</p>
+            <p class="text-base font-medium text-green-600 dark:text-green-400">{{ project.nombre_proyecto }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-300">Estado: {{ project.estado }}</p>
           </div>
           <!-- Botones para editar y eliminar (sin afectar el click del contenedor) -->
           <div class="mt-2 flex space-x-2">
             <button
               @click.stop="openEditModal(project)"
-              class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm"
+              class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
             >
               Editar
             </button>
             <button
               @click.stop="openDeleteModal(project)"
-              class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm"
+              class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-sm"
             >
               Eliminar
             </button>
           </div>
         </div>
-        <div v-if="paginatedProjects.length === 0" class="text-center text-gray-500">
+        <div v-if="paginatedProjects.length === 0" class="text-center text-gray-500 dark:text-gray-400">
           No se encontraron proyectos.
         </div>
         <!-- Divs vacíos para mantener el espacio de 5 elementos -->
@@ -63,7 +63,7 @@
       <div class="hidden md:block overflow-x-auto">
         <table class="min-w-full">
           <thead>
-            <tr class="bg-gradient-to-r from-green-100 to-green-200 text-gray-700">
+            <tr class="bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 text-green-800 dark:text-green-200">
               <th class="px-6 py-3 text-left font-semibold">ID</th>
               <th class="px-6 py-3 text-left font-semibold">Nombre</th>
               <th class="px-6 py-3 text-left font-semibold hidden lg:table-cell">Estado</th>
@@ -76,25 +76,25 @@
             <tr
               v-for="project in paginatedProjects"
               :key="project.proyectos_id"
-              class="bg-white shadow rounded-lg transition-colors cursor-pointer hover:bg-gray-100"
+              class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/30"
               @click="openViewModal(project)"
             >
-              <td class="px-6 py-4">{{ project.proyectos_id }}</td>
-              <td class="px-6 py-4">{{ project.nombre_proyecto }}</td>
-              <td class="px-6 py-4 hidden lg:table-cell">{{ project.estado }}</td>
-              <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap">{{ project.fecha_inicio }}</td>
-              <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap">{{ project.fecha_fin }}</td>
+              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ project.proyectos_id }}</td>
+              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ project.nombre_proyecto }}</td>
+              <td class="px-6 py-4 hidden lg:table-cell text-gray-800 dark:text-gray-200">{{ project.estado }}</td>
+              <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap text-gray-800 dark:text-gray-200">{{ project.fecha_inicio }}</td>
+              <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap text-gray-800 dark:text-gray-200">{{ project.fecha_fin }}</td>
               <td class="px-6 py-4">
                 <div class="flex flex-col md:flex-row gap-1 md:gap-2" @click.stop>
                   <button
                     @click="openEditModal(project)"
-                    class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-xs md:text-sm"
+                    class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs md:text-sm"
                   >
                     Editar
                   </button>
                   <button
                     @click="openDeleteModal(project)"
-                    class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-xs md:text-sm"
+                    class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-xs md:text-sm"
                   >
                     Eliminar
                   </button>
@@ -102,7 +102,7 @@
               </td>
             </tr>
             <tr v-if="paginatedProjects.length === 0">
-              <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+              <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                 No se encontraron proyectos.
               </td>
             </tr>
@@ -124,7 +124,7 @@
         <button 
           @click="prevPage" 
           :disabled="currentPage === 1"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 transition"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-green-600 dark:bg-green-500 text-white hover:bg-green-700 dark:hover:bg-green-600 disabled:opacity-50 transition-colors duration-300"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -137,10 +137,12 @@
             v-for="page in pages" 
             :key="page" 
             @click="goToPage(page)" 
-            class="w-10 h-10 rounded-full border border-green-600 text-green-600 flex items-center justify-center transition hover:bg-green-600 hover:text-white"
-            :class="{'bg-green-600 text-white': page === currentPage}"
+            class="w-10 h-10 rounded-full border border-green-600 dark:border-green-500 flex items-center justify-center transition-colors duration-300 font-medium"
+            :class="page === currentPage 
+              ? 'bg-green-600 dark:bg-green-500 text-white' 
+              : 'bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 hover:bg-green-600 dark:hover:bg-green-500 hover:text-white'"
           >
-            {{ page }}
+            <span>{{ page }}</span>
           </button>
         </div>
   
@@ -148,7 +150,7 @@
         <button 
           @click="nextPage" 
           :disabled="currentPage === totalPages"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 transition"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-green-600 dark:bg-green-500 text-white hover:bg-green-700 dark:hover:bg-green-600 disabled:opacity-50 transition-colors duration-300"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -156,10 +158,10 @@
         </button>
       </div>
   
-      <div v-if="loading" class="text-center mt-4 text-gray-500">
+      <div v-if="loading" class="text-center mt-4 text-gray-500 dark:text-gray-400">
         Cargando proyectos...
       </div>
-      <div v-if="error" class="text-center mt-4 text-red-500">
+      <div v-if="error" class="text-center mt-4 text-red-500 dark:text-red-400">
         {{ error }}
       </div>
   
@@ -319,13 +321,9 @@ thead tr th {
   border: none;
 }
 tbody tr {
-  background: white;
   border-radius: 0.5rem;
 }
 tbody tr td {
   border: none;
-}
-tbody tr:hover {
-  background-color: #f7fafc;
 }
 </style>

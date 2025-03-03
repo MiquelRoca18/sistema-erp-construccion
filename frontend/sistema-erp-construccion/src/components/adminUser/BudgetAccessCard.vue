@@ -1,13 +1,13 @@
 <template>
   <router-link to="/budgets" class="block">
-    <div class="p-6 bg-gradient-to-r from-yellow-100 to-yellow-200 rounded-lg shadow-lg transform transition hover:scale-105">
+    <div class="p-6 bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900/40 dark:to-amber-800/40 rounded-lg shadow-lg dark:shadow-gray-900/30 transform transition hover:scale-105 transition-all duration-300">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-2xl font-bold text-yellow-800">Presupuestos</h2>
+          <h2 class="text-2xl font-bold text-yellow-800 dark:text-yellow-300 transition-colors duration-300">Presupuestos</h2>
         </div>
         <div>
           <!-- Ícono de documento con signo de dólar -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-yellow-800" viewBox="0 0 24 24">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-yellow-800 dark:text-yellow-300 transition-colors duration-300" viewBox="0 0 24 24">
             <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2"/>
             <polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/>
             <text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="8" font-weight="bold">$</text>

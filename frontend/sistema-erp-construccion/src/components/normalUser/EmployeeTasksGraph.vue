@@ -1,12 +1,12 @@
 <!-- components/EmployeeTasksGraph.vue -->
 <template>
-  <div class="p-4 bg-white" style="height: 300px;">
+  <div class="p-4 bg-white dark:bg-gray-800" style="height: 300px;">
     <canvas ref="chartCanvas" style="width: 100%; height: 100%;"></canvas>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, onUnmounted } from 'vue';
 import { getAllTasks } from '@/service/taskService';
 import Chart from 'chart.js/auto';
 
@@ -19,6 +19,21 @@ const props = defineProps({
 
 const chartCanvas = ref(null);
 let chartInstance = null;
+
+// Función para detectar el modo de color
+const isDarkMode = () => {
+  return document.documentElement.classList.contains('dark');
+};
+
+// Función para obtener los colores según el modo
+const getChartColors = () => {
+  const darkMode = isDarkMode();
+  return {
+    title: darkMode ? '#e5e7eb' : '#111827',
+    legend: darkMode ? '#e5e7eb' : '#111827',
+    background: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'transparent'
+  };
+};
 
 const fetchTasksAndRenderChart = async () => {
   if (!props.employeeId) return; // No hacer nada si employeeId es null
@@ -43,6 +58,8 @@ const fetchTasksAndRenderChart = async () => {
     }
     
     const ctx = chartCanvas.value.getContext('2d');
+    const colors = getChartColors();
+
     chartInstance = new Chart(ctx, {
       type: 'pie',
       data: {
@@ -59,17 +76,19 @@ const fetchTasksAndRenderChart = async () => {
           legend: {
             position: 'bottom',
             labels: {
-              color: '#111827',
+              color: colors.legend,
               font: { size: 13 },
             },
+            backgroundColor: colors.background,
           },
           title: {
             display: true,
             text: 'Distribución de Tareas',
             font: { size: 24 },
-            color: '#111827',
+            color: colors.title,
           },
         },
+        color: colors.title,
       },
     });
   } catch (error) {
@@ -77,8 +96,51 @@ const fetchTasksAndRenderChart = async () => {
   }
 };
 
+// Función para manejar el cambio de modo
+const handleModeChange = () => {
+  if (chartInstance) {
+    const colors = getChartColors();
+    
+    // Actualizar colores del título
+    chartInstance.options.plugins.title.color = colors.title;
+    
+    // Actualizar colores de la leyenda
+    chartInstance.options.plugins.legend.labels.color = colors.legend;
+    chartInstance.options.plugins.legend.backgroundColor = colors.background;
+    
+    // Actualizar color general
+    chartInstance.options.color = colors.title;
+    
+    // Actualizar el gráfico
+    chartInstance.update();
+  }
+};
+
+// Añadir event listener para cambios de modo
+const modeObserver = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.attributeName === 'class') {
+      handleModeChange();
+    }
+  });
+});
+
 onMounted(() => {
   fetchTasksAndRenderChart();
+  
+  // Observar cambios en la clase del elemento raíz
+  modeObserver.observe(document.documentElement, { 
+    attributes: true, 
+    attributeFilter: ['class'] 
+  });
+});
+
+// Limpiar el observer cuando el componente se desmonte
+onUnmounted(() => {
+  modeObserver.disconnect();
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
 });
 
 // Vigilar cambios en employeeId para volver a renderizar la gráfica

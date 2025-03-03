@@ -1,45 +1,45 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 bg-opacity-50">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300">
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 transition-colors duration-300">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl dark:shadow-gray-900/50 max-w-lg w-full overflow-hidden transform transition-all duration-300">
       <!-- Encabezado con degradado -->
-      <div class="bg-gradient-to-r from-orange-500 to-orange-400 p-4 rounded-t-2xl">
+      <div class="bg-gradient-to-r from-orange-500 to-orange-400 dark:from-orange-600 dark:to-orange-500 p-4 rounded-t-2xl">
         <div class="flex justify-between items-center">
           <h2 class="text-white text-2xl font-bold">Asignar Empleados a la Tarea</h2>
-          <button @click="closeModal" class="text-white text-3xl leading-none hover:text-gray-200">&times;</button>
+          <button @click="closeModal" class="text-white text-3xl leading-none hover:text-gray-200 dark:hover:text-gray-300">&times;</button>
         </div>
       </div>
       <!-- Formulario -->
       <form @submit.prevent="handleSubmit" class="p-6 space-y-6">
         <!-- Listado de asignaciones -->
         <div>
-          <label class="block text-gray-700 mb-2">Empleados asignados</label>
+          <label class="block text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300">Empleados asignados</label>
           <div v-for="(id, index) in assignments" :key="index" class="flex items-center space-x-2 mb-3">
             <select
               v-model="assignments[index]"
               required
-              class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+              class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 text-sm transition-colors duration-300"
             >
               <option value="" disabled>Seleccione un empleado</option>
               <option v-for="employee in employees" :key="employee.empleados_id" :value="employee.empleados_id">
                 {{ employee.nombre }}
               </option>
             </select>
-            <button type="button" @click="removeAssignment(index)" class="text-red-500 hover:text-red-600 text-2xl">&times;</button>
+            <button type="button" @click="removeAssignment(index)" class="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 text-2xl transition-colors duration-300">&times;</button>
           </div>
-          <button type="button" @click="addAssignment" class="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-sm">
+          <button type="button" @click="addAssignment" class="mt-2 px-4 py-2 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm">
             Añadir empleado
           </button>
         </div>
         <!-- Mensaje de error -->
-        <div v-if="errorMessage" class="p-2 bg-red-100 border border-red-300 rounded-md text-red-700 text-xs">
+        <div v-if="errorMessage" class="p-2 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-800 rounded-md text-red-700 dark:text-red-400 text-xs transition-colors duration-300">
           {{ errorMessage }}
         </div>
         <!-- Botones de Acción -->
         <div class="flex justify-end space-x-4">
-          <button type="button" @click="closeModal" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition text-sm">
+          <button type="button" @click="closeModal" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors duration-300 text-sm">
             Cancelar
           </button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm">
+          <button type="submit" class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300 text-sm">
             Guardar
           </button>
         </div>
@@ -202,5 +202,5 @@ const closeModal = () => {
 </script>
 
 <style scoped>
-/* Puedes agregar estilos adicionales si lo consideras necesario */
+/* Estilos para el modal */
 </style>

@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen flex flex-col justify-center items-center p-6 gap-6 w-full">
+  <div class="min-h-screen flex flex-col justify-center items-center p-6 gap-6 w-full transition-colors duration-300">
     
     <!-- Fila superior: Perfil + Gráfica -->
     <div class="flex flex-col md:flex-row w-full max-w-3xl gap-6">
       
       <!-- Columna Perfil -->
-      <div class="flex flex-col bg-white/90 border border-gray-200 rounded-xl shadow-lg w-full md:w-2/5 p-4">
+      <div class="flex flex-col bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full md:w-2/5 p-4 transition-colors duration-300">
         <div class="flex-grow flex flex-col items-center justify-center">
           <router-link :to="`/employee/${employeeId}`">
             <EmployeeProfileComponent
@@ -16,7 +16,7 @@
         </div>
         <button
           @click="logout"
-          class="mt-4 px-5 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors duration-200 w-full"
+          class="mt-4 px-5 py-2 bg-red-500 dark:bg-red-600 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-200 w-full"
         >
           Logout
         </button>
@@ -25,7 +25,7 @@
       <!-- Columna Gráfica (solo se renderiza si employeeId existe) -->
       <div 
         v-if="employeeId"
-        class="flex flex-col bg-white/90 border border-gray-200 rounded-xl shadow-lg w-full md:w-3/5 p-4"
+        class="flex flex-col bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full md:w-3/5 p-4 transition-colors duration-300"
       >
         <router-link :to="{ path: `/tasks/${employeeId}` }" class="block">
           <EmployeeTasksGraph :employeeId="employeeId" />
@@ -34,11 +34,11 @@
     </div>
     
     <!-- Fila inferior: Tareas Pendientes -->
-    <div class="bg-white/90 border border-gray-200 rounded-xl shadow-lg w-full max-w-3xl p-4">
-  <router-link :to="pendingTasksLink" class="block">
-    <EmployeeTasksComponent />
-  </router-link>
-</div>
+    <div class="bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full max-w-3xl p-4 transition-colors duration-300">
+      <router-link :to="pendingTasksLink" class="block">
+        <EmployeeTasksComponent />
+      </router-link>
+    </div>
     
   </div>
 </template>

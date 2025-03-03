@@ -1,34 +1,34 @@
 <template>
-  <div class="flex flex-col justify-center items-center min-h-screen p-8">
-    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+  <div class="flex flex-col justify-center items-center min-h-screen p-8 transition-colors duration-300">
+    <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
       <!-- Encabezado y acción -->
       <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-800 text-center sm:text-left mb-4 sm:mb-0">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center sm:text-left mb-4 sm:mb-0 transition-colors duration-300">
           Gestión de Tareas
         </h1>
         <button
           @click="openModal"
-          class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition"
+          class="px-4 py-2 bg-orange-600 dark:bg-orange-500 text-white rounded-lg hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors duration-300"
         >
           Nueva Tarea
         </button>
       </div>
 
-      <!-- Filtro Desplegable (se mantiene el mismo código de filtros) -->
+      <!-- Filtro Desplegable -->
       <div class="mb-6">
-        <button @click="toggleFilter" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
+        <button @click="toggleFilter" class="px-4 py-2 bg-orange-600 dark:bg-orange-500 text-white rounded-lg hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors duration-300">
           Filtros
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block ml-2 transition-transform" :class="{'rotate-180': showFilter}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
           </svg>
         </button>
         <transition name="fade">
-          <div v-if="showFilter" class="mt-4 p-4 border rounded-lg shadow bg-gray-50">
+          <div v-if="showFilter" class="mt-4 p-4 border dark:border-gray-600 rounded-lg shadow dark:shadow-gray-900/20 bg-gray-50 dark:bg-gray-700 transition-colors duration-300">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <!-- Filtrar por Proyecto -->
               <div>
-                <label class="block text-gray-700 mb-1">Proyecto</label>
-                <select v-model="filter.project" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400">
+                <label class="block text-gray-700 dark:text-gray-300 mb-1">Proyecto</label>
+                <select v-model="filter.project" class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300">
                   <option value="">Todos</option>
                   <option v-for="project in projects" :key="project" :value="project">
                     {{ project }}
@@ -37,18 +37,18 @@
               </div>
               <!-- Filtrar por Fecha Inicio -->
               <div>
-                <label class="block text-gray-700 mb-1">Fecha Inicio</label>
-                <input type="date" v-model="filter.startDate" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400">
+                <label class="block text-gray-700 dark:text-gray-300 mb-1">Fecha Inicio</label>
+                <input type="date" v-model="filter.startDate" class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300">
               </div>
               <!-- Filtrar por Fecha Fin -->
               <div>
-                <label class="block text-gray-700 mb-1">Fecha Fin</label>
-                <input type="date" v-model="filter.endDate" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400">
+                <label class="block text-gray-700 dark:text-gray-300 mb-1">Fecha Fin</label>
+                <input type="date" v-model="filter.endDate" class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300">
               </div>
               <!-- Filtrar por Estado -->
               <div>
-                <label class="block text-gray-700 mb-1">Estado</label>
-                <select v-model="filter.state" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400">
+                <label class="block text-gray-700 dark:text-gray-300 mb-1">Estado</label>
+                <select v-model="filter.state" class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300">
                   <option value="">Todos</option>
                   <option value="pendiente">Pendiente</option>
                   <option value="en progreso">En Progreso</option>
@@ -57,8 +57,8 @@
               </div>
               <!-- Filtrar por Empleado -->
               <div>
-                <label class="block text-gray-700 mb-1">Empleado</label>
-                <select v-model="filter.employee" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400">
+                <label class="block text-gray-700 dark:text-gray-300 mb-1">Empleado</label>
+                <select v-model="filter.employee" class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300">
                   <option value="">Todos</option>
                   <option v-for="employee in employees" :key="employee" :value="employee">
                     {{ employee }}
@@ -67,7 +67,7 @@
               </div>
             </div>
             <div class="mt-4 text-right">
-              <button @click="clearFilters" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+              <button @click="clearFilters" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors duration-300">
                 Limpiar filtros
               </button>
             </div>
@@ -80,37 +80,37 @@
         <div
           v-for="task in paginatedTasks"
           :key="task.tareas_id"
-          class="bg-white p-4 rounded-lg shadow mb-4 cursor-pointer hover:bg-gray-100 transition"
+          class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/30 transition-colors duration-300"
           @click="openViewModal(task)"
         >
           <div class="flex justify-between items-center">
             <div>
-              <p class="text-lg font-bold">ID: {{ task.tareas_id }}</p>
-              <p class="text-base">{{ task.nombre_tarea }}</p>
+              <p class="text-lg font-bold text-gray-800 dark:text-gray-200">ID: {{ task.tareas_id }}</p>
+              <p class="text-base font-medium text-orange-600 dark:text-orange-400">{{ task.nombre_tarea }}</p>
             </div>
             <div class="flex space-x-2">
               <button
                 @click.stop="openEditModal(task)"
-                class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm"
+                class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
               >
                 Editar
               </button>
               <button
                 @click.stop="openDeleteModal(task)"
-                class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm"
+                class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-sm"
               >
                 Eliminar
               </button>
               <button
                 @click.stop="openAssignModal(task)"
-                class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
+                class="px-3 py-1 bg-blue-600 dark:bg-blue-500 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300 text-sm"
               >
                 Asignar
               </button>
             </div>
           </div>
         </div>
-        <div v-if="paginatedTasks.length === 0 && !loading" class="text-center text-gray-500">
+        <div v-if="paginatedTasks.length === 0 && !loading" class="text-center text-gray-500 dark:text-gray-400">
           No se encontraron tareas.
         </div>
         <!-- Espaciado para mantener 5 elementos -->
@@ -121,7 +121,7 @@
       <div class="hidden sm:block overflow-x-auto">
         <table class="min-w-full">
           <thead>
-            <tr class="bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800">
+            <tr class="bg-gradient-to-r from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-800 dark:text-orange-200">
               <th class="px-6 py-3 text-left font-semibold">ID</th>
               <th class="px-6 py-3 text-left font-semibold">Tarea</th>
               <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell">Estado</th>
@@ -134,31 +134,31 @@
             <tr
               v-for="task in paginatedTasks"
               :key="task.tareas_id"
-              class="bg-white shadow rounded-lg transition-colors cursor-pointer hover:bg-gray-50"
+              class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-orange-50 dark:hover:bg-orange-900/30"
               @click="openViewModal(task)"
             >
-              <td class="px-6 py-4">{{ task.tareas_id }}</td>
-              <td class="px-6 py-4">{{ task.nombre_tarea }}</td>
-              <td class="px-6 py-4 hidden xl:table-cell">{{ task.estado }}</td>
-              <td class="px-6 py-4 hidden xl:table-cell">{{ task.nombre_proyecto }}</td>
-              <td class="px-6 py-4">{{ task.empleado_nombre }}</td>
+              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ task.tareas_id }}</td>
+              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ task.nombre_tarea }}</td>
+              <td class="px-6 py-4 hidden xl:table-cell text-gray-800 dark:text-gray-200">{{ task.estado }}</td>
+              <td class="px-6 py-4 hidden xl:table-cell text-gray-800 dark:text-gray-200">{{ task.nombre_proyecto }}</td>
+              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ task.empleado_nombre }}</td>
               <td class="px-6 py-4">
                 <div class="flex flex-col sm:flex-row gap-1 sm:gap-2" @click.stop>
                   <button
                     @click="openEditModal(task)"
-                    class="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-xs sm:text-sm"
+                    class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs sm:text-sm"
                   >
                     Editar
                   </button>
                   <button
                     @click="openDeleteModal(task)"
-                    class="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-xs sm:text-sm"
+                    class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded-lg hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-xs sm:text-sm"
                   >
                     Eliminar
                   </button>
                   <button
                     @click="openAssignModal(task)"
-                    class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-xs sm:text-sm"
+                    class="px-3 py-1 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300 text-xs sm:text-sm"
                   >
                     Asignar
                   </button>
@@ -166,7 +166,7 @@
               </td>
             </tr>
             <tr v-if="paginatedTasks.length === 0 && !loading">
-              <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+              <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                 No se encontraron tareas.
               </td>
             </tr>
@@ -187,7 +187,7 @@
         <button 
           @click="prevPage" 
           :disabled="currentPage === 1"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-orange-600 text-white hover:bg-orange-700 disabled:opacity-50 transition"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-orange-600 dark:bg-orange-500 text-white hover:bg-orange-700 dark:hover:bg-orange-600 disabled:opacity-50 transition-colors duration-300"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -198,16 +198,18 @@
             v-for="page in pages" 
             :key="page" 
             @click="goToPage(page)" 
-            class="w-10 h-10 rounded-full border border-orange-600 text-orange-600 flex items-center justify-center transition hover:bg-orange-600 hover:text-white"
-            :class="{'bg-orange-600 text-white': page === currentPage}"
+            class="w-10 h-10 rounded-full border border-orange-600 dark:border-orange-500 flex items-center justify-center transition-colors duration-300 font-medium"
+            :class="page === currentPage 
+              ? 'bg-orange-600 dark:bg-orange-500 text-white' 
+              : 'bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 hover:bg-orange-600 dark:hover:bg-orange-500 hover:text-white'"
           >
-            {{ page }}
+            <span>{{ page }}</span>
           </button>
         </div>
         <button 
           @click="nextPage" 
           :disabled="currentPage === totalPages"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-orange-600 text-white hover:bg-orange-700 disabled:opacity-50 transition"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-orange-600 dark:bg-orange-500 text-white hover:bg-orange-700 dark:hover:bg-orange-600 disabled:opacity-50 transition-colors duration-300"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -215,10 +217,10 @@
         </button>
       </div>
 
-      <div v-if="loading" class="text-center mt-4 text-gray-500">
+      <div v-if="loading" class="text-center mt-4 text-gray-500 dark:text-gray-400">
         Cargando tareas...
       </div>
-      <div v-if="error" class="text-center mt-4 text-red-500">
+      <div v-if="error" class="text-center mt-4 text-red-500 dark:text-red-400">
         {{ error }}
       </div>
 
@@ -467,16 +469,10 @@ thead tr th {
   border: none;
 }
 tbody tr {
-  background: white;
   border-radius: 0.5rem;
 }
 tbody tr td {
   border: none;
-}
-
-/* Hover para filas */
-tbody tr:hover {
-  background-color: #f7fafc;
 }
 
 /* Transición para el filtro */

@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col justify-center items-center min-h-screen p-8">
-    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+  <div class="flex flex-col justify-center items-center min-h-screen p-8 transition-colors duration-300">
+    <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
       <!-- Encabezado y acción -->
       <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-800 text-center sm:text-left mb-4 sm:mb-0">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center sm:text-left mb-4 sm:mb-0 transition-colors duration-300">
           Gestión de Empleados
         </h1>
         <button
           @click="openModal"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300"
         >
           Nuevo Empleado
         </button>
@@ -20,7 +20,7 @@
           type="text"
           v-model="searchTerm"
           placeholder="Buscar por nombre..."
-          class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 transition-colors duration-300"
         />
       </div>
 
@@ -29,32 +29,32 @@
         <div
           v-for="employee in paginatedEmployees"
           :key="employee.empleados_id"
-          class="bg-white p-4 rounded-lg shadow mb-4"
+          class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors duration-300 cursor-pointer"
           @click="openViewModal(employee)"
         >
           <div class="flex justify-between items-center">
             <div>
-              <!-- Se elimina la línea que muestra el ID -->
-              <p class="text-base">{{ employee.nombre }}</p>
+              <!-- Nombre en azul para móviles -->
+              <p class="text-base font-medium text-blue-600 dark:text-blue-400">{{ employee.nombre }}</p>
             </div>
             <!-- Botones: Editar y Eliminar, evitando la propagación del clic -->
             <div class="flex space-x-2">
               <button
                 @click.stop="openEditModal(employee)"
-                class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm"
+                class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
               >
                 Editar
               </button>
               <button
                 @click.stop="openDeleteModal(employee)"
-                class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm"
+                class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-sm"
               >
                 Eliminar
               </button>
             </div>
           </div>
         </div>
-        <div v-if="paginatedEmployees.length === 0" class="text-center text-gray-500">
+        <div v-if="paginatedEmployees.length === 0" class="text-center text-gray-500 dark:text-gray-400">
           No se encontraron empleados.
         </div>
         <!-- Divs vacíos para mantener espacio de 5 elementos -->
@@ -65,7 +65,7 @@
       <div class="hidden sm:block overflow-x-auto">
         <table class="min-w-full">
           <thead>
-            <tr class="bg-gradient-to-r from-blue-100 to-blue-200 text-gray-700">
+            <tr class="bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-800 dark:text-blue-200">
               <th class="px-6 py-3 text-left font-semibold">ID</th>
               <th class="px-6 py-3 text-left font-semibold">Nombre</th>
               <th class="px-6 py-3 text-left font-semibold">Rol</th>
@@ -78,25 +78,25 @@
             <tr
               v-for="employee in paginatedEmployees"
               :key="employee.empleados_id"
-              class="bg-white shadow rounded-lg"
+              class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors duration-300 cursor-pointer"
               @click="openViewModal(employee)"
             >
-              <td class="px-6 py-4">{{ employee.empleados_id }}</td>
-              <td class="px-6 py-4">{{ employee.nombre }}</td>
-              <td class="px-6 py-4">{{ employee.rol }}</td>
-              <td class="px-6 py-4 hidden xl:table-cell">{{ employee.telefono }}</td>
-              <td class="px-6 py-4 hidden xl:table-cell">{{ employee.correo }}</td>
+              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ employee.empleados_id }}</td>
+              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ employee.nombre }}</td>
+              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ employee.rol }}</td>
+              <td class="px-6 py-4 hidden xl:table-cell text-gray-800 dark:text-gray-200">{{ employee.telefono }}</td>
+              <td class="px-6 py-4 hidden xl:table-cell text-gray-800 dark:text-gray-200">{{ employee.correo }}</td>
               <td class="px-6 py-4">
                 <div class="flex flex-col sm:flex-row gap-1 sm:gap-2" @click.stop>
                   <button
                     @click="openEditModal(employee)"
-                    class="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-xs sm:text-sm"
+                    class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs sm:text-sm"
                   >
                     Editar
                   </button>
                   <button
                     @click="openDeleteModal(employee)"
-                    class="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-xs sm:text-sm"
+                    class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded-lg hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-xs sm:text-sm"
                   >
                     Eliminar
                   </button>
@@ -104,7 +104,7 @@
               </td>
             </tr>
             <tr v-if="paginatedEmployees.length === 0">
-              <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+              <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                 No se encontraron empleados.
               </td>
             </tr>
@@ -126,7 +126,7 @@
         <button 
           @click="prevPage" 
           :disabled="currentPage === 1"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50 transition-colors duration-300"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -139,10 +139,12 @@
             v-for="page in pages" 
             :key="page" 
             @click="goToPage(page)" 
-            class="w-10 h-10 rounded-full border border-blue-600 text-blue-600 flex items-center justify-center transition hover:bg-blue-600 hover:text-white"
-            :class="{'bg-blue-600 text-white': page === currentPage}"
+            class="w-10 h-10 rounded-full border border-blue-600 dark:border-blue-500 flex items-center justify-center transition-colors duration-300 font-medium"
+            :class="page === currentPage 
+              ? 'bg-blue-600 dark:bg-blue-500 text-white' 
+              : 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white'"
           >
-            {{ page }}
+            <span>{{ page }}</span>
           </button>
         </div>
 
@@ -150,7 +152,7 @@
         <button 
           @click="nextPage" 
           :disabled="currentPage === totalPages"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50 transition-colors duration-300"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -158,10 +160,10 @@
         </button>
       </div>
 
-      <div v-if="loading" class="text-center mt-4 text-gray-500">
+      <div v-if="loading" class="text-center mt-4 text-gray-500 dark:text-gray-400">
         Cargando empleados...
       </div>
-      <div v-if="error" class="text-center mt-4 text-red-500">
+      <div v-if="error" class="text-center mt-4 text-red-500 dark:text-red-400">
         {{ error }}
       </div>
 
@@ -307,6 +309,11 @@ const deleteEmployeeConfirmed = async () => {
     employeeToDelete.value = null;
   }
 };
+
+const openViewModal = (employee: any) => {
+  // Implementación futura: modal para ver detalles del empleado
+  console.log("Ver empleado:", employee);
+};
 </script>
 
 <style scoped>
@@ -318,7 +325,6 @@ thead tr th {
   border: none;
 }
 tbody tr {
-  background: white;
   border-radius: 0.5rem;
 }
 tbody tr td {

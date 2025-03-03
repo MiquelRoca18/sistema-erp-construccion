@@ -4,7 +4,7 @@
     <div class="flex w-full">
       
       <!-- Sidebar (Solo visible en pantallas grandes) -->
-      <Sidebar v-if="isAuthenticated" :sidebarOpen="sidebarOpen" @toggleSidebar="toggleSidebar" />
+      <Sidebar v-if="isAuthenticated" :sidebarOpen="sidebarOpen" @toggleSidebar="toggleSidebar" :isDark="isDark" @toggleDarkMode="toggleDarkMode" />
 
       <!-- Contenedor de contenido -->
       <div class="relative flex flex-col w-full overflow-auto">
@@ -80,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import Sidebar from './components/Sidebar.vue';
 import { isAuthenticated } from '@/service/authStore';
 
@@ -91,7 +91,33 @@ const toggleSidebar = () => {
 
 // Variable para controlar el dark mode
 const isDark = ref(false);
+
 const toggleDarkMode = () => {
   isDark.value = !isDark.value;
+  // Guardar preferencia en localStorage
+  localStorage.setItem('theme', isDark.value ? 'dark' : 'light');
 };
+
+// Inicializar el modo según preferencia guardada o del sistema
+onMounted(() => {
+  // Revisar si hay una preferencia guardada
+  const savedTheme = localStorage.getItem('theme');
+  
+  if (savedTheme === 'dark' || 
+     (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    isDark.value = true;
+  } else {
+    isDark.value = false;
+  }
+});
+
+// Observar cambios en el modo oscuro
+watch(isDark, (newValue) => {
+  // Actualizar el documento con la clase dark (para componentes que no son Vue)
+  if (newValue) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+});
 </script>
