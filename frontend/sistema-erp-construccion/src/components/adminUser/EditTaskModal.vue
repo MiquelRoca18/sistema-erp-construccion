@@ -197,7 +197,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style scoped>
-/* Se mantiene un estilo compacto y legible sin responsive adicional */
-</style>

@@ -70,7 +70,3 @@ const confirmDeletion = async () => {
   }
 };
 </script>
-
-<style scoped>
-/* Puedes agregar estilos adicionales si lo consideras necesario */
-</style>

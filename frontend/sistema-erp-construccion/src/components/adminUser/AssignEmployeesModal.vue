@@ -200,7 +200,3 @@ const closeModal = () => {
   emit('close');
 };
 </script>
-
-<style scoped>
-/* Estilos para el modal */
-</style>

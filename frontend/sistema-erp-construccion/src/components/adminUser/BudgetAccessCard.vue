@@ -34,6 +34,3 @@ onMounted(() => {
   fetchTotalBudgets();
 });
 </script>
-
-<style scoped>
-</style>

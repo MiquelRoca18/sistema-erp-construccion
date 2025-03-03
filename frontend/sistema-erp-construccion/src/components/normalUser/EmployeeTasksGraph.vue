@@ -1,4 +1,3 @@
-<!-- components/EmployeeTasksGraph.vue -->
 <template>
   <div class="p-4 bg-white dark:bg-gray-800" style="height: 300px;">
     <canvas ref="chartCanvas" style="width: 100%; height: 100%;"></canvas>

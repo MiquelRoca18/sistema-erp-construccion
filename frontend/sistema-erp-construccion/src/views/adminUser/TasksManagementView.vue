@@ -224,7 +224,7 @@
         {{ error }}
       </div>
 
-      <!-- Modales para crear, editar, eliminar, ver y asignar tarea -->
+      <!-- Modales -->
       <CreateTaskModal v-if="showModal" @close="closeModal" @created="fetchTasks" />
       <EditTaskModal
         v-if="taskToEdit"
@@ -440,7 +440,6 @@ const deleteTaskConfirmed = async () => {
   }
 };
 
-// Modal de vista de tarea
 const openViewModal = (task: any) => {
   taskToView.value = task;
 };
@@ -449,7 +448,6 @@ const closeViewModal = () => {
   taskToView.value = null;
 };
 
-// Nuevo modal para asignar empleados
 const openAssignModal = (task: any) => {
   taskToAssign.value = task;
 };

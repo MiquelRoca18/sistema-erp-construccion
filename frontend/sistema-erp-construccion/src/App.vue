@@ -1,5 +1,4 @@
 <template>
-  <!-- Se aplica la clase 'dark' al contenedor raíz cuando isDark es true -->
   <div :class="{ dark: isDark }" class="min-h-screen flex flex-col transition-colors duration-300">
     <div class="flex w-full">
       
@@ -113,7 +112,6 @@ onMounted(() => {
 
 // Observar cambios en el modo oscuro
 watch(isDark, (newValue) => {
-  // Actualizar el documento con la clase dark (para componentes que no son Vue)
   if (newValue) {
     document.documentElement.classList.add('dark');
   } else {

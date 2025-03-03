@@ -188,7 +188,3 @@ const handleSubmit = async () => {
   }
 };
 </script>
-
-<style scoped>
-/* Puedes ajustar estilos adicionales si es necesario */
-</style>

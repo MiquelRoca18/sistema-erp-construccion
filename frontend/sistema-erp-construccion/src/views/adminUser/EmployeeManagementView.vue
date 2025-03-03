@@ -34,7 +34,6 @@
         >
           <div class="flex justify-between items-center">
             <div>
-              <!-- Nombre en azul para móviles -->
               <p class="text-base font-medium text-blue-600 dark:text-blue-400">{{ employee.nombre }}</p>
             </div>
             <!-- Botones: Editar y Eliminar, evitando la propagación del clic -->
@@ -120,7 +119,7 @@
         </table>
       </div>
 
-      <!-- Paginación Premium -->
+      <!-- Paginación -->
       <div v-if="totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
         <!-- Botón Anterior -->
         <button 
@@ -167,10 +166,10 @@
         {{ error }}
       </div>
 
-      <!-- Modal para crear empleado -->
+      <!-- Modales -->
+       
       <CreateEmployeeModal v-if="showModal" @close="closeModal" @created="fetchEmployees" />
 
-      <!-- Modal para editar empleado -->
       <EditEmployeeModal
         v-if="employeeToEdit"
         :employee="employeeToEdit"
@@ -178,7 +177,6 @@
         @updated="fetchEmployees"
       />
 
-      <!-- Modal para confirmar borrado -->
       <DeleteEmployeeModal
         v-if="employeeToDelete"
         :employee="employeeToDelete"

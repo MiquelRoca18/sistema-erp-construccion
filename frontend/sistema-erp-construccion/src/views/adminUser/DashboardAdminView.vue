@@ -10,7 +10,6 @@
         <BudgetAccessCard />
       </div>
       
-      <!-- Sección KPI centrada -->
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-gray-900/30 p-8 transition-colors duration-300">
         <AdminKpiComponent />
       </div>

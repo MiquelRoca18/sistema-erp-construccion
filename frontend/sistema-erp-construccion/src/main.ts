@@ -5,5 +5,5 @@ import './style.css'
 
 const app = createApp(App);
 
-app.use(router); // Usamos el router en la aplicación
+app.use(router); 
 app.mount('#app');

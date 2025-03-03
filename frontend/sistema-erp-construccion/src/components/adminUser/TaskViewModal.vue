@@ -82,7 +82,3 @@ const formatDate = (dateStr: string) => {
   return date.toLocaleDateString();
 };
 </script>
-
-<style scoped>
-/* Puedes agregar estilos adicionales o animaciones personalizadas si lo deseas */
-</style>

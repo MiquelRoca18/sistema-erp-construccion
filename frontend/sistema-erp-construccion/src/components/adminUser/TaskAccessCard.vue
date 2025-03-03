@@ -31,6 +31,3 @@ onMounted(() => {
   fetchTotalTasks();
 });
 </script>
-
-<style scoped>
-</style>

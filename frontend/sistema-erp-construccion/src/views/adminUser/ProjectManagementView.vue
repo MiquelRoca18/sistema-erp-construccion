@@ -24,7 +24,7 @@
         />
       </div>
   
-      <!-- Vista Mobile: Card view (para dispositivos pequeños) -->
+      <!-- Vista Mobile: Card view -->
       <div class="block md:hidden">
         <div
           v-for="project in paginatedProjects"
@@ -36,7 +36,7 @@
             <p class="text-base font-medium text-green-600 dark:text-green-400">{{ project.nombre_proyecto }}</p>
             <p class="text-sm text-gray-600 dark:text-gray-300">Estado: {{ project.estado }}</p>
           </div>
-          <!-- Botones para editar y eliminar (sin afectar el click del contenedor) -->
+          <!-- Botones para editar y eliminar -->
           <div class="mt-2 flex space-x-2">
             <button
               @click.stop="openEditModal(project)"
@@ -59,7 +59,7 @@
         <div v-for="n in missingRows" :key="'empty-' + n" class="h-20"></div>
       </div>
   
-      <!-- Vista Desktop: Tabla (para dispositivos md en adelante) -->
+      <!-- Vista Desktop: Tabla -->
       <div class="hidden md:block overflow-x-auto">
         <table class="min-w-full">
           <thead>
@@ -118,7 +118,7 @@
         </table>
       </div>
   
-      <!-- Paginación Premium -->
+      <!-- Paginación -->
       <div v-if="totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
         <!-- Botón Anterior -->
         <button 
@@ -165,16 +165,14 @@
         {{ error }}
       </div>
   
-      <!-- Modal para crear proyecto -->
+      <!-- Modales -->
+
       <CreateProjectModal v-if="showCreateModal" @close="closeCreateModal" @created="fetchProjects" />
-  
-      <!-- Modal para editar proyecto -->
+
       <EditProjectModal v-if="projectToEdit" :project="projectToEdit" @close="closeEditModal" @updated="fetchProjects" />
-  
-      <!-- Modal para confirmar borrado de proyecto -->
+
       <DeleteProjectModal v-if="projectToDelete" :project="projectToDelete" @close="closeDeleteModal" @deleted="deleteProjectConfirmed" />
-  
-      <!-- Modal para ver detalles del proyecto -->
+
       <ProjectDetailsModal v-if="projectToView" :project="projectToView" @close="closeViewModal" />
     </div>
   </div>
@@ -240,7 +238,7 @@ const missingRows = computed(() => {
   return missing > 0 ? missing : 0;
 });
 
-// Paginación Premium: Limitar a 5 números de página
+// Paginación: Limitar a 5 números de página
 const pages = computed(() => {
   const total = totalPages.value;
   const current = currentPage.value;

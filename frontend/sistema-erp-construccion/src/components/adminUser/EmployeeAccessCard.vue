@@ -32,7 +32,3 @@ onMounted(() => {
   fetchTotalEmployees();
 });
 </script>
-
-<style scoped>
-/* Ajustes opcionales */
-</style>

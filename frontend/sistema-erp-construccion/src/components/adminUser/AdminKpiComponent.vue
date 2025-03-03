@@ -97,8 +97,3 @@ const totalBudgetFormatted = computed(() => {
   return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(totalBudget.value);
 });
 </script>
-
-
-<style scoped>
-/* Puedes ajustar estilos adicionales si es necesario */
-</style>

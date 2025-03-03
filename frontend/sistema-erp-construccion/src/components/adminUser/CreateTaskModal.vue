@@ -94,7 +94,7 @@ const emit = defineEmits(['close', 'created']);
 const form = ref({
   nombre_tarea: '',
   descripcion: '',
-  proyectos_id: '' // Se mantiene como cadena, se convertirá en número en el submit
+  proyectos_id: '' 
 });
 
 const projects = ref([]);
@@ -125,7 +125,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style scoped>
-/* Puedes agregar estilos o animaciones adicionales si lo consideras necesario */
-</style>

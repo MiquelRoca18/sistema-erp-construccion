@@ -1,7 +1,6 @@
-<!-- components/TaskDetailModalOtros.vue -->
 <template>
   <div class="fixed inset-0 flex items-center justify-center z-50 px-4">
-    <!-- Fondo semi-transparente (clic para cerrar) -->
+    <!-- Fondo semi-transparente -->
     <div class="fixed inset-0 bg-black opacity-50 dark:opacity-70" @click="close"></div>
 
     <!-- Contenedor del modal -->
@@ -24,7 +23,7 @@
   
       <!-- Contenido principal -->
       <div class="space-y-6">
-        <!-- 1. Tarea y Estado -->
+        <!-- Tarea y Estado -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between">
           <div class="flex-1">
             <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Tarea</label>
@@ -49,7 +48,7 @@
           </div>
         </div>
   
-        <!-- 2. Descripción -->
+        <!-- Descripción -->
         <div v-if="task.descripcion !== undefined">
           <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Descripción</label>
           <textarea
@@ -60,13 +59,13 @@
           ></textarea>
         </div>
   
-        <!-- 3. Proyecto (no editable) -->
+        <!-- Proyecto -->
         <div>
           <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Proyecto</label>
           <p class="mt-1 text-lg font-semibold text-gray-800 dark:text-gray-200">{{ task.nombre_proyecto }}</p>
         </div>
   
-        <!-- 4. Fechas -->
+        <!-- Fechas -->
         <div class="flex flex-col sm:flex-row sm:justify-between gap-4">
           <div class="flex-1">
             <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Fecha de Inicio</label>
@@ -88,7 +87,7 @@
           </div>
         </div>
   
-        <!-- 5. Empleado asignado (editable con select) -->
+        <!-- Empleado asignado (editable con select) -->
         <div>
           <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Asignado a</label>
           <select
@@ -109,7 +108,7 @@
         </div>
       </div>
   
-      <!-- Footer con acciones -->
+      <!-- Footer -->
       <div class="mt-6 flex justify-end">
         <button 
           @click="close" 

@@ -66,7 +66,3 @@ onMounted(() => {
   fetchTasks();
 });
 </script>
-
-<style scoped>
-/* Puedes ajustar estos estilos si fuera necesario */
-</style>

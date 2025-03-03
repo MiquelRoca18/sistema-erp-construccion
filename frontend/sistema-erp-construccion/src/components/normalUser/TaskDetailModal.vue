@@ -1,7 +1,6 @@
-<!-- components/TaskDetailModal.vue -->
 <template>
   <div class="fixed inset-0 flex items-center justify-center z-50 px-4">
-    <!-- Fondo semi-transparente (clic para cerrar) -->
+    <!-- Fondo semi-transparente -->
     <div class="fixed inset-0 bg-black opacity-50 dark:opacity-70" @click="close"></div>
 
     <!-- Contenedor del modal -->
@@ -18,7 +17,7 @@
 
       <!-- Contenido principal -->
       <div class="space-y-6">
-        <!-- 1. Tarea y Estado -->
+        <!-- Tarea y Estado -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between">
           <h3 class="text-3xl font-extrabold text-gray-900 dark:text-gray-100">{{ task.nombre_tarea }}</h3>
           <div class="mt-4 md:mt-0 w-full md:w-1/3">
@@ -37,7 +36,7 @@
           </div>
         </div>
 
-        <!-- 2. Descripción -->
+        <!--. Descripción -->
         <div v-if="task.descripcion">
           <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Descripción</label>
           <div class="mt-1 p-2 border border-gray-200 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 text-base max-h-32 overflow-y-auto">
@@ -45,14 +44,14 @@
           </div>
         </div>
 
-        <!-- 3. Proyecto -->
+        <!-- Proyecto -->
         <div>
           <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">
             Proyecto: <span class="font-normal text-gray-600 dark:text-gray-400">{{ task.nombre_proyecto }}</span>
           </p>
         </div>
 
-        <!-- 4. Fechas -->
+        <!-- Fechas -->
         <div class="flex flex-col sm:flex-row sm:justify-between">
           <div>
             <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">

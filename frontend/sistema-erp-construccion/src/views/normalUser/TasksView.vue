@@ -122,7 +122,7 @@
         <div v-for="n in emptySlots" :key="'empty-'+n" class="p-4 opacity-0"></div>
       </div>
 
-      <!-- Paginación Premium -->
+      <!-- Paginación -->
       <div v-if="totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
         <!-- Botón Anterior -->
         <button 
@@ -163,7 +163,7 @@
       </div>
     </div>
 
-    <!-- Modal de Detalle de Tarea -->
+    <!-- Modales -->
     <TaskDetailModal
       v-if="selectedTask && selectedTaskType !== 'otros'"
       :task="selectedTask"
@@ -171,7 +171,6 @@
       @update="handleTaskUpdate"
     />
 
-    <!-- Modal para Tareas de otros -->
     <TaskDetailModalOthers
       v-if="selectedTask && selectedTaskType === 'otros'"
       :task="selectedTask"
@@ -199,14 +198,13 @@ const error = ref('');
 // Filtros
 const selectedProject = ref('');
 const selectedStatus = ref('');
-const selectedTaskType = ref('mis'); // Por defecto "mis tareas"
+const selectedTaskType = ref('mis');
 const startDate = ref('');
 const endDate = ref('');
 
-// Tarea seleccionada para modal
 const selectedTask = ref(null);
 
-// Paginación y funciones relacionadas...
+// Paginación y funciones relacionadas
 const currentPage = ref(1);
 const resetPagination = () => { currentPage.value = 1; };
 
@@ -242,7 +240,7 @@ const emptySlots = computed(() => {
   return slots > 0 ? slots : 0;
 });
 
-// Sincronizar filtros con la URL...
+// Sincronizar filtros con la URL 
 watch([selectedProject, selectedStatus, selectedTaskType, startDate, endDate], ([newProject, newStatus, newTaskType, newStartDate, newEndDate]) => {
   router.replace({
     query: {
@@ -304,7 +302,7 @@ const paginatedTasks = computed(() =>
   )
 );
 
-// Paginación Premium: limitar a 5 números de página
+// Paginación: limitar a 5 números de página
 const pages = computed(() => {
   const total = totalPages.value;
   const current = currentPage.value;

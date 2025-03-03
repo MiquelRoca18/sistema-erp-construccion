@@ -31,6 +31,3 @@ onMounted(() => {
   fetchTotalProjects();
 });
 </script>
-
-<style scoped>
-</style>

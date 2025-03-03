@@ -6,7 +6,6 @@
         <h1 class="text-3xl font-bold text-yellow-800 dark:text-yellow-200 text-center sm:text-left">
           Gestión de Presupuestos
         </h1>
-        <!-- Se ha eliminado el botón "Nuevo Presupuesto" -->
       </div>
 
       <!-- Filtros -->
@@ -25,7 +24,7 @@
         />
       </div>
 
-      <!-- Vista Mobile: Tarjetas (sin botón eliminar) -->
+      <!-- Vista Mobile: Tarjetas -->
       <div class="block sm:hidden w-full">
         <div
           v-for="budget in paginatedBudgets"
@@ -47,7 +46,6 @@
               >
                 Editar
               </button>
-              <!-- Se ha eliminado el botón "Eliminar" -->
             </div>
           </div>
         </div>
@@ -58,7 +56,7 @@
         <div v-for="n in missingRows" :key="'empty-' + n" class="h-20"></div>
       </div>
 
-      <!-- Vista Desktop: Tabla (sin botón eliminar) -->
+      <!-- Vista Desktop: Tabla -->
       <div class="hidden sm:block w-full overflow-x-auto">
         <table class="min-w-full">
           <thead>
@@ -149,7 +147,7 @@
       </div>
     </div>
   
-    <!-- Modales (solo el de edición) -->
+    <!-- Modales -->
     <EditBudgetModal v-if="showEditModal" :budget="budgetToEdit" @close="closeEditModal" @updated="fetchBudgets" />
   </div>
 </template>
@@ -163,11 +161,10 @@ const budgets = ref<any[]>([]);
 const loading = ref(false);
 const error = ref('');
 const searchProject = ref('');
-const searchTotal = ref(''); // Campo para el filtro numérico
+const searchTotal = ref(''); 
 const currentPage = ref(1);
 const pageSize = 5;
   
-// Solo mantenemos el modal de edición
 const showEditModal = ref(false);
 const budgetToEdit = ref(null);
   
@@ -248,8 +245,6 @@ const goToPage = (page: number) => {
   currentPage.value = page;
 };
   
-// Eliminadas las funciones relacionadas con crear y eliminar
-// Solo mantenemos las funciones de edición
 const openEditModal = (budget: any) => {
   budgetToEdit.value = budget;
   showEditModal.value = true;
@@ -258,11 +253,6 @@ const openEditModal = (budget: any) => {
 const closeEditModal = () => {
   showEditModal.value = false;
   budgetToEdit.value = null;
-};
-
-const openViewModal = (budget: any) => {
-  // Opcional: implementar modal de vista de presupuesto
-  console.log("Ver presupuesto:", budget);
 };
 </script>
   

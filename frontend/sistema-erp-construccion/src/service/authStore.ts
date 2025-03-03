@@ -2,7 +2,7 @@ import { reactive, computed } from 'vue';
 
 interface AuthState {
   token: string | null;
-  user: number | null; // ID del empleado
+  user: number | null; 
   role: string | null;
 }
 
@@ -12,13 +12,10 @@ const state: AuthState = reactive({
   role: localStorage.getItem('role') || null,
 });
 
-// Computed para saber si el usuario está autenticado
 export const isAuthenticated = computed(() => !!state.token);
 
-// Computed para obtener el rol del usuario
 export const userRole = computed(() => state.role);
 
-// Función para iniciar sesión (almacena token, id y rol)
 export function login(userData: { token: string; empleados_id: number; rol: string }) {
   state.token = userData.token;
   state.user = userData.empleados_id;
@@ -28,7 +25,6 @@ export function login(userData: { token: string; empleados_id: number; rol: stri
   localStorage.setItem('role', userData.rol);
 }
 
-// Función para cerrar sesión
 export function logout() {
   state.token = null;
   state.user = null;

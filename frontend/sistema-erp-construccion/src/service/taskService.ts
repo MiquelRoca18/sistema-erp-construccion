@@ -94,7 +94,7 @@ export const updateTaskAssignment = async (taskId: number, oldEmployeeId: number
   }
 };
 
-// Obtener todas las tareas de la empresa (incluye el nombre del empleado y del proyecto)
+// Obtener todas las tareas de la empresa
 export const getAllCompanyTasks = async () => {
   try {
     const token = localStorage.getItem('token');

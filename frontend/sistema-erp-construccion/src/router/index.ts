@@ -5,7 +5,7 @@ import EmployeeProfileView from '../views/normalUser/EmployeeProfileView.vue';
 import TasksView from '../views/normalUser/TasksView.vue';
 import DashboardAdminView from '../views/adminUser/DashboardAdminView.vue';
 import EmployeeManagementView from '../views/adminUser/EmployeeManagementView.vue';
-import ProjectManagementView from '../views/adminUser/ProjectManagementView.vue'; // Vista de proyectos
+import ProjectManagementView from '../views/adminUser/ProjectManagementView.vue'; 
 import TasksManagementView from '../views/adminUser/TasksManagementView.vue';
 
 import { logout } from '@/service/authStore';

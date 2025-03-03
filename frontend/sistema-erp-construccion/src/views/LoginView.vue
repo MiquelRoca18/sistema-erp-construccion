@@ -1,7 +1,5 @@
 <template>
-  <!-- Contenedor principal con transición de colores; fondo claro y oscuro -->
   <div class="w-full min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4 transition-colors duration-300">
-    <!-- Tarjeta de login con sombras y bordes adaptados a cada modo -->
     <div class="w-full max-w-lg p-8 md:p-10 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-2xl transition-all duration-300">
       <h1 class="text-3xl font-bold text-center mb-6 text-gray-800 dark:text-gray-100">
         Iniciar sesión
@@ -72,7 +70,3 @@ const handleSubmit = async () => {
   }
 };
 </script>
-
-<style scoped>
-/* Puedes agregar transiciones o estilos adicionales si lo deseas */
-</style>
