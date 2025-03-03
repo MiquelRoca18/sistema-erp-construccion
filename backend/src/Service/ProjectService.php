@@ -43,23 +43,46 @@ class ProjectService extends BaseService {
         if ($error) {
             return ['status' => 400, 'message' => $error];
         }
-
+        
         // Asignar valores predeterminados
         $data->estado = $data->estado ?? 'pendiente';
         $data->fecha_inicio = $data->fecha_inicio ?? date('Y-m-d');
         $data->fecha_fin = $data->fecha_fin ?? null;
-
+    
         // Validar que el responsable exista
         if (!empty($data->responsable_id) && !$this->employeeModel->exists($data->responsable_id)) {
             return ['status' => 404, 'message' => 'El responsable no existe'];
         } elseif (empty($data->responsable_id)) {
             return ['status' => 400, 'message' => 'El responsable es obligatorio'];
         }
-
-        // Llamar al modelo para crear el proyecto
+    
+        // Crear el proyecto
         $projectId = $this->model->create($data);
-        return $projectId ? ['status' => 201, 'message' => 'Proyecto creado exitosamente', 'data' => $projectId] : ['status' => 500, 'message' => 'Error al crear el proyecto'];
+        if ($projectId) {
+            // Crear presupuesto por defecto para el proyecto
+            $budgetModel = new \App\Model\Budget();
+            $defaultBudgetData = (object)[
+                'proyectos_id' => $projectId,
+                'equipos' => 0,
+                'mano_obra' => 0,
+                'materiales' => 0
+            ];
+            $budgetId = $budgetModel->create($defaultBudgetData);
+            if ($budgetId) {
+                return [
+                    'status' => 201,
+                    'message' => 'Proyecto y presupuesto creados exitosamente',
+                    'data' => ['project_id' => $projectId, 'budget_id' => $budgetId]
+                ];
+            } else {
+                // Aquí podrías optar por revertir la creación del proyecto o manejar el error de otra forma.
+                return ['status' => 500, 'message' => 'Proyecto creado, pero fallo al crear el presupuesto'];
+            }
+        } else {
+            return ['status' => 500, 'message' => 'Error al crear el proyecto'];
+        }
     }
+    
 
     public function updateProject($projectId, $data) {
         // Validar ID
@@ -102,15 +125,40 @@ class ProjectService extends BaseService {
         if ($error = $this->validateId($projectId)) {
             return $error;
         }
-
+    
         // Validar existencia del proyecto
         if ($error = $this->validateExists($projectId)) {
             return $error;
         }
-
-        // Eliminar el proyecto
-        $result = $this->model->delete($projectId);
-        return $result ? $this->responseDeleted('Tarea eliminada') : $this->responseError();   
+    
+        try {
+            // Obtener la conexión PDO mediante el getter
+            $db = $this->model->getDb();
+            // Iniciar la transacción
+            $db->beginTransaction();
+    
+            // Eliminar presupuestos asociados al proyecto
+            $sql = "DELETE FROM presupuestos WHERE proyectos_id = :projectId";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
+            $stmt->execute();
+    
+            // Eliminar el proyecto
+            $result = $this->model->delete($projectId);
+    
+            if ($result) {
+                $db->commit();
+                return $this->responseDeleted('Proyecto eliminado');
+            } else {
+                $db->rollBack();
+                return $this->responseError();
+            }
+        } catch (\Exception $e) {
+            $this->model->getDb()->rollBack();
+            return ['status' => 500, 'message' => 'Error al eliminar el proyecto: ' . $e->getMessage()];
+        }
     }
+    
+    
 }
 ?>

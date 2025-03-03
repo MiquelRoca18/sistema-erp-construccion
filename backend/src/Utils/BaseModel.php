@@ -11,7 +11,11 @@ class BaseModel {
         $this->db = (new Database())->getConnection();
         $this->table = $table;
     }
-
+    
+    public function getDb() {
+        return $this->db;
+    }
+    
     // Obtener todos los registros de la tabla
     public function get() {
         $query = 'SELECT * FROM ' . $this->table;
