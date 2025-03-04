@@ -7,8 +7,8 @@ import DashboardAdminView from '../views/adminUser/DashboardAdminView.vue';
 import EmployeeManagementView from '../views/adminUser/EmployeeManagementView.vue';
 import ProjectManagementView from '../views/adminUser/ProjectManagementView.vue'; 
 import TasksManagementView from '../views/adminUser/TasksManagementView.vue';
-
-import { logout } from '@/service/authStore';
+import NotFoundView from '../views/NotFoundView.vue';
+import { logout, isAuthenticated } from '@/service/authStore';
 import BudgetManagementView from '../views/adminUser/BudgetManagementView.vue';
 
 const routes = [
@@ -53,12 +53,24 @@ const routes = [
     name: 'tasksAdmin',
     component: TasksManagementView,
   },
-  ,
   {
     path: '/budgets',
     name: 'budgets',
     component: BudgetManagementView,
   },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFoundView,
+    beforeEnter: (to, from, next) => {
+      // Si el usuario está autenticado, redirige al dashboard, de lo contrario, al login
+      if (isAuthenticated.value) {
+        next({ name: 'dashboard' });
+      } else {
+        next({ name: 'login' });
+      }
+    }
+  }
 ];
 
 const router = createRouter({
