@@ -17,7 +17,7 @@ export const login = async (credentials: { username: string; password_hash: stri
         'Content-Type': 'application/json',
       },
     });
-    console.log('Response:', response.data);
+    console.log('Response:', response.data.data);
     return response.data.data; 
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error de autenticación');
