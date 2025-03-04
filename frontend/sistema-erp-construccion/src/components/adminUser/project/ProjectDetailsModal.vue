@@ -1,4 +1,3 @@
-
 <template>
   <!-- ProjectDetailsModal.vue -->
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
@@ -7,7 +6,7 @@
       <div class="bg-gradient-to-r from-green-500 to-green-400 dark:from-green-700 dark:to-green-600 p-4">
         <div class="flex justify-between items-center">
           <h2 class="text-white text-2xl font-bold">Detalles del Proyecto</h2>
-          <button @click="close" class="text-white text-3xl leading-none hover:text-gray-200 dark:hover:text-gray-300 cursor-pointer">&times;</button>
+          <button @click="closeModal" class="text-white text-3xl leading-none hover:text-gray-200 dark:hover:text-gray-300 cursor-pointer">&times;</button>
         </div>
       </div>
       <!-- Contenido -->
@@ -31,13 +30,13 @@
             <p class="text-gray-600 dark:text-gray-400 text-sm">
               <span class="font-medium">Inicio:</span>
             </p>
-            <p class="text-gray-800 dark:text-gray-200 font-medium">{{ formatDate ? formatDate(project.fecha_inicio) : project.fecha_inicio }}</p>
+            <p class="text-gray-800 dark:text-gray-200 font-medium">{{ formatDate(project.fecha_inicio) }}</p>
           </div>
           <div v-if="project.fecha_fin">
             <p class="text-gray-600 dark:text-gray-400 text-sm">
               <span class="font-medium">Fin:</span>
             </p>
-            <p class="text-gray-800 dark:text-gray-200 font-medium">{{ formatDate ? formatDate(project.fecha_fin) : project.fecha_fin }}</p>
+            <p class="text-gray-800 dark:text-gray-200 font-medium">{{ formatDate(project.fecha_fin) }}</p>
           </div>
         </div>
         <!-- Descripción -->
@@ -68,6 +67,13 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
+// Función formatDate para formatear las fechas
+const formatDate = (date: string): string => {
+  if (!date) return 'No definida';
+  return new Date(date).toLocaleDateString('es-ES');
+};
+
+// Función de cierre para emitir el evento close
 const closeModal = () => {
   emit('close');
 };

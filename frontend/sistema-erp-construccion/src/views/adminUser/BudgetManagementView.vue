@@ -1,4 +1,5 @@
 <template>
+  <!-- BudgetManagementView.vue -->
   <div class="flex flex-col justify-center items-center min-h-screen p-8">
     <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
       <!-- Encabezado sin botón de crear -->
@@ -167,6 +168,8 @@ const pageSize = 5;
   
 const showEditModal = ref(false);
 const budgetToEdit = ref(null);
+const showViewModal = ref(false);  // Añadido para la visualización
+const selectedBudget = ref(null);  // Añadido para la visualización
   
 const fetchBudgets = async () => {
   loading.value = true;
@@ -201,7 +204,8 @@ const filteredBudgets = computed(() => {
     if (maxTotal !== null && maxTotal !== undefined && maxTotal !== "") {
       // Aseguramos que el total sea un número
       const totalVal = parseFloat(budget.total);
-      totalMatch = !isNaN(totalVal) && totalVal <= maxTotal;
+      // Convertimos maxTotal a número para la comparación
+      totalMatch = !isNaN(totalVal) && totalVal <= parseFloat(maxTotal.toString());
     }
     return projectMatch && totalMatch;
   });
@@ -253,6 +257,12 @@ const openEditModal = (budget: any) => {
 const closeEditModal = () => {
   showEditModal.value = false;
   budgetToEdit.value = null;
+};
+
+// Añadida función para abrir modal de vista
+const openViewModal = (budget: any) => {
+  selectedBudget.value = budget;
+  showViewModal.value = true;
 };
 </script>
   
