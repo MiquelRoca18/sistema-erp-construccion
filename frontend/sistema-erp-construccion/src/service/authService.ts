@@ -9,15 +9,12 @@ interface LoginResponse {
 }
 
 export const login = async (credentials: { username: string; password_hash: string }): Promise<LoginResponse> => {
-  console.log('Iniciandio sesión');
   try {
-    console.log('Data:', credentials);
     const response = await axios.post(`${API_URL}/auth/login`, credentials, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    console.log('Response:', response.data.data);
     return response.data.data; 
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error de autenticación');

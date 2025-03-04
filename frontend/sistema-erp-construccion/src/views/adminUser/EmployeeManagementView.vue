@@ -307,11 +307,6 @@ const deleteEmployeeConfirmed = async () => {
     employeeToDelete.value = null;
   }
 };
-
-const openViewModal = (employee: any) => {
-  // Implementación futura: modal para ver detalles del empleado
-  console.log("Ver empleado:", employee);
-};
 </script>
 
 <style scoped>

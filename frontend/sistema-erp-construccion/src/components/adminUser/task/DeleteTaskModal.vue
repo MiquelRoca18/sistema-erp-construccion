@@ -61,7 +61,6 @@ const closeModal = () => {
 const confirmDeletion = async () => {
   errorMessage.value = '';
   try {
-    console.log(props.task.tareas_id);
     await deleteTask(props.task.tareas_id);
     emit('deleted');
   } catch (error: any) {
