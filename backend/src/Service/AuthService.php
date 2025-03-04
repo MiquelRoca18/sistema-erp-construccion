@@ -15,7 +15,6 @@ class AuthService extends BaseService {
     }
 
     public function authenticate($data) {
-        // Validar si se proporcionan username y password
         if (empty($data->username) || empty($data->password_hash)) {
             return ['status' => 400, 'message' => 'El nombre de usuario y la contraseña son obligatorios'];
         }
@@ -35,11 +34,10 @@ class AuthService extends BaseService {
         $payload = [
             'iat' => $issuedAt,
             'exp' => $expiresAt,
-            'sub' => $user['empleados_id'], // Asegúrate de usar el campo correcto según tu lógica
+            'sub' => $user['empleados_id'], 
             'role' => $user['role']
         ];
 
-        // Generar el token JWT
         $token = JWT::encode($payload, $secretKey, 'HS256');
 
         // Retornar además el rol en la respuesta para que el frontend lo use
@@ -55,7 +53,6 @@ class AuthService extends BaseService {
     }
 
     public function updatePassword($token, $data) {
-        // (Método sin cambios, se mantiene igual)
         if (empty($data->currentPassword) || empty($data->newPassword) || empty($data->confirmPassword)) {
             return ['status' => 400, 'message' => 'Todos los campos son obligatorios'];
         }

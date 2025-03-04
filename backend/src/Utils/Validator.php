@@ -12,7 +12,7 @@ class Validator {
                 return "El campo $field es obligatorio";
             }
         }
-        return null; // Sin errores
+        return null;
     }
     public function validateNumbers(array $fields, $data) {
         foreach ($fields as $field) {
@@ -55,7 +55,7 @@ class Validator {
             return "La fecha debe ser anterior o igual a $maxDate";
         }
     
-        return null; // Si todo está bien
+        return null; 
     }
     
 

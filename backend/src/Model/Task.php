@@ -9,6 +9,7 @@ class Task extends BaseModel{
         parent::__construct('tareas');
     }
 
+    // Obtener tareas con el nombre del empleado
     public function getTasksWithEmployee() {
         $query = "SELECT t.*, 
                          GROUP_CONCAT(e.nombre SEPARATOR ', ') AS empleado_nombre, 

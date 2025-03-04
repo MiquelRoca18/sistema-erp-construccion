@@ -121,7 +121,6 @@ class EmployeeTaskService extends BaseService {
         }
         // Verificar si la nueva asignación ya existe para esa tarea
         if ($this->model->relationExists($newEmployeeId, $taskId)) {
-            // Se puede obtener el nombre del empleado si se desea, por ejemplo:
             $empData = $this->employeeModel->getById($newEmployeeId);
             $empName = $empData ? $empData['nombre'] : $newEmployeeId;
             return $this->responseError("El empleado '{$empName}' ya está asignado a esta tarea.");

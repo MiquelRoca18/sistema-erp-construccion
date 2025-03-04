@@ -48,7 +48,7 @@ class EmployeeService extends BaseService {
             ];
         }
     
-        // Comprobar que no existe ya un empleado con ese nombre (ignorando mayúsculas/minúsculas)
+        // Comprobar que no existe ya un empleado con ese nombre
         $nombreInput = strtolower($nombreLimpio);
         $existingEmployees = $this->model->get();
         if ($existingEmployees) {
@@ -91,7 +91,7 @@ class EmployeeService extends BaseService {
         // Crear el empleado
         $employee = $this->model->create($data);
     
-        // Procesar el nombre: ya tenemos dos palabras garantizadas en $nombreArray
+        // Procesar el nombre
         $nombre = $nombreArray[0];
         $apellido = $nombreArray[1];
     
@@ -145,7 +145,6 @@ class EmployeeService extends BaseService {
                     'message' => 'El nombre debe contener exactamente dos palabras (nombre y apellido) separadas por un solo espacio. Ejemplo: "lola flores".'
                 ];
             }
-            // Convertir a minúsculas para la comparación
             $nombreInput = strtolower($nombreLimpio);
             // Obtener todos los empleados
             $allEmployees = $this->model->get();
@@ -164,7 +163,7 @@ class EmployeeService extends BaseService {
     
         // Validar fecha de contratación si se actualiza
         if (isset($data->fecha_contratacion)) {
-            // Validar formato de fecha con la función general
+            // Validar formato de fecha
             if ($error = $this->validator->validateDate($data->fecha_contratacion)) {
                 return ['status' => 400, 'message' => $error];
             }

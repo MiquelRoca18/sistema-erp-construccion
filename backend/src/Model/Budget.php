@@ -8,7 +8,7 @@ class Budget extends BaseModel {
         parent::__construct('presupuestos');
     }
 
-    // Nuevo método que retorna los presupuestos con el nombre del proyecto y la suma total de equipos, mano_obra y materiales
+    // Retorna los presupuestos con el nombre del proyecto y la suma total de equipos, mano_obra y materiales
     public function getBudgetsWithDetails() {
         $query = "SELECT 
                     p.presupuestos_id, 

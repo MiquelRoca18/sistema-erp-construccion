@@ -8,7 +8,6 @@ class Database {
     private $pdo;
 
     public function __construct() {
-        // Obtener las variables de entorno
         $host = $_ENV['DB_HOST'];
         $username = $_ENV['DB_USER'];
         $password = $_ENV['DB_PASS'];
@@ -41,7 +40,7 @@ class Database {
     // Crear la base de datos si no existe
     private function createDatabase($dbname) {
         $sql = "CREATE DATABASE IF NOT EXISTS $dbname";
-        $this->pdo->exec($sql); // Ejecutamos el SQL para crear la base de datos
+        $this->pdo->exec($sql); 
         
     }
 
@@ -112,11 +111,9 @@ class Database {
         );
         ";
 
-        // Ejecutar la creación de las tablas
         $this->pdo->exec($sql);
     }
 
-    // Función para insertar datos de ejemplo
     public function insertData() {
         // Verificar si los roles ya existen antes de insertarlos
         $sql = "SELECT COUNT(*) FROM roles WHERE rol = 'admin' OR rol = 'usuario'";
@@ -514,7 +511,6 @@ class Database {
         $this->pdo->exec($sql);
     }
 
-    // Función para obtener la conexión PDO
     public function getConnection() {
         return $this->pdo;
     }

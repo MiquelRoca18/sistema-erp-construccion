@@ -2,13 +2,7 @@
 namespace App\Utils;
 
 class BaseController {
-    /**
-     * Envía una respuesta JSON con el código de estado proporcionado.
-     *
-     * @param int $status Código de estado HTTP.
-     * @param string $message Mensaje de respuesta.
-     * @param mixed $data Datos adicionales para incluir en la respuesta.
-     */
+    // Envía una respuesta JSON con el código de estado proporcionado.
     protected function sendResponse($status, $message, $data = null) {
         http_response_code($status);
         
@@ -17,7 +11,6 @@ class BaseController {
             'message' => $message
         ];
 
-        // Solo incluimos 'data' si no es null
         if (!is_null($data)) {
             $response['data'] = $data;
         }
@@ -25,11 +18,7 @@ class BaseController {
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
-    /**
-     * Obtiene los datos del cuerpo de la solicitud en formato JSON.
-     *
-     * @return mixed|null Los datos decodificados o null si no hay cuerpo.
-     */
+    // Obtiene los datos del cuerpo de la solicitud en formato JSON.
     protected function getRequestData() {
         return json_decode(file_get_contents('php://input'));
     }
@@ -40,7 +29,6 @@ class BaseController {
             return $_SERVER['HTTP_AUTHORIZATION'];
         }
     
-        // Para algunos servidores, el encabezado puede estar en mayúsculas/minúsculas diferentes
         if (function_exists('apache_request_headers')) {
             $headers = apache_request_headers();
             foreach ($headers as $header => $value) {

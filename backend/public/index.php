@@ -20,7 +20,7 @@
     use App\Controller\TaskController;
     use App\Controller\AuthController;
     use App\Controller\EmployeeTaskController;
-    use App\Config\Database; // Usar la nueva clase Database
+    use App\Config\Database; 
     use App\Router;
 
     // Cargar las variables de entorno
@@ -35,22 +35,19 @@
     // Obtener el tipo de solicitud HTTP (GET, POST, DELETE, etc.)
     $requestMethod = $_SERVER['REQUEST_METHOD'];
     if ($requestMethod === 'OPTIONS') {
-        // Responder a la solicitud preflight
         header('Access-Control-Allow-Origin: http://localhost:5173');
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
         header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
         header('Access-Control-Allow-Credentials: true');
-        http_response_code(200); // Respuesta exitosa
-        exit(); // Terminar aquí para solicitudes OPTIONS
+        http_response_code(200); 
+        exit(); 
     }
 
     $scriptName = dirname($_SERVER['SCRIPT_NAME']);
     $requestUri = str_replace($scriptName, '', $_SERVER['REQUEST_URI']);
 
-    // Crear una instancia del router
     $router = new Router();
 
-    // Crear la instancia de los controladores
     $employeeController = new EmployeeController();
     $projectController = new ProjectController();
     $budgetController = new BudgetController();
@@ -59,7 +56,7 @@
     $employeeTaskController = new EmployeeTaskController();
     
     // Ejecutar la configuración de la base de datos
-    $database = new Database(); // Instancia de la clase Database
+    $database = new Database();
     $pdo = $database->getConnection();
     
     // Verificar si la base de datos y las tablas ya existen

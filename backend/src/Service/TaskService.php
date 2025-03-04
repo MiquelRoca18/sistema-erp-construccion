@@ -105,7 +105,7 @@ class TaskService extends BaseService{
             return $error;
         }
     
-        // Si la tarea no existe, consideramos que ya está eliminada y retornamos éxito.
+        // Si la tarea no existe, consideramos que ya está eliminada
         if(!$this->model->exists($id)){
              return $this->responseDeleted('La tarea ya no existe');
         }
@@ -121,9 +121,8 @@ class TaskService extends BaseService{
         return $result ? $this->responseDeleted('Tarea eliminada') : $this->responseError();   
     }
     
-    /**
-     * Elimina todas las asociaciones en la tabla empleados_tareas para la tarea dada.
-     */
+    // Elimina todas las asociaciones en la tabla empleados_tareas para la tarea dada.
+    
     private function deleteTaskAssociations($taskId) {
         try {
              $db = (new \App\Config\Database())->getConnection();

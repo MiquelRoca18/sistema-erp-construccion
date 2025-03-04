@@ -7,7 +7,6 @@ class EmployeeTask {
     private $table = 'empleados_tareas';
 
     public function __construct() {
-         // Establece la conexión a la base de datos
         $this->db = (new Database())->getConnection();
     }
 
@@ -91,6 +90,7 @@ class EmployeeTask {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
     
+    // Obtener tareas asignadas de otros empleados por empleado responsable
     public function getTasksByResponsible($employeeId) {
         $query = "
             SELECT 
@@ -116,6 +116,7 @@ class EmployeeTask {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }    
 
+    // Actualizar asignación de tarea a empleado
     public function updateAssignment($taskId, $oldEmployeeId, $newEmployeeId) {
         $query = "UPDATE " . $this->table . " 
                   SET empleados_id = :newEmployeeId 

@@ -21,7 +21,6 @@ class AuthController extends BaseController {
     }
 
     public function changePassword() {
-        // Obtener los datos del cuerpo de la solicitud
         $data = $this->getRequestData();
         
         // Obtener el token JWT del encabezado de autorización
@@ -34,10 +33,8 @@ class AuthController extends BaseController {
         // Extraer el token eliminando "Bearer "
         $token = str_replace('Bearer ', '', $headers['Authorization']);
         
-        // Llamar al servicio para actualizar la contraseña
         $result = $this->authService->updatePassword($token, $data);
         
-        // Enviar la respuesta correspondiente
         $this->sendResponse($result['status'], $result['message']);
     }
     

@@ -56,8 +56,8 @@ class ProjectService extends BaseService {
             return ['status' => 400, 'message' => 'El responsable es obligatorio'];
         }
     
-        // Crear el proyecto
         $projectId = $this->model->create($data);
+        
         if ($projectId) {
             // Crear presupuesto por defecto para el proyecto
             $budgetModel = new \App\Model\Budget();
@@ -75,7 +75,6 @@ class ProjectService extends BaseService {
                     'data' => ['project_id' => $projectId, 'budget_id' => $budgetId]
                 ];
             } else {
-                // Aquí podrías optar por revertir la creación del proyecto o manejar el error de otra forma.
                 return ['status' => 500, 'message' => 'Proyecto creado, pero fallo al crear el presupuesto'];
             }
         } else {
@@ -132,9 +131,8 @@ class ProjectService extends BaseService {
         }
     
         try {
-            // Obtener la conexión PDO mediante el getter
             $db = $this->model->getDb();
-            // Iniciar la transacción
+
             $db->beginTransaction();
     
             // Eliminar presupuestos asociados al proyecto

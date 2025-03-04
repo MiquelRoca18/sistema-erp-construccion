@@ -15,6 +15,7 @@ class Project extends BaseModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
     
+    // Obtener proyectos con el nombre del responsable
     public function getProjectsWithResponsable() {
         $query = "SELECT p.*, e.nombre AS responsable_nombre 
                   FROM " . $this->table . " p 
