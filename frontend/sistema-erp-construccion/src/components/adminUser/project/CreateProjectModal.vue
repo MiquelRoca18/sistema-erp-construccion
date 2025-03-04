@@ -96,6 +96,8 @@ const form = ref({
 
 const employees = ref<any[]>([]);
 const errorMessage = ref('');
+const fecha_inicio = ref('');
+const fecha_fin = ref('');
 
 const emit = defineEmits(['close', 'created']);
 
@@ -104,14 +106,29 @@ const closeModal = () => {
 };
 
 const handleSubmit = async () => {
-  errorMessage.value = '';
-  try {
-    await createProject(form.value);
-    emit('created');
-    closeModal();
-  } catch (error: any) {
-    console.error(error.message);
-    errorMessage.value = error.message || 'Error al crear proyecto';
+  if (isFormValid.value) {
+    loading.value = true;
+    
+    try {
+      // Crear objeto proyecto con todas las propiedades requeridas
+      const proyecto = {
+        nombre_proyecto: nombre.value,
+        descripcion: descripcion.value,
+        responsable_id: responsable_id.value,
+        // Añadir campos requeridos que faltaban
+        fecha_inicio: fecha_inicio.value || new Date().toISOString().split('T')[0], // Fecha actual si no está definida
+        fecha_fin: fecha_fin.value || null // null si no está definida aún
+      };
+      
+      await createProject(proyecto);
+      showSuccessMessage();
+      close();
+      emit('created');
+    } catch (error: any) {
+      errorMessage.value = error.message || 'Error al crear el proyecto';
+    } finally {
+      loading.value = false;
+    }
   }
 };
 

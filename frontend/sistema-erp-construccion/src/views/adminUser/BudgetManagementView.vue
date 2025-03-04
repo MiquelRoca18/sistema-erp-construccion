@@ -1,5 +1,4 @@
 <template>
-  <!-- BudgetManagementView.vue -->
   <div class="flex flex-col justify-center items-center min-h-screen p-8">
     <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
       <!-- Encabezado sin botón de crear -->

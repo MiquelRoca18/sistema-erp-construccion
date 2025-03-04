@@ -1,4 +1,15 @@
 import axios from 'axios';
+
+// Definir la interfaz Project aquí mismo para tenerla disponible
+export interface Project {
+  nombre_proyecto: string;
+  estado?: string;
+  fecha_inicio: string;
+  fecha_fin: string | null;
+  descripcion?: string;
+  responsable_id?: number | string;
+}
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const getProjects = async () => {
@@ -18,18 +29,19 @@ export const getProjects = async () => {
   }
 };
 
-export const createProject = async (projectData: {
-  nombre_proyecto: string;
-  estado?: string;
-  fecha_inicio: string;
-  fecha_fin: string;
-  descripcion?: string;
-  responsable_id?: number;
-}) => {
+export const createProject = async (projectData: Partial<Project>) => {
   try {
+    // Completar datos faltantes si es necesario
+    const projectComplete = {
+      ...projectData,
+      fecha_inicio: projectData.fecha_inicio || new Date().toISOString().split('T')[0],
+      fecha_fin: projectData.fecha_fin || null
+    };
+
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No se encontró el token.');
-    const response = await axios.post(`${API_URL}/projects`, projectData, {
+    
+    const response = await axios.post(`${API_URL}/projects`, projectComplete, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
