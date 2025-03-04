@@ -1,4 +1,5 @@
 <template>
+  <!-- ProjectManagementView.vue -->
   <div class="flex flex-col justify-center items-center min-h-screen p-8 transition-colors duration-300">
     <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
       <!-- Encabezado y acción -->
@@ -181,10 +182,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
 import { getProjects, deleteProject } from '@/service/projectService';
-import CreateProjectModal from '@/components/adminUser/CreateProjectModal.vue';
-import EditProjectModal from '@/components/adminUser/EditProjectModal.vue';
-import DeleteProjectModal from '@/components/adminUser/DeleteProjectModal.vue';
-import ProjectDetailsModal from '@/components/adminUser/ProjectDetailsModal.vue';
+import CreateProjectModal from '@/components/adminUser/project/CreateProjectModal.vue';
+import EditProjectModal from '@/components/adminUser/project/EditProjectModal.vue';
+import DeleteProjectModal from '@/components/adminUser/project/DeleteProjectModal.vue';
+import ProjectDetailsModal from '@/components/adminUser/project/ProjectDetailsModal.vue';
 
 const projects = ref<any[]>([]);
 const loading = ref(true);

@@ -155,7 +155,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
 import { getBudgets } from '@/service/budgetService';
-import EditBudgetModal from '@/components/adminUser/EditBudgetModal.vue';
+import EditBudgetModal from '@/components/adminUser/budget/EditBudgetModal.vue';
   
 const budgets = ref<any[]>([]);
 const loading = ref(false);

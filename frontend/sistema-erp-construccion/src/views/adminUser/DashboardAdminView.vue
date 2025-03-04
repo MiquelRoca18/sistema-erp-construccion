@@ -18,9 +18,9 @@
 </template>
 
 <script setup lang="ts">
-import EmployeeAccessCard from '@/components/adminUser/EmployeeAccessCard.vue';
-import ProjectAccessCard from '@/components/adminUser/ProjectAccessCard.vue';
-import TaskAccessCard from '@/components/adminUser/TaskAccessCard.vue';
-import BudgetAccessCard from '@/components/adminUser/BudgetAccessCard.vue';
+import EmployeeAccessCard from '@/components/adminUser/employee/EmployeeAccessCard.vue';
+import ProjectAccessCard from '@/components/adminUser/project/ProjectAccessCard.vue';
+import TaskAccessCard from '@/components/adminUser/task/TaskAccessCard.vue';
+import BudgetAccessCard from '@/components/adminUser/budget/BudgetAccessCard.vue';
 import AdminKpiComponent from '@/components/adminUser/AdminKpiComponent.vue';
 </script>

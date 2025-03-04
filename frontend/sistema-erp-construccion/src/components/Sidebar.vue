@@ -203,9 +203,9 @@ const employeeId = ref(null);
 const employeeName = ref("Empleado Desconocido");
 const employeePhoto = ref("/src/assets/images/employeePhoto.webp");
 
-// Inicializamos los menús como plegados
-const personalOpen = ref(false);
-const adminOpen = ref(false);
+// Inicializamos los menús como abiertos por defecto para mejor experiencia de usuario
+const personalOpen = ref(true);
+const adminOpen = ref(true);
 
 const togglePersonal = () => {
   personalOpen.value = !personalOpen.value;

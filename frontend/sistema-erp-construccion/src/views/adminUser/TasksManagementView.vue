@@ -256,11 +256,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
 import { getAllCompanyTasks, deleteTask } from '@/service/taskService';
-import CreateTaskModal from '@/components/adminUser/CreateTaskModal.vue';
-import EditTaskModal from '@/components/adminUser/EditTaskModal.vue';
-import DeleteTaskModal from '@/components/adminUser/DeleteTaskModal.vue';
-import TaskViewModal from '@/components/adminUser/TaskViewModal.vue';
-import AssignEmployeesModal from '@/components/adminUser/AssignEmployeesModal.vue';
+import CreateTaskModal from '@/components/adminUser/task/CreateTaskModal.vue';
+import EditTaskModal from '@/components/adminUser/task/EditTaskModal.vue';
+import DeleteTaskModal from '@/components/adminUser/task/DeleteTaskModal.vue';
+import TaskViewModal from '@/components/adminUser/task/TaskViewModal.vue';
+import AssignEmployeesModal from '@/components/adminUser/employee/AssignEmployeesModal.vue';
 
 const tasks = ref<any[]>([]);
 const loading = ref(true);

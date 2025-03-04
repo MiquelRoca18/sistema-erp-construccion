@@ -4,8 +4,8 @@
     <!-- Fila superior: Perfil + Gráfica -->
     <div class="flex flex-col md:flex-row w-full max-w-3xl gap-6">
       
-      <!-- Columna Perfil -->
-      <div class="flex flex-col bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full md:w-2/5 p-4 transition-colors duration-300">
+      <!-- Columna Perfil - Oculta en dispositivos pequeños -->
+      <div class="hidden md:flex md:flex-col bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full md:w-2/5 p-4 transition-colors duration-300">
         <div class="flex-grow flex flex-col items-center justify-center">
           <router-link :to="`/employee/${employeeId}`">
             <EmployeeProfileComponent
@@ -38,6 +38,16 @@
       <router-link :to="pendingTasksLink" class="block">
         <EmployeeTasksComponent />
       </router-link>
+    </div>
+    
+    <!-- Botón de logout móvil - Visible solo en dispositivos pequeños -->
+    <div class="md:hidden w-full max-w-3xl">
+      <button
+        @click="logout"
+        class="w-full px-5 py-3 bg-red-500 dark:bg-red-600 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-200"
+      >
+        Cerrar Sesión
+      </button>
     </div>
     
   </div>

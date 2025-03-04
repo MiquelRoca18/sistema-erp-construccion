@@ -190,9 +190,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
 import { getEmployees, deleteEmployee } from '@/service/employeeService';
-import CreateEmployeeModal from '@/components/adminUser/CreateEmployeeModal.vue';
-import EditEmployeeModal from '@/components/adminUser/EditEmployeeModal.vue';
-import DeleteEmployeeModal from '@/components/adminUser/DeleteEmployeeModal.vue';
+import CreateEmployeeModal from '@/components/adminUser/employee/CreateEmployeeModal.vue';
+import EditEmployeeModal from '@/components/adminUser/employee/EditEmployeeModal.vue';
+import DeleteEmployeeModal from '@/components/adminUser/employee/DeleteEmployeeModal.vue';
 
 const employees = ref<any[]>([]);
 const loading = ref(true);
