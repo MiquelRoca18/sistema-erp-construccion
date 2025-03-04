@@ -1,18 +1,6 @@
-# Ignorar las dependencias de Composer
-/vendor/
-
-# Ignorar logs
-*.log
-/logs/
-
 # Ignorar archivos de sistema
 .DS_Store
 .idea
 .vscode
 
-# Ignorar directorios de caché y temporales
-/tmp/
-/cache/
-
-# Ignorar archivos de configuración
-.env
+/frontend/
