@@ -13,6 +13,3 @@
 # Ignorar directorios de caché y temporales
 /tmp/
 /cache/
-
-# Ignorar archivos de configuración
-/backend/
