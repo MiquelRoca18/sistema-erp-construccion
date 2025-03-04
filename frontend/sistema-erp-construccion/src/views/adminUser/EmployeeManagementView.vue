@@ -29,8 +29,7 @@
         <div
           v-for="employee in paginatedEmployees"
           :key="employee.empleados_id"
-          class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors duration-300 cursor-pointer"
-          @click="openViewModal(employee)"
+          class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors duration-300"
         >
           <div class="flex justify-between items-center">
             <div>
@@ -39,13 +38,13 @@
             <!-- Botones: Editar y Eliminar, evitando la propagación del clic -->
             <div class="flex space-x-2">
               <button
-                @click.stop="openEditModal(employee)"
+                @click="openEditModal(employee)"
                 class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
               >
                 Editar
               </button>
               <button
-                @click.stop="openDeleteModal(employee)"
+                @click="openDeleteModal(employee)"
                 class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-sm"
               >
                 Eliminar
@@ -77,8 +76,7 @@
             <tr
               v-for="employee in paginatedEmployees"
               :key="employee.empleados_id"
-              class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors duration-300 cursor-pointer"
-              @click="openViewModal(employee)"
+              class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors duration-300"
             >
               <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ employee.empleados_id }}</td>
               <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ employee.nombre }}</td>
@@ -86,7 +84,7 @@
               <td class="px-6 py-4 hidden xl:table-cell text-gray-800 dark:text-gray-200">{{ employee.telefono }}</td>
               <td class="px-6 py-4 hidden xl:table-cell text-gray-800 dark:text-gray-200">{{ employee.correo }}</td>
               <td class="px-6 py-4">
-                <div class="flex flex-col sm:flex-row gap-1 sm:gap-2" @click.stop>
+                <div class="flex flex-col sm:flex-row gap-1 sm:gap-2">
                   <button
                     @click="openEditModal(employee)"
                     class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs sm:text-sm"
