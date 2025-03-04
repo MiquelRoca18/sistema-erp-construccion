@@ -96,6 +96,7 @@ const form = ref({
 
 const employees = ref<any[]>([]);
 const errorMessage = ref('');
+const loading = ref(false);
 const fecha_inicio = ref('');
 const fecha_fin = ref('');
 
@@ -105,6 +106,12 @@ const closeModal = () => {
   emit('close');
 };
 
+import { computed } from 'vue';
+
+const isFormValid = computed(() => {
+  return form.value.nombre_proyecto && form.value.descripcion && form.value.responsable_id;
+});
+
 const handleSubmit = async () => {
   if (isFormValid.value) {
     loading.value = true;
@@ -112,16 +119,14 @@ const handleSubmit = async () => {
     try {
       // Crear objeto proyecto con todas las propiedades requeridas
       const proyecto = {
-        nombre_proyecto: nombre.value,
-        descripcion: descripcion.value,
-        responsable_id: responsable_id.value,
-        // Añadir campos requeridos que faltaban
+        nombre_proyecto: form.value.nombre_proyecto,
+        descripcion: form.value.descripcion,
+        responsable_id: form.value.responsable_id,  
         fecha_inicio: fecha_inicio.value || new Date().toISOString().split('T')[0], // Fecha actual si no está definida
         fecha_fin: fecha_fin.value || null // null si no está definida aún
       };
       
       await createProject(proyecto);
-      showSuccessMessage();
       close();
       emit('created');
     } catch (error: any) {
