@@ -12,7 +12,7 @@ import Chart from 'chart.js/auto';
 const props = defineProps({
   employeeId: {
     type: Number,
-    required: false, // Puede ser nulo inicialmente
+    required: false, 
   },
 });
 
