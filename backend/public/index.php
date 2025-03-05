@@ -32,11 +32,11 @@
     // Definir variables de entorno predeterminadas para entorno de producción en Render
     // Estas se usarán solo si no se encuentra un archivo .env
     if (!file_exists(__DIR__ . '/../.env')) {
-        $_ENV['DB_HOST'] = getenv('DB_HOST') ?: 'db-erp-construccion.c77pqfk1wxdy.us-east-1.rds.amazonaws.com';
-        $_ENV['DB_USER'] = getenv('DB_USER') ?: 'admin';
-        $_ENV['DB_PASS'] = getenv('DB_PASS') ?: 'admin$123';
-        $_ENV['DB_NAME'] = getenv('DB_NAME') ?: 'ERP_CONSTRUCTION';
-        $_ENV['SECRET_KEY'] = getenv('SECRET_KEY') ?: 'clavesecreta12345';
+        $_ENV['DB_HOST'] = getenv('DB_HOST') ?: getenv('MYSQLHOST') ?: 'localhost';
+        $_ENV['DB_USER'] = getenv('DB_USER') ?: getenv('MYSQLUSER') ?: 'root';
+        $_ENV['DB_PASS'] = getenv('DB_PASS') ?: getenv('MYSQLPASSWORD') ?: '';
+        $_ENV['DB_NAME'] = getenv('DB_NAME') ?: getenv('MYSQLDATABASE') ?: 'tu_base_de_datos';
+        $_ENV['SECRET_KEY'] = getenv('SECRET_KEY') ?: 'un_valor_secreto_predeterminado';
         $_ENV['JWT_EXPIRES_IN'] = getenv('JWT_EXPIRES_IN') ?: 3600;
     } else {
         // Cargar las variables de entorno desde .env si existe
