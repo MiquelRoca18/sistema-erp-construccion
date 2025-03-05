@@ -9,12 +9,14 @@ interface LoginResponse {
 }
 
 export const login = async (credentials: { username: string; password_hash: string }): Promise<LoginResponse> => {
+  console.log("credentials", credentials);
   try {
     const response = await axios.post(`${API_URL}/auth/login`, credentials, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
+    console.log(response.data);
     console.log(response.data.data);
     return response.data.data; 
   } catch (error: any) {
