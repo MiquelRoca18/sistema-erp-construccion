@@ -223,6 +223,7 @@ onMounted(async () => {
     try {
       const token = localStorage.getItem('token');
       const employeeData = await getEmployeeData(user, token);
+      console.log("Datos del empleado:", employeeData);
       employeeId.value = employeeData.empleados_id;
       employeeName.value = employeeData.nombre || "Empleado Desconocido";
       employeePhoto.value = employeeData.photo || employeePhoto;

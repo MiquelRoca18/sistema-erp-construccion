@@ -26,16 +26,11 @@ export const login = async (credentials: { username: string; password_hash: stri
 
 export const getEmployeeData = async (employeeId: number, token: string) => {
   try {
-    console.log("Obteniendo datos para el empleado:", employeeId);
     const response = await axios.get(`${API_URL}/employees/${employeeId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
     });
-    
-    console.log("Respuesta completa:", response);
-    console.log("Datos del empleado:", response.data);
-    console.log("Datos.data:", response.data.data);
     
     // Asegúrate de devolver los datos correctos
     return response.data.data; 

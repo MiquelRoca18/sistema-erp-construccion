@@ -65,7 +65,6 @@ const fetchTasks = async () => {
 
   try {
     loading.value = true;
-    console.log("Fetching tasks for employee", props.employeeId);
     const response = await getPendingTasks(props.employeeId);
     tasks.value = response;
   } catch (err) {

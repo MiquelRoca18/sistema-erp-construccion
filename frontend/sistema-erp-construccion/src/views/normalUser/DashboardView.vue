@@ -66,27 +66,16 @@ onMounted(async () => {
   try {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
-      // Agregamos más logs de depuración
-      console.log("Usuario obtenido de localStorage:", user);
-      console.log("ID de empleado a buscar:", user.empleados_id);
 
       const employeeData = await getEmployeeData(user.empleados_id, localStorage.getItem('token'));
       
-      // Logs de depuración detallados
-      console.log("Datos del empleado recibidos:", employeeData);
-      console.log("Tipo de datos:", typeof employeeData);
-      console.log("Propiedades de employeeData:", Object.keys(employeeData));
+      ("Tipo de datos:", typeof employeeData);
 
       // Asignación segura de valores
       if (employeeData && typeof employeeData === 'object') {
         employeeId.value = employeeData.empleados_id ?? null;
         employeeName.value = employeeData.nombre || "Empleado Desconocido";
         employeePhoto.value = employeeData.photo || defaultEmployeePhoto;
-
-        console.log("Valores asignados:");
-        console.log("ID de empleado:", employeeId.value);
-        console.log("Nombre de empleado:", employeeName.value);
-        console.log("Foto de empleado:", employeePhoto.value);
       } else {
         console.error("Datos de empleado inválidos");
         router.push('/');
