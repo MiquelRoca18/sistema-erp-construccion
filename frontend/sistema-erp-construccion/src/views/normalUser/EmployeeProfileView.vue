@@ -116,12 +116,14 @@ onMounted(async () => {
     const data = await getEmployeeData(employeeId);
     employee.value = data;
     
-    console.log("Datos de la foto:", {
-      photo: data.photo,
-      defaultPhoto: defaultEmployeePhoto
-    });
-    
-    employeePhoto.value = data.photo || defaultEmployeePhoto;
+    // Modificación para manejar la foto
+    if (data.photo) {
+      // Si hay una foto en los datos, usarla
+      employeePhoto.value = data.photo;
+    } else {
+      // Si no hay foto, usar la foto por defecto
+      employeePhoto.value = defaultEmployeePhoto;
+    }
   } catch (error) {
     console.error("Error al cargar el perfil del empleado:", error);
   }
