@@ -191,7 +191,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { getEmployeeData } from '@/service/authService';
 import { userRole } from '@/service/authStore';
-import employeePhoto from '@/assets/images/employeePhoto.webp'
+import defaultEmployeePhoto from '@/assets/images/employeePhoto.webp'
 
 const props = defineProps({
   sidebarOpen: Boolean,
@@ -202,7 +202,7 @@ const emit = defineEmits(['toggleSidebar', 'toggleDarkMode']);
 
 const employeeId = ref(null);
 const employeeName = ref("Empleado Desconocido");
-const employeePhoto = ref(employeePhoto);
+const employeePhoto = ref(defaultEmployeePhoto);
 
 // Inicializamos los menús como abiertos por defecto para mejor experiencia de usuario
 const personalOpen = ref(true);

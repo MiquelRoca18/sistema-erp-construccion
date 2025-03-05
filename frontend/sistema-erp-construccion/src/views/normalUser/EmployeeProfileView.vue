@@ -90,12 +90,12 @@
 import { ref, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getEmployeeData, updateEmployee, changePassword as apiChangePassword } from '@/service/authService';
-import employeePhoto from '@/assets/images/employeePhoto.webp'
+import defaultEmployeePhoto from '@/assets/images/employeePhoto.webp'
 
 const route = useRoute();
 const router = useRouter();
 const employee = ref({});
-const employeePhoto = ref(employeePhoto);
+const employeePhoto = ref(defaultEmployeePhoto);
 const employeeId = route.params.id;
 
 // Estado para el modal de cambio de contraseña

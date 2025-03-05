@@ -61,12 +61,12 @@ import { logout as authLogout, userRole } from '@/service/authStore';
 import EmployeeProfileComponent from "@/components/normalUser/EmployeeProfileComponent.vue";
 import EmployeeTasksComponent from "@/components/normalUser/EmployeeTasksComponent.vue";
 import EmployeeTasksGraph from "@/components/normalUser/EmployeeTasksGraph.vue";
-import employeePhoto from '@/assets/images/employeePhoto.webp'
+import defaultEmployeePhoto from '@/assets/images/employeePhoto.webp'
 
 const router = useRouter();
 const employeeId = ref(null);
 const employeeName = ref("Empleado Desconocido");
-const employeePhoto = ref(employeePhoto);
+const employeePhoto = ref(defaultEmployeePhoto);
 
 onMounted(async () => {
   const user = JSON.parse(localStorage.getItem("user"));
