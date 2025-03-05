@@ -17,7 +17,8 @@ class EmployeeService extends BaseService {
     }
 
     public function getEmployee($employeeId) {
-        echo 'Service';
+        error_log('[DEBUG] Service');
+
         // Validar ID
         if ($error = $this->validateId($employeeId)) {
             return $error;

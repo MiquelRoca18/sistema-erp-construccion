@@ -93,8 +93,8 @@
             $database->insertData();  
         }
 
-        echo 'Index';
-        echo $requestUri;
+        error_log('[DEBUG] Index');
+        error_log('[DEBUG] Request URI: ' . $requestUri);
 
         // Definir las rutas para los empleados
         $router->addRoute('GET', 'employees', [$employeeController, 'get']);
