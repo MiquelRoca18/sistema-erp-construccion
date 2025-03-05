@@ -26,15 +26,28 @@ class BaseModel {
 
     // Obtener un registro por su ID
     public function getById($id) {
-        error_log('[DEBUG] BaseModel');
-        error_log('[DEBUG] table: ' .  $this->table);
-        error_log('[DEBUG] id: ' . $id);
+        error_log('[DEBUG] BaseModel getById - Inicio');
+        error_log('[DEBUG] BaseModel - table: ' .  $this->table);
+        error_log('[DEBUG] BaseModel - id: ' . print_r($id, true));
         
         $query = 'SELECT * FROM ' . $this->table . ' WHERE ' . $this->table . '_id = :id';
+        error_log('[DEBUG] BaseModel - Query: ' . $query);
+        
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        
+        try {
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            error_log('[DEBUG] BaseModel - Resultado fetch:');
+            error_log(print_r($result, true));
+            
+            return $result;
+        } catch (\PDOException $e) {
+            error_log('[ERROR] BaseModel - Error en getById: ' . $e->getMessage());
+            return null;
+        }
     }
 
     // Verificar si un registro existe
