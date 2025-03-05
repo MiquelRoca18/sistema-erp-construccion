@@ -63,6 +63,7 @@ const router = useRouter();
 const handleSubmit = async () => {
   try {
     const response = await apiLogin({ username: username.value, password_hash: password_hash.value });
+    console.log(response);
     authLogin({ token: response.token, empleados_id: response.empleados_id, rol: response.rol });
     router.push('/dashboard');
   } catch (error: any) {
