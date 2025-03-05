@@ -44,8 +44,6 @@
             $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
             $dotenv->load();
         } catch (Exception $e) {
-            // Si hay error al cargar .env, registrar pero seguir con la ejecución
-            error_log('Error cargando el archivo .env: ' . $e->getMessage());
             
             // Establecer valores predeterminados solo si las variables no existen
             if (!isset($_ENV['DB_HOST'])) $_ENV['DB_HOST'] = getenv('MYSQLHOST') ?: 'localhost';
@@ -70,10 +68,6 @@
 
     // Eliminar barras iniciales
     $requestUri = ltrim($requestUri, '/');
-
-    error_log("Script Name: $scriptName");
-    error_log("Request URI original: " . $_SERVER['REQUEST_URI']);
-    error_log("Request URI procesada: $requestUri");
 
     $router = new Router();
 
