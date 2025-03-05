@@ -66,8 +66,11 @@ onMounted(async () => {
   const user = JSON.parse(localStorage.getItem("user"));
   if (user) {
     const employeeData = await getEmployeeData(user.empleados_id, localStorage.getItem('token'));
-    // Asignamos los datos del empleado obtenidos del backend
+    console.log("Comprobación: " + employeeData);
+    console.log("1: "+employeeId.value);
     employeeId.value = employeeData.empleados_id; 
+    // employeeId console.log
+    console.log("2: "+employeeId.value);
     employeeName.value = employeeData.nombre || "Empleado Desconocido";
     employeePhoto.value = employeeData.photo || employeePhoto;
   } else {
