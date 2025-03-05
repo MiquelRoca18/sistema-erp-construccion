@@ -58,6 +58,9 @@
         }
     }
 
+    // Obtener el método de la solicitud HTTP
+    $requestMethod = $_SERVER['REQUEST_METHOD'];
+
     $scriptName = dirname($_SERVER['SCRIPT_NAME']);
     $requestUri = str_replace($scriptName, '', $_SERVER['REQUEST_URI']);
 
