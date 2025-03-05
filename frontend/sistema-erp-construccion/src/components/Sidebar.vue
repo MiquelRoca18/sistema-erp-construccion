@@ -222,11 +222,16 @@ onMounted(async () => {
   if (user) {
     try {
       const token = localStorage.getItem('token');
-      const employeeData = await getEmployeeData(user, token);
+      console.log("Usuario antes de getEmployeeData:", user);
+      
+      // Asegúrate de pasar el ID del empleado
+      const employeeData = await getEmployeeData(user.empleados_id, token);
+      
       console.log("Datos del empleado:", employeeData);
+      
       employeeId.value = employeeData.empleados_id;
       employeeName.value = employeeData.nombre || "Empleado Desconocido";
-      employeePhoto.value = employeeData.photo || employeePhoto;
+      employeePhoto.value = employeeData.photo || defaultEmployeePhoto;
     } catch (error) {
       console.error("Error al cargar los datos del empleado:", error);
     }
