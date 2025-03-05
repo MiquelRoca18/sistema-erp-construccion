@@ -2,19 +2,21 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Obtener las tareas pendientes
-export const getPendingTasks = async (employeeId: any) => {
+export const getPendingTasks = async (employeeId: number | null) => {
+  if (!employeeId) {
+    throw new Error('ID de empleado no válido');
+  }
+
   try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('No se encontró el token.');
-    }
     const response = await axios.get(`${API_URL}/employee-tasks/pending-tasks/${employeeId}`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
     });
-    return Array.isArray(response.data.data) ? response.data.data : [];
+    
+    return response.data.data;
   } catch (error: any) {
+    console.error('Error al obtener tareas pendientes:', error);
     throw new Error(error.response?.data?.message || 'Error al obtener tareas pendientes');
   }
 };
