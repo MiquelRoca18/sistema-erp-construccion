@@ -115,7 +115,7 @@ onMounted(async () => {
   try {
     const data = await getEmployeeData(employeeId);
     employee.value = data;
-    employeePhoto.value = data.photo || '/src/assets/images/employeePhoto.webp';
+    employeePhoto.value = data.photo || employeePhoto;
   } catch (error) {
     console.error("Error al cargar el perfil del empleado:", error);
   }

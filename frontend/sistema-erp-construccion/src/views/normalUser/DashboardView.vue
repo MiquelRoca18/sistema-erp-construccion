@@ -72,10 +72,11 @@ onMounted(async () => {
   const user = JSON.parse(localStorage.getItem("user"));
   if (user) {
     const employeeData = await getEmployeeData(user, localStorage.getItem('token'));
+    console.log("Datos Empleado: "+employeeData);
     // Asignamos los datos del empleado obtenidos del backend
     employeeId.value = employeeData.empleados_id; 
     employeeName.value = employeeData.nombre || "Empleado Desconocido";
-    employeePhoto.value = employeeData.photo || "/src/assets/images/employeePhoto.webp";
+    employeePhoto.value = employeeData.photo || employeePhoto;
   } else {
     router.push('/');
   }
@@ -85,7 +86,7 @@ const logout = () => {
   authLogout();
   employeeId.value = null;
   employeeName.value = "Empleado Desconocido";
-  employeePhoto.value = "/src/assets/images/employeePhoto.webp";
+  employeePhoto.value = employeePhoto;
   router.push('/');
 };
 
