@@ -61,8 +61,15 @@
     // Obtener el método de la solicitud HTTP
     $requestMethod = $_SERVER['REQUEST_METHOD'];
 
+    // Obtener la ruta relativa
+    $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     $scriptName = dirname($_SERVER['SCRIPT_NAME']);
-    $requestUri = str_replace($scriptName, '', $_SERVER['REQUEST_URI']);
+
+    // Eliminar el prefijo del script name de la URI
+    $requestUri = preg_replace('#^' . preg_quote($scriptName, '#') . '#', '', $requestUri);
+
+    // Eliminar barras iniciales
+    $requestUri = ltrim($requestUri, '/');
 
     error_log("Script Name: $scriptName");
     error_log("Request URI original: " . $_SERVER['REQUEST_URI']);
@@ -121,7 +128,7 @@
         $router->addRoute('DELETE', '/tasks/([0-9]+)', [$taskController, 'deleteTask']);
         
         // Definir las rutas para la autenticación
-        $router->addRoute('POST', '/auth/login', [$authController, 'login']);
+        $router->addRoute('POST', 'auth/login', [$authController, 'login']);
         $router->addRoute('POST', '/auth/logout', [$authController, 'logout']); 
         $router->addRoute('POST', '/auth/change-password', [$authController, 'changePassword']);
 

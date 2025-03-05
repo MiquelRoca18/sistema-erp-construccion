@@ -12,10 +12,26 @@ class AuthController extends BaseController {
 
     public function login() {
         error_log("Método login() llamado");
+        
+        // Verificar el método de la solicitud
+        error_log("Método HTTP: " . $_SERVER['REQUEST_METHOD']);
+        
+        // Obtener datos de la solicitud
         $data = $this->getRequestData();
+        
         error_log("Datos recibidos: " . print_r($data, true));
+        
+        // Verificar si los datos son los esperados
+        if (!isset($data->username) || !isset($data->password_hash)) {
+            error_log("Datos de login incompletos");
+            $this->sendResponse(400, 'Datos de login incompletos');
+            return;
+        }
+        
         $result = $this->authService->authenticate($data);
+        
         error_log("Resultado de autenticación: " . print_r($result, true));
+        
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
 
