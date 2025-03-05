@@ -8,10 +8,10 @@ class Database {
     private $pdo;
 
     public function __construct() {
-        $host = $_ENV['DB_HOST'];
-        $username = $_ENV['DB_USER'];
-        $password = $_ENV['DB_PASS'];
-        $dbname = $_ENV['DB_NAME'];
+        $host = $_ENV['DB_HOST'] ?? getenv('DB_HOST') ?? 'localhost';
+        $username = $_ENV['DB_USER'] ?? getenv('DB_USER') ?? 'root';
+        $password = $_ENV['DB_PASS'] ?? getenv('DB_PASS') ?? '';
+        $dbname = $_ENV['DB_NAME'] ?? getenv('DB_NAME') ?? 'ERP_CONSTRUCTION';
 
         try {
             // Conectar al servidor MySQL sin especificar la base de datos
