@@ -1,9 +1,7 @@
 <template>
   <div class="min-h-screen flex flex-col justify-center items-center p-6 gap-6 w-full transition-colors duration-300">
-    
     <!-- Fila superior: Perfil + Gráfica -->
     <div class="flex flex-col md:flex-row w-full max-w-3xl gap-6">
-      
       <!-- Columna Perfil - Oculta en dispositivos pequeños -->
       <div class="hidden md:flex md:flex-col bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full md:w-2/5 p-4 transition-colors duration-300">
         <div class="flex-grow flex flex-col items-center justify-center">
@@ -21,7 +19,6 @@
           Logout
         </button>
       </div>
-      
       <!-- Columna Gráfica (solo se renderiza si employeeId existe) -->
       <div 
         v-if="employeeId"
@@ -32,14 +29,12 @@
         </router-link>
       </div>
     </div>
-    
     <!-- Fila inferior: Tareas Pendientes -->
     <div class="bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full max-w-3xl p-4 transition-colors duration-300">
       <router-link :to="pendingTasksLink" class="block">
-        <EmployeeTasksComponent />
+        <EmployeeTasksComponent :employeeId="employeeId" />
       </router-link>
     </div>
-    
     <!-- Botón de logout móvil - Visible solo en dispositivos pequeños -->
     <div class="md:hidden w-full max-w-3xl">
       <button
@@ -49,7 +44,6 @@
         Cerrar Sesión
       </button>
     </div>
-    
   </div>
 </template>
 

@@ -39,6 +39,13 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getPendingTasks } from '@/service/taskService';
 
+const props = defineProps({
+  employeeId: {
+    type: Number,
+    required: true
+  }
+});
+
 const tasks = ref([]);
 const loading = ref(true);
 const error = ref('');
@@ -46,12 +53,7 @@ const router = useRouter();
 
 const fetchTasks = async () => {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) {
-      router.push('/');
-      return;
-    }
-    const response = await getPendingTasks(user);
+    const response = await getPendingTasks(props.employeeId);
     tasks.value = response;
   } catch (err) {
     error.value = 'Error al obtener las tareas pendientes.';
