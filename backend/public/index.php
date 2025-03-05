@@ -95,7 +95,7 @@
 
         // Definir las rutas para los empleados
         $router->addRoute('GET', 'employees', [$employeeController, 'get']);
-        $router->addRoute('GET', 'employees/([0-9]+)', [$employeeController, 'getEmployee']);
+        $router->addRoute('GET', 'employees/{employeeId}', ['EmployeeController', 'getEmployee']);
         $router->addRoute('POST', 'employees', [$employeeController, 'createEmployee']);
         $router->addRoute('PUT', 'employees/([0-9]+)', [$employeeController, 'updateEmployee']);
         $router->addRoute('DELETE', 'employees/([0-9]+)', [$employeeController, 'deleteEmployee']);
