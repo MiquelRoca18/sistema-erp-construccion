@@ -93,6 +93,9 @@
             $database->insertData();  
         }
 
+        echo 'Index';
+        echo $requestUri;
+
         // Definir las rutas para los empleados
         $router->addRoute('GET', 'employees', [$employeeController, 'get']);
         $router->addRoute('GET', 'employees/([0-9]+)', [$employeeController, 'getEmployee']);
