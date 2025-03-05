@@ -5,10 +5,15 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     unzip \
+    curl \
+    git \
     && docker-php-ext-install zip pdo pdo_mysql
 
 # Habilitar mod_rewrite
 RUN a2enmod rewrite
+
+# Instalar Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copiar el código fuente
 COPY . /var/www/html/
@@ -18,6 +23,9 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 
 # Configurar directorio de trabajo
 WORKDIR /var/www/html
+
+# Instalar dependencias de Composer
+RUN composer install --no-dev --optimize-autoloader
 
 # Cambiar permisos
 RUN chown -R www-data:www-data /var/www/html
