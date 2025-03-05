@@ -51,7 +51,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getEmployeeData } from '@/service/authService';
-import { logout as authLogout, userRole } from '@/service/authStore';
+import { logout as authLogout } from '@/service/authStore';
 import EmployeeProfileComponent from "@/components/normalUser/EmployeeProfileComponent.vue";
 import EmployeeTasksComponent from "@/components/normalUser/EmployeeTasksComponent.vue";
 import EmployeeTasksGraph from "@/components/normalUser/EmployeeTasksGraph.vue";
@@ -63,17 +63,39 @@ const employeeName = ref("Empleado Desconocido");
 const employeePhoto = ref(defaultEmployeePhoto);
 
 onMounted(async () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user) {
-    const employeeData = await getEmployeeData(user.empleados_id, localStorage.getItem('token'));
-    console.log("Comprobación: " + employeeData);
-    console.log("1: "+employeeId.value);
-    employeeId.value = employeeData.empleados_id; 
-    // employeeId console.log
-    console.log("2: "+employeeId.value);
-    employeeName.value = employeeData.nombre || "Empleado Desconocido";
-    employeePhoto.value = employeeData.photo || employeePhoto;
-  } else {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      // Agregamos más logs de depuración
+      console.log("Usuario obtenido de localStorage:", user);
+      console.log("ID de empleado a buscar:", user.empleados_id);
+
+      const employeeData = await getEmployeeData(user.empleados_id, localStorage.getItem('token'));
+      
+      // Logs de depuración detallados
+      console.log("Datos del empleado recibidos:", employeeData);
+      console.log("Tipo de datos:", typeof employeeData);
+      console.log("Propiedades de employeeData:", Object.keys(employeeData));
+
+      // Asignación segura de valores
+      if (employeeData && typeof employeeData === 'object') {
+        employeeId.value = employeeData.empleados_id ?? null;
+        employeeName.value = employeeData.nombre || "Empleado Desconocido";
+        employeePhoto.value = employeeData.photo || defaultEmployeePhoto;
+
+        console.log("Valores asignados:");
+        console.log("ID de empleado:", employeeId.value);
+        console.log("Nombre de empleado:", employeeName.value);
+        console.log("Foto de empleado:", employeePhoto.value);
+      } else {
+        console.error("Datos de empleado inválidos");
+        router.push('/');
+      }
+    } else {
+      router.push('/');
+    }
+  } catch (error) {
+    console.error("Error al obtener datos del empleado:", error);
     router.push('/');
   }
 });
@@ -82,7 +104,7 @@ const logout = () => {
   authLogout();
   employeeId.value = null;
   employeeName.value = "Empleado Desconocido";
-  employeePhoto.value = employeePhoto;
+  employeePhoto.value = defaultEmployeePhoto;
   router.push('/');
 };
 
