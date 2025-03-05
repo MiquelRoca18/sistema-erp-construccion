@@ -29,15 +29,6 @@
     use App\Config\Database; 
     use App\Router;
 
-    // Función de depuración mejorada
-    function debugLog($message, $data = null) {
-        $logMessage = '[DEBUG] ' . $message;
-        if ($data !== null) {
-            $logMessage .= ': ' . (is_string($data) ? $data : json_encode($data));
-        }
-        error_log($logMessage);
-    }
-
     // Definir variables de entorno predeterminadas para entorno de producción
     if (!file_exists(__DIR__ . '/../.env')) {
         $_ENV['DB_HOST'] = getenv('DB_HOST') ?: getenv('MYSQLHOST') ?: 'localhost';
@@ -68,10 +59,6 @@
     // Obtener el método de la solicitud HTTP
     $requestMethod = $_SERVER['REQUEST_METHOD'];
 
-    // Depuración de la solicitud
-    debugLog('Request Method', $requestMethod);
-    debugLog('Full Request URI', $_SERVER['REQUEST_URI']);
-
     // Obtener la ruta relativa
     $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     $scriptName = dirname($_SERVER['SCRIPT_NAME']);
@@ -79,11 +66,8 @@
     // Eliminar el prefijo del script name de la URI
     $requestUri = preg_replace('#^' . preg_quote($scriptName, '#') . '#', '', $requestUri);
 
-    // Eliminar barras iniciales y finales
-    $requestUri = trim($requestUri, '/');
-
-    // Depuración de URI procesada
-    debugLog('Processed Request URI', $requestUri);
+    // Eliminar barras iniciales
+    $requestUri = ltrim($requestUri, '/');
 
     $router = new Router();
 
@@ -154,12 +138,6 @@
         $router->addRoute('GET', 'employee-tasks/responsible/([0-9]+)', [$employeeTaskController, 'getTasksByResponsible']);
         $router->addRoute('PUT', 'employee-tasks/assignment/([0-9]+)', [$employeeTaskController, 'updateAssignment']);
         
-        // Depuración adicional antes de despachar la ruta
-        debugLog('Route Matching', [
-            'URI' => $requestUri,
-            'Method' => $requestMethod
-        ]);
-
         // Disparar el despachador de rutas
         $router->dispatch($requestUri, $requestMethod);
     } catch (Exception $e) {

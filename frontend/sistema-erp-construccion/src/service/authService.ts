@@ -26,15 +26,21 @@ export const login = async (credentials: { username: string; password_hash: stri
 
 export const getEmployeeData = async (employeeId: number, token: string) => {
   try {
-    console.log("Data:", employeeId, token);
+    if (!employeeId || !token) {
+      throw new Error('ID de empleado o token inválido');
+    }
+
+    console.log("Obteniendo datos para el empleado:", employeeId);
     const response = await axios.get(`${API_URL}/employees/${employeeId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
     });
+    
     console.log("Datos del empleado:", response.data.data);
     return response.data.data; 
   } catch (error: any) {
+    console.error('Error al obtener datos del empleado:', error);
     throw new Error(error.response?.data?.message || 'Error al obtener datos del empleado');
   }
 };

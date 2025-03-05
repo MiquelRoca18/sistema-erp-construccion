@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col justify-center items-center p-6 gap-6 w-full transition-colors duration-300">
+  <div v-if="employeeId" class="min-h-screen flex flex-col justify-center items-center p-6 gap-6 w-full transition-colors duration-300">
     <!-- Fila superior: Perfil + Gráfica -->
     <div class="flex flex-col md:flex-row w-full max-w-3xl gap-6">
       <!-- Columna Perfil - Oculta en dispositivos pequeños -->
@@ -19,9 +19,8 @@
           Logout
         </button>
       </div>
-      <!-- Columna Gráfica (solo se renderiza si employeeId existe) -->
+      <!-- Columna Gráfica -->
       <div 
-        v-if="employeeId"
         class="flex flex-col bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full md:w-3/5 p-4 transition-colors duration-300"
       >
         <router-link :to="{ path: `/tasks/${employeeId}` }" class="block">
@@ -45,13 +44,16 @@
       </button>
     </div>
   </div>
+  <div v-else class="flex justify-center items-center h-screen">
+    Cargando...
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getEmployeeData } from '@/service/authService';
-import { logout as authLogout, userRole } from '@/service/authStore';
+import { logout as authLogout } from '@/service/authStore';
 import EmployeeProfileComponent from "@/components/normalUser/EmployeeProfileComponent.vue";
 import EmployeeTasksComponent from "@/components/normalUser/EmployeeTasksComponent.vue";
 import EmployeeTasksGraph from "@/components/normalUser/EmployeeTasksGraph.vue";
@@ -63,14 +65,19 @@ const employeeName = ref("Empleado Desconocido");
 const employeePhoto = ref(defaultEmployeePhoto);
 
 onMounted(async () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user) {
-    const employeeData = await getEmployeeData(user.empleados_id, localStorage.getItem('token'));
-    // Asignamos los datos del empleado obtenidos del backend
-    employeeId.value = employeeData.empleados_id; 
-    employeeName.value = employeeData.nombre || "Empleado Desconocido";
-    employeePhoto.value = employeeData.photo || employeePhoto;
-  } else {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.empleados_id) {
+      const employeeData = await getEmployeeData(user.empleados_id, localStorage.getItem('token'));
+      // Asignamos los datos del empleado obtenidos del backend
+      employeeId.value = employeeData.empleados_id; 
+      employeeName.value = employeeData.nombre || "Empleado Desconocido";
+      employeePhoto.value = employeeData.photo || defaultEmployeePhoto;
+    } else {
+      router.push('/');
+    }
+  } catch (error) {
+    console.error('Error al cargar datos del empleado:', error);
     router.push('/');
   }
 });
@@ -79,14 +86,14 @@ const logout = () => {
   authLogout();
   employeeId.value = null;
   employeeName.value = "Empleado Desconocido";
-  employeePhoto.value = employeePhoto;
+  employeePhoto.value = defaultEmployeePhoto;
   router.push('/');
 };
 
 const pendingTasksLink = computed(() => {
-  return {
-    path: `/tasks/${employeeId.value}`,
-    query: { status: 'pendiente' }
-  };
+  // Solo genera el enlace si employeeId tiene un valor
+  return employeeId.value 
+    ? { path: `/tasks/${employeeId.value}`, query: { status: 'pendiente' } }
+    : { path: '/' };
 });
 </script>
