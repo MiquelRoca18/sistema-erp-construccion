@@ -21,7 +21,7 @@ export function login(userData: { token: string; empleados_id: number; rol: stri
   state.user = userData.empleados_id;
   state.role = userData.rol;
   localStorage.setItem('token', userData.token);
-  localStorage.setItem('user', JSON.stringify(userData.empleados_id));
+  localStorage.setItem('user', JSON.stringify(userData));
   localStorage.setItem('role', userData.rol);
 }
 
