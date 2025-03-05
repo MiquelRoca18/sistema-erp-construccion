@@ -16,7 +16,7 @@ class Database {
 
         try {
             // Conectar al servidor MySQL sin especificar la base de datos
-            $this->pdo = new PDO("mysql:host={$host};charset=utf8", $username, $password);
+            $this->pdo = new PDO("mysql:host={$host};port={$port};dbname={$dbname};charset=utf8", $username, $password);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // Verificar si la base de datos existe
