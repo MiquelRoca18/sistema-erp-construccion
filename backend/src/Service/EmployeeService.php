@@ -27,7 +27,7 @@ class EmployeeService extends BaseService {
             return $error;
         }
 
-        $employee = $this->model->getByid($employeeId);
+        $employee = $this->model->getById($employeeId);
         return $this->responseFound($employee, 'Empleado encontrado');
     }
 
