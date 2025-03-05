@@ -115,7 +115,13 @@ onMounted(async () => {
   try {
     const data = await getEmployeeData(employeeId);
     employee.value = data;
-    employeePhoto.value = data.photo || employeePhoto;
+    
+    console.log("Datos de la foto:", {
+      photo: data.photo,
+      defaultPhoto: defaultEmployeePhoto
+    });
+    
+    employeePhoto.value = data.photo || defaultEmployeePhoto;
   } catch (error) {
     console.error("Error al cargar el perfil del empleado:", error);
   }
