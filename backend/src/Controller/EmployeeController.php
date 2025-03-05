@@ -17,15 +17,11 @@ class EmployeeController extends BaseController {
     }
 
     public function getEmployee($employeeId) {
-        error_log('[DEBUG] Controller getEmployee - Inicio');
-        error_log('[DEBUG] Controller getEmployee - ID recibido: ' . print_r($employeeId, true));
+        custom_error_log("Controller getEmployee - ID recibido: " . print_r($employeeId, true), 'EMPLOYEE_CONTROLLER');
         
         $result = $this->employeeService->getEmployee($employeeId);
         
-        error_log('[DEBUG] Controller getEmployee - Resultado completo: ' . print_r($result, true));
-        error_log('[DEBUG] Controller getEmployee - Estatus: ' . ($result['status'] ?? 'No definido'));
-        error_log('[DEBUG] Controller getEmployee - Mensaje: ' . ($result['message'] ?? 'No definido'));
-        error_log('[DEBUG] Controller getEmployee - Datos: ' . print_r($result['data'] ?? 'No hay datos', true));
+        custom_error_log("Controller getEmployee - Resultado: " . print_r($result, true), 'EMPLOYEE_CONTROLLER');
         
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }

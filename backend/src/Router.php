@@ -3,33 +3,47 @@
 namespace App;
 
 class Router {
-
     private $routes = [];
 
-    public function addRoute($method, $route, $callback) {
-        $this->routes[] = compact('method', 'route', 'callback');
+    public function addRoute($method, $pattern, $handler) {
+        custom_error_log("Adding route: Method = {$method}, Pattern = {$pattern}", 'ROUTER_CONFIG');
+        $this->routes[] = [
+            'method' => $method,
+            'pattern' => $pattern,
+            'handler' => $handler
+        ];
     }
 
     public function dispatch($requestUri, $requestMethod) {
-        // Eliminar cualquier barra inicial
-        $requestUri = ltrim($requestUri, '/');
-    
+        custom_error_log("Dispatching: URI = {$requestUri}, Method = {$requestMethod}", 'ROUTER');
+        
         foreach ($this->routes as $route) {
-            // Eliminar barra inicial del patrón de ruta
-            $routePattern = ltrim($route['route'], '/');
+            // Construir patrón de regex
+            $pattern = '#^' . $route['pattern'] . '$#';
             
+            custom_error_log("Checking route: Method = {$route['method']}, Pattern = {$pattern}", 'ROUTER');
             
-            if ($requestMethod == $route['method']) {
-                // Modificar el patrón de regex para ser más flexible
-                if (preg_match("#^" . $routePattern . "(/.*)?$#", $requestUri, $params)) {
-                    array_shift($params);
-                    call_user_func_array($route['callback'], $params);
-                    return;
-                }
+            // Verificar método y patrón
+            if ($route['method'] === $requestMethod && preg_match($pattern, $requestUri, $matches)) {
+                custom_error_log("Route matched: " . $pattern, 'ROUTER');
+                
+                // Eliminar la coincidencia completa, dejando solo los parámetros capturados
+                array_shift($matches);
+                
+                // Llamar al controlador con los parámetros capturados
+                call_user_func_array($route['handler'], $matches);
+                return;
             }
         }
         
+        // Si no se encuentra la ruta
+        custom_error_log("No route found for: {$requestUri}", 'ROUTER');
+        
         header("HTTP/1.0 404 Not Found");
-        echo json_encode(["message" => "Ruta no encontrada"]);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'error' => true, 
+            'message' => 'Ruta no encontrada'
+        ]);
     }
 }

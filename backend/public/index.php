@@ -4,6 +4,17 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
+    // Configurar la ubicación de los logs
+    ini_set('error_log', '/tmp/php_errors.log');
+
+    // Función de registro centralizada
+    function custom_error_log($message, $level = 'DEBUG') {
+        // Registra en error_log y también imprime
+        error_log("[{$level}] " . $message);
+        // Si quieres depuración adicional
+        file_put_contents('/tmp/custom_debug.log', date('[Y-m-d H:i:s] ') . "[{$level}] {$message}\n", FILE_APPEND);
+    }
+
     // Habilitar CORS - ACTUALIZADO para permitir solicitudes desde el frontend desplegado
     header('Access-Control-Allow-Origin: https://sistema-erp-construccion-1.onrender.com');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
