@@ -100,46 +100,46 @@
         }
 
         // Definir las rutas para los empleados
-        $router->addRoute('GET', '/employees', [$employeeController, 'get']);
-        $router->addRoute('GET', '/employees/([0-9]+)', [$employeeController, 'getEmployee']);
-        $router->addRoute('POST', '/employees', [$employeeController, 'createEmployee']);
-        $router->addRoute('PUT', '/employees/([0-9]+)', [$employeeController, 'updateEmployee']);
-        $router->addRoute('DELETE', '/employees/([0-9]+)', [$employeeController, 'deleteEmployee']);
+        $router->addRoute('GET', 'employees', [$employeeController, 'get']);
+        $router->addRoute('GET', 'employees/([0-9]+)', [$employeeController, 'getEmployee']);
+        $router->addRoute('POST', 'employees', [$employeeController, 'createEmployee']);
+        $router->addRoute('PUT', 'employees/([0-9]+)', [$employeeController, 'updateEmployee']);
+        $router->addRoute('DELETE', 'employees/([0-9]+)', [$employeeController, 'deleteEmployee']);
 
         // Definir las rutas para los proyectos
-        $router->addRoute('GET', '/projects', [$projectController, 'get']);
-        $router->addRoute('GET', '/projects/([0-9]+)', [$projectController, 'getProject']);
-        $router->addRoute('POST', '/projects', [$projectController, 'createProject']);
-        $router->addRoute('PUT', '/projects/([0-9]+)', [$projectController, 'updateProject']);
-        $router->addRoute('DELETE', '/projects/([0-9]+)', [$projectController, 'deleteProject']);
+        $router->addRoute('GET', 'projects', [$projectController, 'get']);
+        $router->addRoute('GET', 'projects/([0-9]+)', [$projectController, 'getProject']);
+        $router->addRoute('POST', 'projects', [$projectController, 'createProject']);
+        $router->addRoute('PUT', 'projects/([0-9]+)', [$projectController, 'updateProject']);
+        $router->addRoute('DELETE', 'projects/([0-9]+)', [$projectController, 'deleteProject']);
 
         // Definir las rutas para los presupuestos
-        $router->addRoute('GET', '/budgets', [$budgetController, 'get']);
-        $router->addRoute('GET', '/budgets/([0-9]+)', [$budgetController, 'getBudget']);
-        $router->addRoute('POST', '/budgets', [$budgetController, 'createBudget']);
-        $router->addRoute('PUT', '/budgets/([0-9]+)', [$budgetController, 'updateBudget']);
-        $router->addRoute('DELETE', '/budgets/([0-9]+)', [$budgetController, 'deleteBudget']);
+        $router->addRoute('GET', 'budgets', [$budgetController, 'get']);
+        $router->addRoute('GET', 'budgets/([0-9]+)', [$budgetController, 'getBudget']);
+        $router->addRoute('POST', 'budgets', [$budgetController, 'createBudget']);
+        $router->addRoute('PUT', 'budgets/([0-9]+)', [$budgetController, 'updateBudget']);
+        $router->addRoute('DELETE', 'budgets/([0-9]+)', [$budgetController, 'deleteBudget']);
 
         // Definir las rutas para las tareas
-        $router->addRoute('GET', '/tasks', [$taskController, 'get']);
-        $router->addRoute('GET', '/tasks/([0-9]+)', [$taskController, 'getTask']);
-        $router->addRoute('POST', '/tasks', [$taskController, 'createTask']);
-        $router->addRoute('PUT', '/tasks/([0-9]+)', [$taskController, 'updateTask']);
-        $router->addRoute('DELETE', '/tasks/([0-9]+)', [$taskController, 'deleteTask']);
+        $router->addRoute('GET', 'tasks', [$taskController, 'get']);
+        $router->addRoute('GET', 'tasks/([0-9]+)', [$taskController, 'getTask']);
+        $router->addRoute('POST', 'tasks', [$taskController, 'createTask']);
+        $router->addRoute('PUT', 'tasks/([0-9]+)', [$taskController, 'updateTask']);
+        $router->addRoute('DELETE', 'tasks/([0-9]+)', [$taskController, 'deleteTask']);
         
         // Definir las rutas para la autenticación
         $router->addRoute('POST', 'auth/login', [$authController, 'login']);
-        $router->addRoute('POST', '/auth/logout', [$authController, 'logout']); 
-        $router->addRoute('POST', '/auth/change-password', [$authController, 'changePassword']);
+        $router->addRoute('POST', 'auth/logout', [$authController, 'logout']); 
+        $router->addRoute('POST', 'auth/change-password', [$authController, 'changePassword']);
 
         // Definir las rutas para empleados_tareas
-        $router->addRoute('POST', '/employee-tasks', [$employeeTaskController, 'addTaskToEmployee']);
-        $router->addRoute('DELETE', '/employee-tasks', [$employeeTaskController, 'removeTaskFromEmployee']);
-        $router->addRoute('GET', '/employee-tasks/employees/([0-9]+)', [$employeeTaskController, 'getTasksByEmployee']);
-        $router->addRoute('GET', '/employee-tasks/tasks/([0-9]+)', [$employeeTaskController, 'getEmployeesByTask']);
-        $router->addRoute('GET', '/employee-tasks/pending-tasks/([0-9]+)', [$employeeTaskController, 'getPendingTasksByEmployee']);
-        $router->addRoute('GET', '/employee-tasks/responsible/([0-9]+)', [$employeeTaskController, 'getTasksByResponsible']);
-        $router->addRoute('PUT', '/employee-tasks/assignment/([0-9]+)', [$employeeTaskController, 'updateAssignment']);
+        $router->addRoute('POST', 'employee-tasks', [$employeeTaskController, 'addTaskToEmployee']);
+        $router->addRoute('DELETE', 'employee-tasks', [$employeeTaskController, 'removeTaskFromEmployee']);
+        $router->addRoute('GET', 'employee-tasks/employees/([0-9]+)', [$employeeTaskController, 'getTasksByEmployee']);
+        $router->addRoute('GET', 'employee-tasks/tasks/([0-9]+)', [$employeeTaskController, 'getEmployeesByTask']);
+        $router->addRoute('GET', 'employee-tasks/pending-tasks/([0-9]+)', [$employeeTaskController, 'getPendingTasksByEmployee']);
+        $router->addRoute('GET', 'employee-tasks/responsible/([0-9]+)', [$employeeTaskController, 'getTasksByResponsible']);
+        $router->addRoute('PUT', 'employee-tasks/assignment/([0-9]+)', [$employeeTaskController, 'updateAssignment']);
         
         // Disparar el despachador de rutas
         $router->dispatch($requestUri, $requestMethod);

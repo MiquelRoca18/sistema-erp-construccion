@@ -191,6 +191,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { getEmployeeData } from '@/service/authService';
 import { userRole } from '@/service/authStore';
+import employeePhoto from '@/assets/images/employeePhoto.webp'
 
 const props = defineProps({
   sidebarOpen: Boolean,
@@ -201,7 +202,7 @@ const emit = defineEmits(['toggleSidebar', 'toggleDarkMode']);
 
 const employeeId = ref(null);
 const employeeName = ref("Empleado Desconocido");
-const employeePhoto = ref("/src/assets/images/employeePhoto.webp");
+const employeePhoto = ref(employeePhoto);
 
 // Inicializamos los menús como abiertos por defecto para mejor experiencia de usuario
 const personalOpen = ref(true);
@@ -224,7 +225,7 @@ onMounted(async () => {
       const employeeData = await getEmployeeData(user, token);
       employeeId.value = employeeData.empleados_id;
       employeeName.value = employeeData.nombre || "Empleado Desconocido";
-      employeePhoto.value = employeeData.photo || "/src/assets/images/employeePhoto.webp";
+      employeePhoto.value = employeeData.photo || employeePhoto;
     } catch (error) {
       console.error("Error al cargar los datos del empleado:", error);
     }
