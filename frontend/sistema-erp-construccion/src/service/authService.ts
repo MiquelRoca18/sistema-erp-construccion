@@ -9,17 +9,23 @@ interface LoginResponse {
 }
 
 export const login = async (credentials: { username: string; password_hash: string }): Promise<LoginResponse> => {
-  console.log("credentials", credentials);
+  console.log("API_URL completa:", `${API_URL}/auth/login`);
+  console.log("Credenciales:", credentials);
+  
   try {
     const response = await axios.post(`${API_URL}/auth/login`, credentials, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    console.log(response.data);
-    console.log(response.data.data);
-    return response.data.data; 
+    
+    console.log("Respuesta completa:", response);
+    console.log("Datos de respuesta:", response.data);
+    
+    return response.data.data;
   } catch (error: any) {
+    console.error("Error de login completo:", error);
+    console.error("Detalles del error:", error.response?.data);
     throw new Error(error.response?.data?.message || 'Error de autenticación');
   }
 };

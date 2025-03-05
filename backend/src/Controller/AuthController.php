@@ -11,8 +11,11 @@ class AuthController extends BaseController {
     }
 
     public function login() {
+        error_log("Método login() llamado");
         $data = $this->getRequestData();
+        error_log("Datos recibidos: " . print_r($data, true));
         $result = $this->authService->authenticate($data);
+        error_log("Resultado de autenticación: " . print_r($result, true));
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
 

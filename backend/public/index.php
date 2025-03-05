@@ -64,6 +64,10 @@
     $scriptName = dirname($_SERVER['SCRIPT_NAME']);
     $requestUri = str_replace($scriptName, '', $_SERVER['REQUEST_URI']);
 
+    error_log("Script Name: $scriptName");
+    error_log("Request URI original: " . $_SERVER['REQUEST_URI']);
+    error_log("Request URI procesada: $requestUri");
+
     $router = new Router();
 
     $employeeController = new EmployeeController();
