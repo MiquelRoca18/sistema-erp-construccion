@@ -11,6 +11,11 @@ class EmployeeService extends BaseService {
         parent::__construct(new Employee());
     }
 
+    public function getEmployees() {
+        $employees = $this->model->get();
+        return $employees ? $this->responseFound($employees, 'Empleados encontrados') : $this->responseNotFound();
+    }
+
     public function getEmployee($employeeId) {
         error_log('[DEBUG] Service getEmployee - Inicio');
         error_log('[DEBUG] Service getEmployee - ID recibido: ' . print_r($employeeId, true));
@@ -31,23 +36,6 @@ class EmployeeService extends BaseService {
         
         error_log('[DEBUG] Service getEmployee - Empleado obtenido: ' . print_r($employee, true));
         
-        return $this->responseFound($employee, 'Empleado encontrado');
-    }
-
-    public function getEmployee($employeeId) {
-        error_log('[DEBUG] Service');
-
-        // Validar ID
-        if ($error = $this->validateId($employeeId)) {
-            return $error;
-        }
-
-        // Validar existencia del empleado
-        if ($error = $this->validateExists($employeeId)) {
-            return $error;
-        }
-
-        $employee = $this->model->getById($employeeId);
         return $this->responseFound($employee, 'Empleado encontrado');
     }
 
