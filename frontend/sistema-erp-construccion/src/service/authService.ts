@@ -37,7 +37,7 @@ export const getEmployeeData = async (employeeId: number, token: string) => {
         'Authorization': `Bearer ${token}`,
       },
     });
-    
+    console.log("Datos del empleado:", response.data.data);
     return response.data.data; 
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al obtener datos del empleado');
