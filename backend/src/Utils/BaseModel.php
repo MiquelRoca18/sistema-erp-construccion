@@ -26,6 +26,7 @@ class BaseModel {
 
     // Obtener un registro por su ID
     public function getById($id) {
+        echo $id;
         $query = 'SELECT * FROM ' . $this->table . ' WHERE ' . $this->table . '_id = :id';
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id);

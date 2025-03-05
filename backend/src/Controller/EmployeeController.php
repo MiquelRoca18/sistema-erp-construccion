@@ -16,8 +16,7 @@ class EmployeeController extends BaseController {
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
 
-    public function getEmployee($request, $response, $args) {
-        $employeeId = $args['employeeId'];
+    public function getEmployee($employeeId) {
         $result = $this->employeeService->getEmployee($employeeId);
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
