@@ -9,18 +9,12 @@ interface LoginResponse {
 }
 
 export const login = async (credentials: { username: string; password_hash: string }): Promise<LoginResponse> => {
-  console.log("API_URL completa:", `${API_URL}/auth/login`);
-  console.log("Credenciales:", credentials);
-  
   try {
     const response = await axios.post(`${API_URL}/auth/login`, credentials, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
-    
-    console.log("Respuesta completa:", response);
-    console.log("Datos de respuesta:", response.data);
     
     return response.data.data;
   } catch (error: any) {
@@ -32,6 +26,7 @@ export const login = async (credentials: { username: string; password_hash: stri
 
 export const getEmployeeData = async (employeeId: number, token: string) => {
   try {
+    console.log("Data:", employeeId, token);
     const response = await axios.get(`${API_URL}/employees/${employeeId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
