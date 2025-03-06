@@ -4,6 +4,13 @@
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-2xl font-bold text-yellow-800 dark:text-yellow-300 transition-colors duration-300">Presupuestos</h2>
+          <p v-if="!isLoading" class="mt-2 text-yellow-700 dark:text-yellow-400">
+            Total: {{ totalBudgets }}
+          </p>
+          <div v-else class="mt-2 flex items-center">
+            <div class="h-4 w-4 border-2 border-yellow-700 dark:border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+            <span class="ml-2 text-yellow-700 dark:text-yellow-400">Cargando...</span>
+          </div>
         </div>
         <div>
           <!-- Ícono de documento con signo de dólar -->
@@ -21,15 +28,22 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { getBudgets } from '@/service/budgetService';
+
 const totalBudgets = ref(0);
+const isLoading = ref(true);
+
 const fetchTotalBudgets = async () => {
+  isLoading.value = true;
   try {
     const budgets = await getBudgets();
     totalBudgets.value = budgets.length;
   } catch (err: any) {
     console.error("Error al obtener presupuestos:", err);
+  } finally {
+    isLoading.value = false;
   }
 };
+
 onMounted(() => {
   fetchTotalBudgets();
 });

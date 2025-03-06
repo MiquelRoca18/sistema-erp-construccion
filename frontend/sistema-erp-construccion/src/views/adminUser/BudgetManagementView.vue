@@ -24,8 +24,14 @@
         />
       </div>
 
+      <!-- Loader principal mientras se cargan los presupuestos -->
+      <div v-if="loading" class="flex flex-col items-center justify-center py-10">
+        <div class="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-gray-600 dark:text-gray-300">Cargando presupuestos...</p>
+      </div>
+
       <!-- Vista Mobile: Tarjetas -->
-      <div class="block sm:hidden w-full">
+      <div v-else class="block sm:hidden w-full">
         <div
           v-for="budget in paginatedBudgets"
           :key="budget.presupuestos_id"
@@ -49,7 +55,7 @@
             </div>
           </div>
         </div>
-        <div v-if="paginatedBudgets.length === 0 && !loading" class="text-center text-gray-500 dark:text-gray-400">
+        <div v-if="paginatedBudgets.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-6">
           No se encontraron presupuestos.
         </div>
         <!-- Divs vacíos para mantener el espacio de 5 elementos -->
@@ -57,7 +63,7 @@
       </div>
 
       <!-- Vista Desktop: Tabla -->
-      <div class="hidden sm:block w-full overflow-x-auto">
+      <div v-else class="hidden sm:block w-full overflow-x-auto">
         <table class="min-w-full">
           <thead>
             <tr class="bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 text-yellow-800 dark:text-yellow-200">
@@ -91,11 +97,10 @@
                   >
                     Editar
                   </button>
-                  <!-- Se ha eliminado el botón "Eliminar" -->
                 </div>
               </td>
             </tr>
-            <tr v-if="paginatedBudgets.length === 0 && !loading">
+            <tr v-if="paginatedBudgets.length === 0">
               <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                 No se encontraron presupuestos.
               </td>
@@ -105,7 +110,7 @@
       </div>
   
       <!-- Paginación -->
-      <div v-if="totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
+      <div v-if="totalPages > 1 && !loading" class="mt-6 flex items-center justify-center space-x-2">
         <button 
           @click="prevPage" 
           :disabled="currentPage === 1"
@@ -139,10 +144,11 @@
         </button>
       </div>
   
-      <div v-if="loading" class="text-center mt-4 text-gray-500 dark:text-gray-400">
-        Cargando presupuestos...
-      </div>
-      <div v-if="error" class="text-center mt-4 text-red-500 dark:text-red-400">
+      <!-- Mensaje de error -->
+      <div v-if="error" class="mt-4 p-3 bg-red-100 dark:bg-red-900/40 border border-red-300 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+        </svg>
         {{ error }}
       </div>
     </div>
@@ -158,7 +164,7 @@ import { getBudgets } from '@/service/budgetService';
 import EditBudgetModal from '@/components/adminUser/budget/EditBudgetModal.vue';
   
 const budgets = ref<any[]>([]);
-const loading = ref(false);
+const loading = ref(true); // Iniciar como true para mostrar el loader inmediatamente
 const error = ref('');
 const searchProject = ref('');
 const searchTotal = ref(''); 
@@ -167,15 +173,26 @@ const pageSize = 5;
   
 const showEditModal = ref(false);
 const budgetToEdit = ref(null);
-const showViewModal = ref(false);  // Añadido para la visualización
-const selectedBudget = ref(null);  // Añadido para la visualización
+const showViewModal = ref(false);
+const selectedBudget = ref(null);
   
+// Tiempo de espera mínimo para mostrar el loader
+const minLoadingTime = 500; // ms
+
 const fetchBudgets = async () => {
+  const startTime = Date.now();
   loading.value = true;
   error.value = '';
+  
   try {
     const data = await getBudgets();
     budgets.value = data;
+    
+    // Asegurar que el loader se muestre por al menos minLoadingTime ms
+    const elapsedTime = Date.now() - startTime;
+    if (elapsedTime < minLoadingTime) {
+      await new Promise(resolve => setTimeout(resolve, minLoadingTime - elapsedTime));
+    }
   } catch (err: any) {
     error.value = err.message || 'Error al obtener presupuestos.';
   } finally {
@@ -194,16 +211,13 @@ watch([searchProject, searchTotal], () => {
   
 const filteredBudgets = computed(() => {
   const projectTerm = searchProject.value.trim().toLowerCase();
-  const maxTotal = searchTotal.value; // Valor numérico gracias a v-model.number
+  const maxTotal = searchTotal.value;
 
   return budgets.value.filter(budget => {
     const projectMatch = budget.nombre_proyecto.toLowerCase().includes(projectTerm);
     let totalMatch = true;
-    // Si se ingresó un valor numérico en searchTotal, comparamos
     if (maxTotal !== null && maxTotal !== undefined && maxTotal !== "") {
-      // Aseguramos que el total sea un número
       const totalVal = parseFloat(budget.total);
-      // Convertimos maxTotal a número para la comparación
       totalMatch = !isNaN(totalVal) && totalVal <= parseFloat(maxTotal.toString());
     }
     return projectMatch && totalMatch;
@@ -258,7 +272,6 @@ const closeEditModal = () => {
   budgetToEdit.value = null;
 };
 
-// Añadida función para abrir modal de vista
 const openViewModal = (budget: any) => {
   selectedBudget.value = budget;
   showViewModal.value = true;
@@ -278,5 +291,18 @@ tbody tr {
 }
 tbody tr td {
   border: none;
+}
+
+/* Animación para el loader */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.pulse {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>

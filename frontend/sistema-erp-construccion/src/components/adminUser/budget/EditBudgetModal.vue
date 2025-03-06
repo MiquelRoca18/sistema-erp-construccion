@@ -84,14 +84,17 @@
             type="button" 
             @click="closeModal" 
             class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded hover:bg-gray-400 dark:hover:bg-gray-500 transition text-sm"
+            :disabled="isSubmitting"
           >
             Cancelar
           </button>
           <button 
             type="submit" 
-            class="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white rounded hover:bg-yellow-700 dark:hover:bg-yellow-600 transition text-sm"
+            class="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white rounded hover:bg-yellow-700 dark:hover:bg-yellow-600 transition text-sm flex items-center"
+            :disabled="isSubmitting"
           >
-            Guardar Cambios
+            <span v-if="isSubmitting" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+            {{ isSubmitting ? 'Guardando...' : 'Guardar Cambios' }}
           </button>
         </div>
       </form>
@@ -109,6 +112,7 @@ const props = defineProps({
     required: true
   }
 });
+
 const emit = defineEmits(['close', 'updated']);
 
 const form = ref({
@@ -117,7 +121,9 @@ const form = ref({
   mano_obra: '',
   materiales: ''
 });
+
 const errorMessage = ref('');
+const isSubmitting = ref(false);
 
 onMounted(() => {
   form.value = {
@@ -129,17 +135,29 @@ onMounted(() => {
 });
 
 const closeModal = () => {
+  // No permitir cerrar el modal durante el envío
+  if (isSubmitting.value) return;
   emit('close');
 };
 
 const handleSubmit = async () => {
   errorMessage.value = '';
+  isSubmitting.value = true;
+  
   try {
-    await updateBudget(props.budget.presupuestos_id, form.value);
+    // Agregar un pequeño retraso mínimo para mostrar el loader
+    const updatePromise = updateBudget(props.budget.presupuestos_id, form.value);
+    const minDelay = new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Esperar a que ambas promesas se resuelvan
+    await Promise.all([updatePromise, minDelay]);
+    
     emit('updated');
     emit('close');
   } catch (error: any) {
     errorMessage.value = error.message || 'Error al actualizar presupuesto';
+  } finally {
+    isSubmitting.value = false;
   }
 };
 </script>

@@ -1,13 +1,23 @@
 <template>
-  <router-link to="/projects" class="block">
-    <div class="p-6 bg-gradient-to-r from-green-100 to-green-200 dark:from-green-800 dark:to-green-900 rounded-lg shadow-lg transform transition hover:scale-105">
+  <router-link to="/budgets" class="block">
+    <div class="p-6 bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900/40 dark:to-amber-800/40 rounded-lg shadow-lg dark:shadow-gray-900/30 transform transition hover:scale-105 transition-all duration-300">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-2xl font-bold text-green-800 dark:text-green-200">Proyectos</h2>
+          <h2 class="text-2xl font-bold text-yellow-800 dark:text-yellow-300 transition-colors duration-300">Presupuestos</h2>
+          <p v-if="!isLoading" class="mt-2 text-yellow-700 dark:text-yellow-400">
+            Total: {{ totalBudgets }}
+          </p>
+          <div v-else class="mt-2 flex items-center">
+            <div class="h-4 w-4 border-2 border-yellow-700 dark:border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+            <span class="ml-2 text-yellow-700 dark:text-yellow-400">Cargando...</span>
+          </div>
         </div>
         <div>
-          <svg class="w-12 h-12 text-green-800 dark:text-green-200" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 8h14v-2H7v2zm0-4h14v-2H7v2zm0-6v2h14V7H7z"/>
+          <!-- Ícono de documento con signo de dólar -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-yellow-800 dark:text-yellow-300 transition-colors duration-300" viewBox="0 0 24 24">
+            <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2"/>
+            <polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2"/>
+            <text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="8" font-weight="bold">$</text>
           </svg>
         </div>
       </div>
@@ -17,17 +27,24 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { getProjects } from '@/service/projectService';
-const totalProjects = ref(0);
-const fetchTotalProjects = async () => {
+import { getBudgets } from '@/service/budgetService';
+
+const totalBudgets = ref(0);
+const isLoading = ref(true);
+
+const fetchTotalBudgets = async () => {
+  isLoading.value = true;
   try {
-    const projects = await getProjects();
-    totalProjects.value = projects.length;
+    const budgets = await getBudgets();
+    totalBudgets.value = budgets.length;
   } catch (err: any) {
-    console.error('Error al obtener proyectos:', err);
+    console.error("Error al obtener presupuestos:", err);
+  } finally {
+    isLoading.value = false;
   }
 };
+
 onMounted(() => {
-  fetchTotalProjects();
+  fetchTotalBudgets();
 });
 </script>

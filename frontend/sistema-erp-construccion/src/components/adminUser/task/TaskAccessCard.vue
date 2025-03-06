@@ -4,6 +4,13 @@
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-2xl font-bold text-orange-800 dark:text-orange-200">Tareas</h2>
+          <p v-if="!isLoading" class="mt-2 text-orange-700 dark:text-orange-300">
+            Total: {{ totalTasks }}
+          </p>
+          <div v-else class="mt-2 flex items-center">
+            <div class="h-4 w-4 border-2 border-orange-700 dark:border-orange-300 border-t-transparent rounded-full animate-spin"></div>
+            <span class="ml-2 text-orange-700 dark:text-orange-300">Cargando...</span>
+          </div>
         </div>
         <div>
           <svg class="w-12 h-12 text-orange-800 dark:text-orange-200" fill="currentColor" viewBox="0 0 24 24">
@@ -18,15 +25,22 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { getAllCompanyTasks } from '@/service/taskService';
+
 const totalTasks = ref(0);
+const isLoading = ref(true);
+
 const fetchTotalTasks = async () => {
+  isLoading.value = true;
   try {
     const tasks = await getAllCompanyTasks();
     totalTasks.value = tasks.length;
   } catch (err: any) {
     console.error('Error al obtener tareas:', err);
+  } finally {
+    isLoading.value = false;
   }
 };
+
 onMounted(() => {
   fetchTotalTasks();
 });

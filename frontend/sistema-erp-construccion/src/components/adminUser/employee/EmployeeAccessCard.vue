@@ -4,6 +4,13 @@
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-2xl font-bold text-sky-800 dark:text-sky-200">Empleados</h2>
+          <p v-if="!isLoading" class="mt-2 text-sky-700 dark:text-sky-300">
+            Total: {{ totalEmployees }}
+          </p>
+          <div v-else class="mt-2 flex items-center">
+            <div class="h-4 w-4 border-2 border-sky-700 dark:border-sky-300 border-t-transparent rounded-full animate-spin"></div>
+            <span class="ml-2 text-sky-700 dark:text-sky-300">Cargando...</span>
+          </div>
         </div>
         <div>
           <svg class="w-12 h-12 text-sky-800 dark:text-sky-200" fill="currentColor" viewBox="0 0 24 24">
@@ -18,16 +25,22 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { getEmployees } from '@/service/employeeService';
-// Se sigue consultando el total aunque no se muestre en el card
+
 const totalEmployees = ref(0);
+const isLoading = ref(true);
+
 const fetchTotalEmployees = async () => {
+  isLoading.value = true;
   try {
     const employees = await getEmployees();
     totalEmployees.value = employees.length;
   } catch (err: any) {
     console.error("Error al obtener empleados:", err);
+  } finally {
+    isLoading.value = false;
   }
 };
+
 onMounted(() => {
   fetchTotalEmployees();
 });

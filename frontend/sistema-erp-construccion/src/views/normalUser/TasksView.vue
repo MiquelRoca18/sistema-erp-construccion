@@ -14,7 +14,12 @@
             <!-- Filtro de Proyecto -->
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Proyecto</label>
-              <select v-model="selectedProject" @change="fetchTasks" class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300">
+              <select 
+                v-model="selectedProject" 
+                @change="fetchTasks" 
+                class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300"
+                :disabled="loading"
+              >
                 <option value="">Todos los proyectos</option>
                 <option v-for="project in uniqueProjects" :key="project.id" :value="project.id">
                   {{ project.nombre }}
@@ -24,7 +29,12 @@
             <!-- Filtro de Estado -->
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Estado</label>
-              <select v-model="selectedStatus" @change="fetchTasks" class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300">
+              <select 
+                v-model="selectedStatus" 
+                @change="fetchTasks" 
+                class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300"
+                :disabled="loading"
+              >
                 <option value="">Todos los estados</option>
                 <option v-for="status in availableStatuses" :key="status" :value="status">
                   {{ status }}
@@ -34,7 +44,12 @@
             <!-- Filtro de Tipo de Tarea -->
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de Tarea</label>
-              <select v-model="selectedTaskType" @change="fetchTasks" class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300">
+              <select 
+                v-model="selectedTaskType" 
+                @change="fetchTasks" 
+                class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300"
+                :disabled="loading"
+              >
                 <option value="mis">Mis tareas</option>
                 <option value="otros">Tareas de otros</option>
               </select>
@@ -42,12 +57,24 @@
             <!-- Filtro de Fecha de Inicio -->
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha de Inicio</label>
-              <input v-model="startDate" @change="fetchTasks" type="date" class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300" />
+              <input 
+                v-model="startDate" 
+                @change="fetchTasks" 
+                type="date" 
+                class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300"
+                :disabled="loading"
+              />
             </div>
             <!-- Filtro de Fecha Fin -->
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha Fin</label>
-              <input v-model="endDate" @change="fetchTasks" type="date" class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300" />
+              <input 
+                v-model="endDate" 
+                @change="fetchTasks" 
+                type="date" 
+                class="w-full p-2.5 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-300"
+                :disabled="loading"
+              />
             </div>
           </div>
         </div>
@@ -58,18 +85,27 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-900/30 p-6 mx-auto w-full max-w-5xl flex flex-col min-h-[600px] transition-colors duration-300">
       <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4 text-center">Lista de Tareas</h2>
 
-      <div v-if="loading" class="text-center text-lg text-gray-500 dark:text-gray-400 flex-grow flex items-center justify-center">
-        Cargando tareas...
+      <div v-if="loading" class="text-center flex-grow flex flex-col items-center justify-center">
+        <!-- Loader animado -->
+        <div class="w-16 h-16 mb-4">
+          <svg class="animate-spin -ml-1 mr-3 h-full w-full text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        <p class="text-lg text-gray-500 dark:text-gray-400">Cargando tareas...</p>
       </div>
+      
       <div v-if="error" class="text-red-500 dark:text-red-400 text-center text-lg flex-grow flex items-center justify-center">
         {{ error }}
       </div>
-      <div v-if="filteredTasks.length === 0" class="text-center text-gray-500 dark:text-gray-400 flex-grow flex items-center justify-center">
+      
+      <div v-if="!loading && filteredTasks.length === 0" class="text-center text-gray-500 dark:text-gray-400 flex-grow flex items-center justify-center">
         No hay tareas disponibles.
       </div>
 
       <!-- Grid de Tareas -->
-      <div class="grid gap-5 flex-grow" :class="(isMobile || isTablet) ? 'grid-cols-1 grid-rows-3' : 'grid-cols-2 grid-rows-3'">
+      <div v-if="!loading && filteredTasks.length > 0" class="grid gap-5 flex-grow" :class="(isMobile || isTablet) ? 'grid-cols-1 grid-rows-3' : 'grid-cols-2 grid-rows-3'">
         <div
           v-for="task in paginatedTasks"
           :key="task.tareas_id"
@@ -123,7 +159,7 @@
       </div>
 
       <!-- Paginación -->
-      <div v-if="totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
+      <div v-if="!loading && totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
         <!-- Botón Anterior -->
         <button 
           @click="prevPage" 
@@ -163,7 +199,7 @@
       </div>
     </div>
 
-    <!-- Modales -->
+    <!-- Modales con loaders -->
     <TaskDetailModal
       v-if="selectedTask && selectedTaskType !== 'otros'"
       :task="selectedTask"
@@ -181,7 +217,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getAllTasks, getTasksByResponsible } from '@/service/taskService';
 import TaskDetailModal from '@/components/normalUser/TaskDetailModal.vue';
@@ -194,6 +230,9 @@ const employeeId = ref(router.currentRoute.value.params.id);
 const tasks = ref([]);
 const loading = ref(true);
 const error = ref('');
+
+// Para evitar múltiples solicitudes simultáneas
+const isFetching = ref(false);
 
 // Filtros
 const selectedProject = ref('');
@@ -212,10 +251,10 @@ const uniqueProjects = computed(() => {
   const projectMap = new Map();
   tasks.value.forEach(task => {
     if (task.proyectos_id && task.nombre_proyecto) {
-      projectMap.set(task.proyectos_id, task.nombre_proyecto);
+      projectMap.set(task.proyectos_id, { id: task.proyectos_id, nombre: task.nombre_proyecto });
     }
   });
-  return Array.from(projectMap, ([id, nombre]) => ({ id, nombre }));
+  return Array.from(projectMap.values());
 });
 
 const availableStatuses = computed(() => {
@@ -261,10 +300,19 @@ watch(() => route.query.status, (newStatus) => {
   }
 }, { immediate: true });
 
-// Función para obtener tareas según el filtro de tipo
+// Función para obtener tareas según el filtro de tipo con control de estado de carga
 const fetchTasks = async () => {
+  // Evita múltiples solicitudes simultáneas
+  if (isFetching.value) return;
+  
+  isFetching.value = true;
   loading.value = true;
+  error.value = '';
+
   try {
+    // Simulamos una pequeña demora para mostrar el loader (remover en producción)
+    // await new Promise(resolve => setTimeout(resolve, 200));
+    
     let response;
     if (selectedTaskType.value === 'otros') {
       response = await getTasksByResponsible(employeeId.value);
@@ -273,14 +321,23 @@ const fetchTasks = async () => {
     }
     tasks.value = response;
   } catch (err) {
-    error.value = err.message || 'Error al obtener las tareas.';
+    console.error('Error al cargar las tareas:', err);
+    error.value = err.message || 'Error al obtener las tareas. Por favor, intente nuevamente.';
   } finally {
     loading.value = false;
+    isFetching.value = false;
   }
   resetPagination();
 };
 
-onMounted(fetchTasks);
+onMounted(() => {
+  fetchTasks();
+  window.addEventListener('resize', updateScreenWidth);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateScreenWidth);
+});
 
 // Filtro local
 const filteredTasks = computed(() => {
@@ -324,16 +381,18 @@ const goToPage = (page) => { currentPage.value = page; };
 
 const openTaskModal = (task) => { selectedTask.value = task; };
 
-const handleTaskUpdate = (updatedTask) => {
+const handleTaskUpdate = async (updatedTask) => {
   const index = tasks.value.findIndex(t => t.tareas_id === updatedTask.tareas_id);
   if (index !== -1) {
     tasks.value[index] = updatedTask;
   }
   selectedTask.value = null;
+  
+  // Refrescar los datos después de una actualización
+  await fetchTasks();
 };
 
 const updateScreenWidth = () => { screenWidth.value = window.innerWidth; };
-window.addEventListener('resize', updateScreenWidth);
 </script>
 
 <style>
@@ -344,5 +403,18 @@ details[open] summary svg {
 /* Elimina el marcador por defecto del summary en algunos navegadores */
 summary::-webkit-details-marker {
   display: none;
+}
+
+/* Animación para el spinner */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
 </style>

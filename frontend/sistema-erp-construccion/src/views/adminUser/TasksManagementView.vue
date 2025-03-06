@@ -9,14 +9,26 @@
         <button
           @click="openModal"
           class="px-4 py-2 bg-orange-600 dark:bg-orange-500 text-white rounded-lg hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors duration-300"
+          :disabled="loading"
         >
-          Nueva Tarea
+          <span v-if="!loading">Nueva Tarea</span>
+          <span v-else class="flex items-center">
+            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Cargando...
+          </span>
         </button>
       </div>
 
       <!-- Filtro Desplegable -->
       <div class="mb-6">
-        <button @click="toggleFilter" class="px-4 py-2 bg-orange-600 dark:bg-orange-500 text-white rounded-lg hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors duration-300">
+        <button 
+          @click="toggleFilter" 
+          class="px-4 py-2 bg-orange-600 dark:bg-orange-500 text-white rounded-lg hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors duration-300"
+          :disabled="loading"
+        >
           Filtros
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block ml-2 transition-transform" :class="{'rotate-180': showFilter}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -28,7 +40,11 @@
               <!-- Filtrar por Proyecto -->
               <div>
                 <label class="block text-gray-700 dark:text-gray-300 mb-1">Proyecto</label>
-                <select v-model="filter.project" class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300">
+                <select 
+                  v-model="filter.project" 
+                  class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300"
+                  :disabled="loading"
+                >
                   <option value="">Todos</option>
                   <option v-for="project in projects" :key="project" :value="project">
                     {{ project }}
@@ -38,17 +54,31 @@
               <!-- Filtrar por Fecha Inicio -->
               <div>
                 <label class="block text-gray-700 dark:text-gray-300 mb-1">Fecha Inicio</label>
-                <input type="date" v-model="filter.startDate" class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300">
+                <input 
+                  type="date" 
+                  v-model="filter.startDate" 
+                  class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300"
+                  :disabled="loading"
+                >
               </div>
               <!-- Filtrar por Fecha Fin -->
               <div>
                 <label class="block text-gray-700 dark:text-gray-300 mb-1">Fecha Fin</label>
-                <input type="date" v-model="filter.endDate" class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300">
+                <input 
+                  type="date" 
+                  v-model="filter.endDate" 
+                  class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300"
+                  :disabled="loading"
+                >
               </div>
               <!-- Filtrar por Estado -->
               <div>
                 <label class="block text-gray-700 dark:text-gray-300 mb-1">Estado</label>
-                <select v-model="filter.state" class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300">
+                <select 
+                  v-model="filter.state" 
+                  class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300"
+                  :disabled="loading"
+                >
                   <option value="">Todos</option>
                   <option value="pendiente">Pendiente</option>
                   <option value="en progreso">En Progreso</option>
@@ -58,7 +88,11 @@
               <!-- Filtrar por Empleado -->
               <div>
                 <label class="block text-gray-700 dark:text-gray-300 mb-1">Empleado</label>
-                <select v-model="filter.employee" class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300">
+                <select 
+                  v-model="filter.employee" 
+                  class="w-full p-2 border dark:border-gray-600 rounded-lg bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 dark:focus:ring-orange-500 transition-colors duration-300"
+                  :disabled="loading"
+                >
                   <option value="">Todos</option>
                   <option v-for="employee in employees" :key="employee" :value="employee">
                     {{ employee }}
@@ -67,7 +101,11 @@
               </div>
             </div>
             <div class="mt-4 text-right">
-              <button @click="clearFilters" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors duration-300">
+              <button 
+                @click="clearFilters" 
+                class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors duration-300"
+                :disabled="loading"
+              >
                 Limpiar filtros
               </button>
             </div>
@@ -75,8 +113,17 @@
         </transition>
       </div>
 
+      <!-- Componente Loader -->
+      <div v-if="loading" class="flex justify-center items-center py-10">
+        <div class="relative">
+          <div class="h-24 w-24 rounded-full border-t-4 border-b-4 border-orange-500 animate-spin"></div>
+          <div class="absolute top-0 left-0 h-24 w-24 rounded-full border-t-4 border-b-4 border-orange-200 animate-spin" style="animation-duration: 1.5s;"></div>
+          <p class="mt-4 text-center text-gray-600 dark:text-gray-300">Cargando tareas...</p>
+        </div>
+      </div>
+
       <!-- Vista Mobile: Tarjetas -->
-      <div class="block sm:hidden">
+      <div v-else class="block sm:hidden">
         <div
           v-for="task in paginatedTasks"
           :key="task.tareas_id"
@@ -110,15 +157,18 @@
             </div>
           </div>
         </div>
-        <div v-if="paginatedTasks.length === 0 && !loading" class="text-center text-gray-500 dark:text-gray-400">
-          No se encontraron tareas.
+        <div v-if="paginatedTasks.length === 0 && !loading" class="text-center text-gray-500 dark:text-gray-400 py-8">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p>No se encontraron tareas.</p>
         </div>
         <!-- Espaciado para mantener 5 elementos -->
         <div v-for="n in missingRows" :key="'empty-' + n" class="h-16"></div>
       </div>
 
       <!-- Vista Desktop: Tabla -->
-      <div class="hidden sm:block overflow-x-auto">
+      <div v-if="!loading" class="hidden sm:block overflow-x-auto">
         <table class="min-w-full">
           <thead>
             <tr class="bg-gradient-to-r from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-800 dark:text-orange-200">
@@ -165,8 +215,11 @@
                 </div>
               </td>
             </tr>
-            <tr v-if="paginatedTasks.length === 0 && !loading">
-              <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+            <tr v-if="paginatedTasks.length === 0">
+              <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 No se encontraron tareas.
               </td>
             </tr>
@@ -183,7 +236,7 @@
       </div>
 
       <!-- Paginación -->
-      <div v-if="totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
+      <div v-if="totalPages > 1 && !loading" class="mt-6 flex items-center justify-center space-x-2">
         <button 
           @click="prevPage" 
           :disabled="currentPage === 1"
@@ -217,15 +270,25 @@
         </button>
       </div>
 
-      <div v-if="loading" class="text-center mt-4 text-gray-500 dark:text-gray-400">
-        Cargando tareas...
-      </div>
-      <div v-if="error" class="text-center mt-4 text-red-500 dark:text-red-400">
+      <!-- Error message -->
+      <div v-if="error" class="mt-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
         {{ error }}
+        <button @click="error = ''" class="ml-auto text-red-500 hover:text-red-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       <!-- Modales -->
-      <CreateTaskModal v-if="showModal" @close="closeModal" @created="fetchTasks" />
+      <CreateTaskModal 
+        v-if="showModal" 
+        @close="closeModal" 
+        @created="fetchTasks" 
+      />
       <EditTaskModal
         v-if="taskToEdit"
         :task="taskToEdit"
@@ -304,10 +367,22 @@ const clearFilters = () => {
 const fetchTasks = async () => {
   try {
     loading.value = true;
+    error.value = ''; // Limpiar errores anteriores
+    
+    // Simulamos un retardo mínimo para evitar parpadeos en cargas muy rápidas
+    const startTime = Date.now();
     const data = await getAllCompanyTasks();
+    
+    // Aseguramos que el loader se muestre al menos por 500ms para evitar parpadeos
+    const elapsedTime = Date.now() - startTime;
+    if (elapsedTime < 500) {
+      await new Promise(resolve => setTimeout(resolve, 500 - elapsedTime));
+    }
+    
     tasks.value = data;
   } catch (err: any) {
     error.value = err.message || 'Error al obtener tareas';
+    console.error('Error al cargar tareas:', err);
   } finally {
     loading.value = false;
   }
@@ -431,11 +506,14 @@ const closeDeleteModal = () => {
 const deleteTaskConfirmed = async () => {
   if (!taskToDelete.value) return;
   try {
+    loading.value = true; // Activar loader durante la eliminación
     await deleteTask(taskToDelete.value.tareas_id);
-    fetchTasks();
+    await fetchTasks(); // Recargamos las tareas después de eliminar
   } catch (err: any) {
-    console.error(err.message);
+    error.value = `Error al eliminar tarea: ${err.message || 'Error desconocido'}`;
+    console.error('Error al eliminar tarea:', err);
   } finally {
+    loading.value = false;
     taskToDelete.value = null;
   }
 };
@@ -479,5 +557,18 @@ tbody tr td {
 }
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
+}
+
+/* Estilos para el loading spinner */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>
