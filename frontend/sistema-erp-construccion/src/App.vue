@@ -1,12 +1,12 @@
 <template>
-  <div :class="{ dark: isDark }" class="flex flex-col min-h-screen overflow-x-hidden transition-colors duration-300">
-    <div class="flex flex-1 w-full overflow-hidden">
+  <div :class="{ dark: isDark }" class="flex flex-col min-h-screen transition-colors duration-300">
+    <div class="flex flex-1 w-full">
       
       <!-- Sidebar (Solo visible en pantallas grandes) -->
       <Sidebar v-if="isAuthenticated" :sidebarOpen="sidebarOpen" @toggleSidebar="toggleSidebar" :isDark="isDark" @toggleDarkMode="toggleDarkMode" />
 
       <!-- Contenedor de contenido -->
-      <div class="relative flex flex-col flex-1 overflow-auto">
+      <div class="relative flex flex-col flex-1">
         
         <!-- Botón de hamburguesa (visible en móviles) -->
         <button 
@@ -28,7 +28,7 @@
         </button>
 
         <!-- Contenido principal -->
-        <div class="flex-1 p-6 pb-safe flex items-center justify-center transition-colors duration-300 bg-gray-100 dark:bg-gray-900">
+        <div class="flex-1 p-6 pb-mobile-safe transition-colors duration-300 bg-gray-100 dark:bg-gray-900">
           <router-view />
         </div>
       </div>
@@ -83,18 +83,16 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
 
 #app {
   height: 100%;
-  overflow: hidden;
 }
 
 /* Añadir padding para dispositivos móviles */
 @media screen and (max-width: 768px) {
-  .pb-safe {
-    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 80px));
+  .pb-mobile-safe {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 60px));
   }
   
   /* Ajustes para iOS Safari */
@@ -103,13 +101,6 @@ html, body {
       /* Usar altura de la ventana gráfica móvil */
       min-height: -webkit-fill-available;
     }
-  }
-}
-
-/* Manejo de pantallas en dispositivos móviles */
-@media screen and (max-height: 600px) {
-  html, body, #app {
-    overflow-y: auto;
   }
 }
 </style>
