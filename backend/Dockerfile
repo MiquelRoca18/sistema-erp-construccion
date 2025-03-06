@@ -35,3 +35,11 @@ EXPOSE 80
 
 # Configurar puerto dinámicamente
 CMD sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf && apache2-foreground
+
+# Añadir a tu Dockerfile existente (después de las otras extensiones)
+RUN pecl install apcu && docker-php-ext-enable apcu
+
+# Configurar APCu para producción
+RUN echo "apc.enable_cli=1" >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+RUN echo "apc.enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini
+RUN echo "apc.ttl=300" >> /usr/local/etc/php/conf.d/docker-php-ext-apcu.ini

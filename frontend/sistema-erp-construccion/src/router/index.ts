@@ -1,15 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginView from '../views/LoginView.vue';
-import DashboardView from '../views/normalUser/DashboardView.vue';
-import EmployeeProfileView from '../views/normalUser/EmployeeProfileView.vue';
-import TasksView from '../views/normalUser/TasksView.vue';
-import DashboardAdminView from '../views/adminUser/DashboardAdminView.vue';
-import EmployeeManagementView from '../views/adminUser/EmployeeManagementView.vue';
-import ProjectManagementView from '../views/adminUser/ProjectManagementView.vue'; 
-import TasksManagementView from '../views/adminUser/TasksManagementView.vue';
-import NotFoundView from '../views/NotFoundView.vue';
 import { logout, isAuthenticated } from '@/service/authStore';
-import BudgetManagementView from '../views/adminUser/BudgetManagementView.vue';
+
+// Aplicando lazy loading para todas las vistas
+const LoginView = () => import('../views/LoginView.vue');
+const DashboardView = () => import('../views/normalUser/DashboardView.vue');
+const EmployeeProfileView = () => import('../views/normalUser/EmployeeProfileView.vue');
+const TasksView = () => import('../views/normalUser/TasksView.vue');
+const DashboardAdminView = () => import('../views/adminUser/DashboardAdminView.vue');
+const EmployeeManagementView = () => import('../views/adminUser/EmployeeManagementView.vue');
+const ProjectManagementView = () => import('../views/adminUser/ProjectManagementView.vue');
+const TasksManagementView = () => import('../views/adminUser/TasksManagementView.vue');
+const NotFoundView = () => import('../views/NotFoundView.vue');
+const BudgetManagementView = () => import('../views/adminUser/BudgetManagementView.vue');
 
 const routes = [
   {
