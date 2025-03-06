@@ -158,11 +158,12 @@ error_log("Mét  odo de solicitud: " . $_SERVER['REQUEST_METHOD']);
         $router->addRoute('GET', 'employee-tasks/responsible/([0-9]+)', [$employeeTaskController, 'getTasksByResponsible']);
         $router->addRoute('PUT', 'employee-tasks/assignment/([0-9]+)', [$employeeTaskController, 'updateAssignment']);
 
-        // Agregar ruta de salud (Health Check)
-        if ($requestUri === 'health' && $requestMethod === 'GET') {
-            http_response_code(200); // Responde con 200 OK sin enviar cuerpo
+        $router->addRoute('GET', 'health', function() {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'ok']);
+            http_response_code(200);
             exit();
-        }
+        });
         
         // Disparar el despachador de rutas
         $router->dispatch($requestUri, $requestMethod);
