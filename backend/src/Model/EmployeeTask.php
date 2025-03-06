@@ -18,7 +18,6 @@ class EmployeeTask {
         return $stmt->fetchColumn() > 0;
     }
     
-
     // Verificar si la relación entre empleado y tarea ya existe
     public function relationExists($empleados_id, $tareas_id) {
         $query = 'SELECT COUNT(*) FROM ' . $this->table . ' WHERE empleados_id = :empleados_id AND tareas_id = :tareas_id';
@@ -49,11 +48,21 @@ class EmployeeTask {
 
     // Obtener tareas asignadas a un empleado con el nombre del proyecto
     public function getTasksByEmployee($empleados_id) {
-        $query = 'SELECT t.*, p.nombre_proyecto 
+        // Optimización: Seleccionar solo columnas necesarias y agregar orden
+        $query = 'SELECT 
+                    t.tareas_id, 
+                    t.estado, 
+                    t.nombre_tarea, 
+                    t.descripcion, 
+                    t.proyectos_id, 
+                    t.fecha_inicio, 
+                    t.fecha_fin, 
+                    p.nombre_proyecto 
                 FROM tareas t 
                 INNER JOIN empleados_tareas et ON t.tareas_id = et.tareas_id
                 INNER JOIN proyectos p ON t.proyectos_id = p.proyectos_id
-                WHERE et.empleados_id = :empleados_id';
+                WHERE et.empleados_id = :empleados_id
+                ORDER BY t.fecha_inicio DESC';
 
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':empleados_id', $empleados_id, \PDO::PARAM_INT);
@@ -64,23 +73,39 @@ class EmployeeTask {
 
     // Obtener empleados asignados a una tarea
     public function getEmployeesByTask($tareas_id) {
-        $query = 'SELECT e.* FROM empleados e 
+        // Optimización: Seleccionar solo columnas necesarias
+        $query = 'SELECT 
+                    e.empleados_id, 
+                    e.nombre, 
+                    e.rol
+                  FROM empleados e 
                   INNER JOIN ' . $this->table . ' et ON e.empleados_id = et.empleados_id
-                  WHERE et.tareas_id = :tareas_id';
+                  WHERE et.tareas_id = :tareas_id
+                  ORDER BY e.nombre';
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':tareas_id', $tareas_id, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    // Obtener tareas asignadas a un empleado con filtro por estado (pendiente)
+    // Obtener tareas asignadas a un empleado con filtro por estado
     public function getPendingTasksByEmployee($empleados_id, $estado = 'pendiente') {
+        // Optimización: Seleccionar solo columnas necesarias y agregar orden
         $query = '
-            SELECT t.tareas_id, t.estado, t.nombre_tarea, t.descripcion, t.proyectos_id, t.fecha_inicio, t.fecha_fin, p.nombre_proyecto
+            SELECT 
+                t.tareas_id, 
+                t.estado, 
+                t.nombre_tarea, 
+                t.descripcion, 
+                t.proyectos_id, 
+                t.fecha_inicio, 
+                t.fecha_fin, 
+                p.nombre_proyecto
             FROM tareas t
             INNER JOIN ' . $this->table . ' et ON t.tareas_id = et.tareas_id
             INNER JOIN proyectos p ON t.proyectos_id = p.proyectos_id
             WHERE et.empleados_id = :empleados_id AND t.estado = :estado
+            ORDER BY t.fecha_inicio ASC
         ';
         
         $stmt = $this->db->prepare($query);
@@ -92,6 +117,7 @@ class EmployeeTask {
     
     // Obtener tareas asignadas de otros empleados por empleado responsable
     public function getTasksByResponsible($employeeId) {
+        // Optimización: Reordenar JOIN, empezar desde la tabla de proyectos
         $query = "
             SELECT 
                 t.tareas_id, 
@@ -104,11 +130,12 @@ class EmployeeTask {
                 p.nombre_proyecto,
                 et.empleados_id,
                 e.nombre AS nombre_empleado
-            FROM tareas t
-            INNER JOIN proyectos p ON t.proyectos_id = p.proyectos_id
+            FROM proyectos p
+            INNER JOIN tareas t ON p.proyectos_id = t.proyectos_id
             INNER JOIN empleados_tareas et ON t.tareas_id = et.tareas_id
             INNER JOIN empleados e ON et.empleados_id = e.empleados_id
             WHERE p.responsable_id = :employeeId
+            ORDER BY t.fecha_inicio DESC
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':employeeId', $employeeId, \PDO::PARAM_INT);

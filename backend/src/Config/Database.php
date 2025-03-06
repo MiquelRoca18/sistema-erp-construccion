@@ -113,6 +113,37 @@ class Database {
         ";
 
         $this->pdo->exec($sql);
+        
+        // Agregar índices para optimizar consultas frecuentes
+        $indices = "
+        -- Índices para la tabla empleados
+        CREATE INDEX IF NOT EXISTS idx_empleados_rol ON empleados(rol);
+        
+        -- Índices para la tabla proyectos
+        CREATE INDEX IF NOT EXISTS idx_proyectos_responsable ON proyectos(responsable_id);
+        CREATE INDEX IF NOT EXISTS idx_proyectos_estado ON proyectos(estado);
+        CREATE INDEX IF NOT EXISTS idx_proyectos_fecha_inicio ON proyectos(fecha_inicio);
+        
+        -- Índices para la tabla tareas
+        CREATE INDEX IF NOT EXISTS idx_tareas_proyecto ON tareas(proyectos_id);
+        CREATE INDEX IF NOT EXISTS idx_tareas_estado ON tareas(estado);
+        CREATE INDEX IF NOT EXISTS idx_tareas_fecha_inicio ON tareas(fecha_inicio);
+        
+        -- Índices para la tabla presupuestos
+        CREATE INDEX IF NOT EXISTS idx_presupuestos_proyecto ON presupuestos(proyectos_id);
+        
+        -- Índices para la tabla empleados_tareas (Ya tienen índices implícitos por la PK compuesta)
+        
+        -- Índices para la tabla autenticacion
+        CREATE INDEX IF NOT EXISTS idx_autenticacion_empleado ON autenticacion(empleados_id);
+        CREATE INDEX IF NOT EXISTS idx_autenticacion_rol ON autenticacion(id_rol);
+        ";
+        
+        // Ejecutar la creación de índices
+        try {
+            $this->pdo->exec($indices);
+        } catch (PDOException $e) {
+        }
     }
 
     public function insertData() {

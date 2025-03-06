@@ -5,22 +5,54 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php [QSA,L]
 
-# Activar compresión GZIP
+# Activar compresión GZIP - mejorada
 <IfModule mod_deflate.c>
+    # Comprimir contenido con tipo MIME específico
     AddOutputFilterByType DEFLATE application/json
     AddOutputFilterByType DEFLATE text/html text/plain text/xml
     AddOutputFilterByType DEFLATE application/javascript
     AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/x-font-ttf application/x-font-opentype
+    AddOutputFilterByType DEFLATE image/svg+xml image/x-icon
     
     # Antiguos navegadores
     BrowserMatch ^Mozilla/4 gzip-only-text/html
     BrowserMatch ^Mozilla/4\.0[678] no-gzip
     BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+    
+    # Nivel de compresión (de 1 a 9, 9 siendo la mayor compresión)
+    DeflateCompressionLevel 6
 </IfModule>
 
-# Habilitar caché HTTP para respuestas
+# Habilitar caché HTTP para respuestas - mejorada
 <IfModule mod_expires.c>
     ExpiresActive On
-    ExpiresDefault "access plus 1 seconds"
-    ExpiresByType application/json "access plus 1 minutes"
+    ExpiresDefault "access plus 1 day"
+    
+    # APIs y datos dinámicos
+    ExpiresByType application/json "access plus 5 minutes"
+    
+    # Recursos estáticos
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-font-ttf "access plus 1 year"
+    
+    # Encabezados de caché
+    <IfModule mod_headers.c>
+        Header append Cache-Control "public"
+        
+        # Deshabilitar ETag para evitar validaciones redundantes
+        Header unset ETag
+        FileETag None
+        
+        # Respuestas JSON con caché más corto
+        <FilesMatch "\.(json)$">
+            Header set Cache-Control "max-age=300, must-revalidate"
+        </FilesMatch>
+    </IfModule>
 </IfModule>

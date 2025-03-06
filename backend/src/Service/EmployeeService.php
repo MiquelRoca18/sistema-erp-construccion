@@ -17,24 +17,19 @@ class EmployeeService extends BaseService {
     }
 
     public function getEmployee($employeeId) {
-        error_log('[DEBUG] Service getEmployee - Inicio');
-        error_log('[DEBUG] Service getEmployee - ID recibido: ' . print_r($employeeId, true));
     
         // Validar ID
         if ($error = $this->validateId($employeeId)) {
-            error_log('[DEBUG] Service getEmployee - Error de validación de ID: ' . print_r($error, true));
             return $error;
         }
     
         // Validar existencia del empleado
         if ($error = $this->validateExists($employeeId)) {
-            error_log('[DEBUG] Service getEmployee - Error de existencia de empleado: ' . print_r($error, true));
             return $error;
         }
     
         $employee = $this->model->getById($employeeId);
         
-        error_log('[DEBUG] Service getEmployee - Empleado obtenido: ' . print_r($employee, true));
         
         return $this->responseFound($employee, 'Empleado encontrado');
     }

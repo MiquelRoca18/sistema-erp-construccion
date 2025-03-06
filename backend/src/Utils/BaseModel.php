@@ -23,15 +23,34 @@ class BaseModel {
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
+    
+    // Obtener registros paginados (nuevo método)
+    public function getPaginated($page = 1, $itemsPerPage = 10, $orderBy = null) {
+        $offset = ($page - 1) * $itemsPerPage;
+        
+        $orderClause = $orderBy ? " ORDER BY $orderBy" : "";
+        $query = 'SELECT * FROM ' . $this->table . $orderClause . ' LIMIT :limit OFFSET :offset';
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':limit', $itemsPerPage, \PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+    
+    // Contar registros para paginación (nuevo método)
+    public function count($whereClause = '1') {
+        $query = 'SELECT COUNT(*) FROM ' . $this->table . ' WHERE ' . $whereClause;
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
 
     // Obtener un registro por su ID
     public function getById($id) {
-        error_log('[DEBUG] BaseModel getById - Inicio');
-        error_log('[DEBUG] BaseModel - table: ' .  $this->table);
-        error_log('[DEBUG] BaseModel - id: ' . print_r($id, true));
         
         $query = 'SELECT * FROM ' . $this->table . ' WHERE ' . $this->table . '_id = :id';
-        error_log('[DEBUG] BaseModel - Query: ' . $query);
         
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
@@ -40,12 +59,8 @@ class BaseModel {
             $stmt->execute();
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
             
-            error_log('[DEBUG] BaseModel - Resultado fetch:');
-            error_log(print_r($result, true));
-            
             return $result;
         } catch (\PDOException $e) {
-            error_log('[ERROR] BaseModel - Error en getById: ' . $e->getMessage());
             return null;
         }
     }
@@ -77,7 +92,6 @@ class BaseModel {
         return $this->db->lastInsertId();
     }
     
-
     // Actualizar un registro
     public function update($id, $data) {
         $data = (array)$data;
@@ -109,6 +123,19 @@ class BaseModel {
         $stmt->execute();
 
         return $stmt->rowCount() > 0;
+    }
+    
+    // Buscar registros genéricos (nuevo método)
+    public function search($column, $term, $limit = 20) {
+        $query = "SELECT * FROM {$this->table} WHERE {$column} LIKE :term LIMIT :limit";
+        $term = "%{$term}%";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':term', $term);
+        $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
 ?>

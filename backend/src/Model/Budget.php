@@ -10,6 +10,7 @@ class Budget extends BaseModel {
 
     // Retorna los presupuestos con el nombre del proyecto y la suma total de equipos, mano_obra y materiales
     public function getBudgetsWithDetails() {
+        // Optimización: Selección específica de columnas y orden para mejor rendimiento
         $query = "SELECT 
                     p.presupuestos_id, 
                     p.proyectos_id, 
@@ -19,7 +20,8 @@ class Budget extends BaseModel {
                     (p.equipos + p.mano_obra + p.materiales) AS total,
                     pr.nombre_proyecto
                   FROM presupuestos p
-                  INNER JOIN proyectos pr ON p.proyectos_id = pr.proyectos_id";
+                  INNER JOIN proyectos pr ON p.proyectos_id = pr.proyectos_id
+                  ORDER BY p.presupuestos_id DESC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

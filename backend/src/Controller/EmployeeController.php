@@ -37,12 +37,8 @@ class EmployeeController extends BaseController {
             return;
         }
         
-        custom_error_log("Controller getEmployee - ID recibido: " . print_r($employeeId, true), 'EMPLOYEE_CONTROLLER');
-        
         $result = $this->employeeService->getEmployee($employeeId);
-        
-        custom_error_log("Controller getEmployee - Resultado: " . print_r($result, true), 'EMPLOYEE_CONTROLLER');
-        
+                
         if (isset($result['data'])) {
             saveToCache($cacheKey, $result['data'], 300); // 5 minutos
         }

@@ -8,7 +8,17 @@ class Project extends BaseModel {
     }
 
     public function getByState($state) {
-        $query = 'SELECT * FROM ' . $this->table . ' WHERE estado = :estado';
+        // Optimización: Selección específica de columnas y orden
+        $query = 'SELECT 
+                    proyectos_id, 
+                    responsable_id, 
+                    estado, 
+                    nombre_proyecto, 
+                    fecha_inicio, 
+                    fecha_fin 
+                  FROM ' . $this->table . ' 
+                  WHERE estado = :estado
+                  ORDER BY fecha_inicio DESC';
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':estado', $state);
         $stmt->execute();
@@ -17,9 +27,19 @@ class Project extends BaseModel {
     
     // Obtener proyectos con el nombre del responsable
     public function getProjectsWithResponsable() {
-        $query = "SELECT p.*, e.nombre AS responsable_nombre 
+        // Optimización: Selección específica de columnas y orden
+        $query = "SELECT 
+                    p.proyectos_id, 
+                    p.responsable_id, 
+                    p.estado, 
+                    p.nombre_proyecto, 
+                    p.fecha_inicio, 
+                    p.fecha_fin, 
+                    p.descripcion,
+                    e.nombre AS responsable_nombre 
                   FROM " . $this->table . " p 
-                  LEFT JOIN empleados e ON p.responsable_id = e.empleados_id";
+                  LEFT JOIN empleados e ON p.responsable_id = e.empleados_id
+                  ORDER BY p.fecha_inicio DESC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
