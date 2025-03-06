@@ -159,6 +159,13 @@ error_log("Mét  odo de solicitud: " . $_SERVER['REQUEST_METHOD']);
         $router->addRoute('PUT', 'employee-tasks/assignment/([0-9]+)', [$employeeTaskController, 'updateAssignment']);
 
         $router->addRoute('GET', 'health', function() {
+            error_log("==== HEALTH CHECK ROUTE ACCEDIDO ====");
+            error_log("Fecha/Hora: " . date('Y-m-d H:i:s'));
+            error_log("IP: " . $_SERVER['REMOTE_ADDR']);
+            error_log("User Agent: " . ($_SERVER['HTTP_USER_AGENT'] ?? 'No definido'));
+            error_log("Method: " . $_SERVER['REQUEST_METHOD']);
+            error_log("=============================");
+            
             header('Content-Type: application/json');
             echo json_encode(['status' => 'ok']);
             http_response_code(200);
