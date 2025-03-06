@@ -14,12 +14,16 @@ export const login = async (credentials: { username: string; password_hash: stri
       headers: {
         'Content-Type': 'application/json',
       },
+      withCredentials: true  // Añade esta línea
     });
     
     return response.data.data;
   } catch (error: any) {
     console.error("Error de login completo:", error);
+    console.error("Error completo:", JSON.stringify(error, null, 2));
     console.error("Detalles del error:", error.response?.data);
+    console.error("Status del error:", error.response?.status);
+    console.error("Headers del error:", error.response?.headers);
     throw new Error(error.response?.data?.message || 'Error de autenticación');
   }
 };

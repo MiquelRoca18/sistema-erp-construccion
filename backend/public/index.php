@@ -1,53 +1,23 @@
 <?php
-    / Habilitar logs de errores para depuración completa
+
+error_log("Solicitud recibida desde: " . ($_SERVER['HTTP_ORIGIN'] ?? 'No definido'));
+error_log("Método de solicitud: " . $_SERVER['REQUEST_METHOD']);
+    // Mostrar errores para depuración
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
-    // Función de registro de depuración
-    function debugLog($message) {
-        error_log("[DEBUG] " . $message);
-    }
+    error_log("Solicitud recibida desde: " . ($_SERVER['HTTP_ORIGIN'] ?? 'No definido'));
+error_log("Mét  odo de solicitud: " . $_SERVER['REQUEST_METHOD']);
 
-    // Registrar información de la solicitud entrante
-    debugLog("Método de solicitud: " . $_SERVER['REQUEST_METHOD']);
-    debugLog("URI de solicitud: " . $_SERVER['REQUEST_URI']);
-    debugLog("Origen (Origin header): " . ($_SERVER['HTTP_ORIGIN'] ?? 'No definido'));
-    
-    // Registrar todos los encabezados de la solicitud
-    debugLog("Encabezados de la solicitud:");
-    foreach (getallheaders() as $nombre => $valor) {
-        debugLog("  $nombre: $valor");
-    }
-
-    // CORS mejorado con más información de depuración
-    $allowedOrigin = 'https://sistema-erp-construccion-1.onrender.com';
-    
-    // Verificación de origen
-    if (isset($_SERVER['HTTP_ORIGIN'])) {
-        debugLog("Origen detectado: " . $_SERVER['HTTP_ORIGIN']);
-        
-        // Comparación de orígenes con más detalles
-        if ($_SERVER['HTTP_ORIGIN'] === $allowedOrigin) {
-            debugLog("Origen PERMITIDO: Coincide exactamente");
-            header('Access-Control-Allow-Origin: ' . $allowedOrigin);
-        } else {
-            debugLog("ADVERTENCIA: Origen NO coincide");
-            debugLog("Origen esperado: $allowedOrigin");
-            debugLog("Origen recibido: " . $_SERVER['HTTP_ORIGIN']);
-        }
-    } else {
-        debugLog("ADVERTENCIA: No se detectó encabezado de origen");
-    }
-
-    // CORS headers adicionales con más logging
+    // Habilitar CORS - ACTUALIZADO para permitir solicitudes desde el frontend desplegado
+    header('Access-Control-Allow-Origin: https://sistema-erp-construccion-1.onrender.com');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
     header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
     header('Access-Control-Allow-Credentials: true');
     
-    // Manejar solicitudes preflight OPTIONS con más información
+    // Manejar las solicitudes preflight OPTIONS
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        debugLog("Solicitud PREFLIGHT detectada");
         http_response_code(200);
         exit();
     }
@@ -199,6 +169,4 @@
             'message' => 'Error en el servidor: ' . $e->getMessage()
         ]);
     }
-
-    debugLog("Procesamiento de solicitud completado");
 ?>
