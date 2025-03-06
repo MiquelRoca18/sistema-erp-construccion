@@ -19,9 +19,6 @@ RewriteRule ^(.*)$ index.php [QSA,L]
     BrowserMatch ^Mozilla/4 gzip-only-text/html
     BrowserMatch ^Mozilla/4\.0[678] no-gzip
     BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
-    
-    # Nivel de compresión (de 1 a 9, 9 siendo la mayor compresión)
-    DeflateCompressionLevel 6
 </IfModule>
 
 # Habilitar caché HTTP para respuestas - mejorada
