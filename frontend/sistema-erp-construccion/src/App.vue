@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ dark: isDark }" class="flex flex-col h-screen overflow-hidden transition-colors duration-300">
+  <div :class="{ dark: isDark }" class="flex flex-col min-h-screen overflow-x-hidden transition-colors duration-300">
     <div class="flex flex-1 w-full overflow-hidden">
       
       <!-- Sidebar (Solo visible en pantallas grandes) -->
@@ -28,7 +28,7 @@
         </button>
 
         <!-- Contenido principal -->
-        <div class="flex-1 p-6 flex items-center justify-center transition-colors duration-300 bg-gray-100 dark:bg-gray-900">
+        <div class="flex-1 p-6 pb-safe flex items-center justify-center transition-colors duration-300 bg-gray-100 dark:bg-gray-900">
           <router-view />
         </div>
       </div>
@@ -89,5 +89,27 @@ html, body {
 #app {
   height: 100%;
   overflow: hidden;
+}
+
+/* Añadir padding para dispositivos móviles */
+@media screen and (max-width: 768px) {
+  .pb-safe {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 80px));
+  }
+  
+  /* Ajustes para iOS Safari */
+  @supports (-webkit-touch-callout: none) {
+    .min-h-screen {
+      /* Usar altura de la ventana gráfica móvil */
+      min-height: -webkit-fill-available;
+    }
+  }
+}
+
+/* Manejo de pantallas en dispositivos móviles */
+@media screen and (max-height: 600px) {
+  html, body, #app {
+    overflow-y: auto;
+  }
 }
 </style>
