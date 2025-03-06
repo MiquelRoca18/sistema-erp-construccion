@@ -4,25 +4,14 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
-    // Habilitar CORS - Configuración mejorada
-    if (isset($_SERVER['HTTP_ORIGIN'])) {
-        header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-        header('Access-Control-Allow-Credentials: true');
-        header('Access-Control-Max-Age: 86400');    // Cache preflight por 24 horas
-    }
-
+    // Habilitar CORS - ACTUALIZADO para permitir solicitudes desde el frontend desplegado
+    header('Access-Control-Allow-Origin: https://sistema-erp-construccion-1.onrender.com');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+    header('Access-Control-Allow-Credentials: true');
+    
     // Manejar las solicitudes preflight OPTIONS
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
-            header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        }
-        
-        if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
-            header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-        } else {
-            header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-        }
-        
         http_response_code(200);
         exit();
     }
