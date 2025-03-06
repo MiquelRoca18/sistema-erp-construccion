@@ -27,7 +27,8 @@
           @click="closeSidebar"
         >
           <img :src="employeePhoto" alt="Perfil" class="w-16 h-16 rounded-full border-4 border-gray-400 dark:border-blue-500 shadow-md">
-          <span class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ employeeName }}</span>
+          <span v-if="employeeName && employeeName !== 'Empleado Desconocido'" class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ employeeName }}</span>
+          <div v-else class="h-6 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
         </router-link>
       </div>
 
@@ -201,7 +202,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { getEmployeeData } from '@/service/authService';
 import { userRole } from '@/service/authStore';
 import defaultEmployeePhoto from '@/assets/images/employeePhoto.webp'
@@ -214,9 +215,10 @@ const props = defineProps({
 const emit = defineEmits(['toggleSidebar', 'toggleDarkMode']);
 
 const employeeId = ref(null);
-const employeeName = ref("Empleado Desconocido");
+const employeeName = ref("");
 const employeePhoto = ref(defaultEmployeePhoto);
-const isLoading = ref(true); // Nuevo estado para controlar la visualización del loader
+const isLoading = ref(true);
+const dataLoadError = ref(false);
 
 // Inicializamos los menús como abiertos por defecto para mejor experiencia de usuario
 const personalOpen = ref(true);
@@ -230,35 +232,49 @@ const toggleAdmin = () => {
   adminOpen.value = !adminOpen.value;
 };
 
-onMounted(async () => {
-  // Establecer isLoading a true al comenzar la carga
+// Función para cargar los datos del empleado
+const loadEmployeeData = async () => {
   isLoading.value = true;
+  dataLoadError.value = false;
+  employeeName.value = "";
   
-  // Cargar datos del empleado
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user) {
-    try {
-      const token = localStorage.getItem('token');
-      console.log("Usuario antes de getEmployeeData:", user);
-      
-      // Asegúrate de pasar el ID del empleado
-      const employeeData = await getEmployeeData(user.empleados_id, token);
-      
-      console.log("Datos del empleado:", employeeData);
-      
-      employeeId.value = employeeData.empleados_id;
-      employeeName.value = employeeData.nombre || "Empleado Desconocido";
-      employeePhoto.value = employeeData.photo || defaultEmployeePhoto;
-    } catch (error) {
-      console.error("Error al cargar los datos del empleado:", error);
-    } finally {
-      // Independientemente del resultado, establecer isLoading a false
-      isLoading.value = false;
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user.empleados_id) {
+      throw new Error("No se encontró la información del usuario");
     }
-  } else {
-    // Si no hay usuario, tampoco deberíamos mostrar el loader
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error("No se encontró el token de autenticación");
+    }
+    
+    const employeeData = await getEmployeeData(user.empleados_id, token);
+    
+    if (employeeData && employeeData.nombre) {
+      employeeId.value = employeeData.empleados_id;
+      employeeName.value = employeeData.nombre;
+      employeePhoto.value = employeeData.photo || defaultEmployeePhoto;
+    } else {
+      throw new Error("No se pudo obtener la información del empleado");
+    }
+  } catch (error) {
+    console.error("Error al cargar los datos del empleado:", error);
+    dataLoadError.value = true;
+    // Si ocurre un error, intentamos otra vez después de un tiempo
+    setTimeout(loadEmployeeData, 3000);
+  } finally {
     isLoading.value = false;
   }
+};
+
+onMounted(() => {
+  loadEmployeeData();
+});
+
+// Verificar si el nombre está cargado y si no, mostrar el loader
+const showNameLoader = computed(() => {
+  return !employeeName.value || employeeName.value === "Empleado Desconocido";
 });
 
 // Función para cerrar el sidebar en dispositivos pequeños
