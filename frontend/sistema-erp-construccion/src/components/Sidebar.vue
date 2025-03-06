@@ -6,9 +6,22 @@
              lg:relative lg:translate-x-0 lg:flex lg:flex-col"
       :class="{ 'translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
     >
-      <!-- Sección del usuario -->
+      <!-- Sección del usuario con loader -->
       <div class="p-6 flex flex-col items-center border-b border-gray-300 dark:border-gray-700">
+        <!-- Loader para la sección del usuario -->
+        <div v-if="isLoading" class="flex flex-col items-center gap-3 py-3 px-4">
+          <div class="w-16 h-16 rounded-full border-4 border-gray-400 dark:border-blue-500 shadow-md flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+            <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          <div class="h-6 w-32 bg-gray-300 dark:bg-gray-600 rounded animate-pulse"></div>
+        </div>
+        
+        <!-- Contenido del usuario cuando esté cargado -->
         <router-link 
+          v-else
           :to="`/employee/${employeeId}`" 
           class="flex flex-col items-center gap-3 hover:bg-gray-200 dark:hover:bg-gray-700 transition py-3 px-4 rounded-lg"
           @click="closeSidebar"
@@ -203,6 +216,7 @@ const emit = defineEmits(['toggleSidebar', 'toggleDarkMode']);
 const employeeId = ref(null);
 const employeeName = ref("Empleado Desconocido");
 const employeePhoto = ref(defaultEmployeePhoto);
+const isLoading = ref(true); // Nuevo estado para controlar la visualización del loader
 
 // Inicializamos los menús como abiertos por defecto para mejor experiencia de usuario
 const personalOpen = ref(true);
@@ -217,6 +231,9 @@ const toggleAdmin = () => {
 };
 
 onMounted(async () => {
+  // Establecer isLoading a true al comenzar la carga
+  isLoading.value = true;
+  
   // Cargar datos del empleado
   const user = JSON.parse(localStorage.getItem("user"));
   if (user) {
@@ -234,7 +251,13 @@ onMounted(async () => {
       employeePhoto.value = employeeData.photo || defaultEmployeePhoto;
     } catch (error) {
       console.error("Error al cargar los datos del empleado:", error);
+    } finally {
+      // Independientemente del resultado, establecer isLoading a false
+      isLoading.value = false;
     }
+  } else {
+    // Si no hay usuario, tampoco deberíamos mostrar el loader
+    isLoading.value = false;
   }
 });
 
