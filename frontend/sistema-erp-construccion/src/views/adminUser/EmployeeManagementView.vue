@@ -276,11 +276,10 @@ const fetchEmployees = async () => {
 // Debounce para búsqueda
 const debounce = (fn: Function, delay: number) => {
   let timeout: number | null = null;
-  return function(...args: any[]) {
-    const context = this;
+  return (...args: any[]) => {
     if (timeout) clearTimeout(timeout);
     timeout = window.setTimeout(() => {
-      fn.apply(context, args);
+      fn(...args);
     }, delay);
   };
 };
