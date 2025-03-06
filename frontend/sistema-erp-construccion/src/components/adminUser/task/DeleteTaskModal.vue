@@ -119,3 +119,4 @@ const confirmDeletion = async () => {
     loading.value = false;
   }
 };
+</script>
