@@ -28,6 +28,7 @@
     function saveToCache($key, $data, $ttl = 300) {
         if (function_exists('apcu_store')) {
             error_log("[CACHE] Storing $key");
+            error_log("[CACHE] Data: " . json_encode($data));
             apcu_store($key, $data, $ttl);
         }
     }
