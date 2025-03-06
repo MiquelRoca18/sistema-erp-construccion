@@ -26,8 +26,7 @@ class Task extends BaseModel{
                   LEFT JOIN empleados_tareas et ON t.tareas_id = et.tareas_id
                   LEFT JOIN empleados e ON et.empleados_id = e.empleados_id
                   LEFT JOIN proyectos p ON t.proyectos_id = p.proyectos_id
-                  GROUP BY t.tareas_id
-                  ORDER BY t.fecha_inicio DESC";
+                  GROUP BY t.tareas_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -47,8 +46,7 @@ class Task extends BaseModel{
                   LEFT JOIN empleados_tareas et ON t.tareas_id = et.tareas_id
                   LEFT JOIN empleados e ON et.empleados_id = e.empleados_id
                   WHERE t.proyectos_id = :proyectos_id
-                  GROUP BY t.tareas_id
-                  ORDER BY t.fecha_inicio";
+                  GROUP BY t.tareas_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':proyectos_id', $projectId, \PDO::PARAM_INT);
         $stmt->execute();

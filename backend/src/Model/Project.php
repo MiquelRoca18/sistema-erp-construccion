@@ -17,8 +17,7 @@ class Project extends BaseModel {
                     fecha_inicio, 
                     fecha_fin 
                   FROM ' . $this->table . ' 
-                  WHERE estado = :estado
-                  ORDER BY fecha_inicio DESC';
+                  WHERE estado = :estado';
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':estado', $state);
         $stmt->execute();
@@ -38,8 +37,7 @@ class Project extends BaseModel {
                     p.descripcion,
                     e.nombre AS responsable_nombre 
                   FROM " . $this->table . " p 
-                  LEFT JOIN empleados e ON p.responsable_id = e.empleados_id
-                  ORDER BY p.fecha_inicio DESC";
+                  LEFT JOIN empleados e ON p.responsable_id = e.empleados_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

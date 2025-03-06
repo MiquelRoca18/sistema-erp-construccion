@@ -17,8 +17,7 @@ class Employee extends BaseModel {
                     telefono, 
                     correo 
                   FROM ' . $this->table . ' 
-                  WHERE rol = :rol
-                  ORDER BY nombre';
+                  WHERE rol = :rol';
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':rol', $role);
         $stmt->execute();
@@ -33,7 +32,6 @@ class Employee extends BaseModel {
                     rol 
                   FROM ' . $this->table . ' 
                   WHERE nombre LIKE :searchTerm
-                  ORDER BY nombre
                   LIMIT 20';
         $searchTerm = '%' . $searchTerm . '%';
         $stmt = $this->db->prepare($query);

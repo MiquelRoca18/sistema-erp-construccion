@@ -20,8 +20,7 @@ class Budget extends BaseModel {
                     (p.equipos + p.mano_obra + p.materiales) AS total,
                     pr.nombre_proyecto
                   FROM presupuestos p
-                  INNER JOIN proyectos pr ON p.proyectos_id = pr.proyectos_id
-                  ORDER BY p.presupuestos_id DESC";
+                  INNER JOIN proyectos pr ON p.proyectos_id = pr.proyectos_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
