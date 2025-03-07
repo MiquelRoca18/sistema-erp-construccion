@@ -1,62 +1,163 @@
-# Sistema ERP para Construcción
+<div align="center">
+  
+# 🏗️ Sistema ERP para Construcción 🏗️
 
-Un sistema de Planificación de Recursos Empresariales completo diseñado específicamente para empresas de construcción que permite gestionar empleados, proyectos, tareas y presupuestos de manera eficiente.
+![License](https://img.shields.io/badge/Licencia-MIT-blue)
+![Version](https://img.shields.io/badge/Versión-1.0-green)
+![Status](https://img.shields.io/badge/Estado-Producción-success)
 
-![Sistema ERP para Construcción](https://via.placeholder.com/800x400?text=Sistema+ERP+Construccion)
+</div>
 
-## Descripción General
+<p align="center">
+  <img src="https://via.placeholder.com/800x400?text=Sistema+ERP+Construccion" alt="Sistema ERP para Construcción" width="800">
+</p>
+
+<div align="center">
+  <b>Un sistema de Planificación de Recursos Empresariales completo diseñado específicamente para empresas de construcción</b>
+</div>
+
+<div align="center">
+  <a href="#descripción-general">Descripción</a> •
+  <a href="#acceso-a-producción">Acceso</a> •
+  <a href="#características">Características</a> •
+  <a href="#stack-tecnológico">Tecnologías</a> •
+  <a href="#instrucciones-de-configuración">Instalación</a> •
+  <a href="#capturas-de-pantalla">Capturas</a> •
+  <a href="#uso">Uso</a>
+</div>
+
+---
+
+## 📋 Descripción General
 
 Este Sistema ERP para Construcción proporciona una solución completa para que las empresas de construcción gestionen sus recursos, proyectos y finanzas. El sistema cuenta con una interfaz amigable construida con Vue.js y Tailwind CSS, respaldada por una robusta arquitectura PHP MVC, permitiendo a los gerentes de construcción y empleados optimizar sus operaciones y mejorar la productividad.
 
-## Características
+## 🌐 Acceso a Producción
 
-### Gestión de Empleados
-- Añadir, editar y eliminar perfiles de empleados
-- Gestionar roles y permisos de empleados
-- Seguimiento de disponibilidad y asignaciones de empleados
-- Monitoreo del rendimiento de los empleados
+Puedes acceder a la versión en línea del sistema en:
+<div align="center">
+  
+  [🔗 https://sistema-erp-construccion-1.onrender.com/](https://sistema-erp-construccion-1.onrender.com/)
+  
+</div>
 
-### Gestión de Proyectos
-- Crear y gestionar proyectos de construcción
-- Seguimiento del estado, plazos y fechas límite de los proyectos
-- Asignar personal responsable a los proyectos
-- Monitoreo del progreso del proyecto
+## 🔑 Credenciales de Prueba
 
-### Gestión de Tareas
-- Crear, asignar y hacer seguimiento de tareas
-- Vincular tareas a proyectos específicos
-- Establecer prioridades, plazos y dependencias de tareas
-- Monitoreo de finalización y rendimiento de tareas
+Para probar la aplicación, puedes utilizar cualquiera de los siguientes usuarios:
 
-### Gestión de Presupuestos
-- Crear y gestionar presupuestos de proyectos
-- Seguimiento de gastos y costos
-- Generar informes financieros
-- Monitoreo de variaciones presupuestarias
+<div align="center">
+  
+| 👤 Usuario | 🔒 Contraseña |
+|:----------:|:-------------:|
+| `juan.perez` | `jupe` |
+| `ana.gomez` | `ango` |
+| `carlos.lopez` | `calo` |
+| `maria.sanchez` | `masa` |
+| `davi.martinez` | `dama` |
+| `laura.fernandez` | `lafe` |
+| `sergio.ramirez` | `sera` |
+| `patricia.torres` | `pato` |
+| `javier.castillo` | `jaca` |
+| `elena.morales` | `elmo` |
 
-## Stack Tecnológico
+</div>
 
-### Frontend
-- **Framework**: Vue.js 3
-- **Estilizado**: Tailwind CSS
-- **Herramienta de construcción**: Vite
-- **Gestión de estado**: Vue Router para navegación
-- **Cliente HTTP**: Axios para peticiones API
-- **Visualización de datos**: Chart.js
+## 💼 Resumen para Empresas
 
-### Backend
-- **Lenguaje**: PHP 8
-- **Arquitectura**: MVC (Modelo-Vista-Controlador)
-- **API**: Endpoints RESTful API
-- **Autenticación**: JWT (JSON Web Tokens)
+<p align="center"><i>Este sistema ERP ha sido diseñado específicamente para optimizar las operaciones de empresas de construcción</i></p>
 
-### Base de Datos
-- Base de datos **MySQL** para almacenamiento de datos
-- Diseño de base de datos relacional con tablas para empleados, proyectos, tareas y presupuestos
+<table align="center">
+  <tr>
+    <td align="center"><b>🚀 Eficiencia en gestión de proyectos</b></td>
+    <td>Control total sobre el ciclo de vida de cada proyecto de construcción</td>
+  </tr>
+  <tr>
+    <td align="center"><b>👥 Optimización de recursos humanos</b></td>
+    <td>Asignación inteligente de personal según habilidades y disponibilidad</td>
+  </tr>
+  <tr>
+    <td align="center"><b>💰 Control financiero preciso</b></td>
+    <td>Seguimiento detallado de presupuestos y gastos en tiempo real</td>
+  </tr>
+  <tr>
+    <td align="center"><b>📊 Mejora en la toma de decisiones</b></td>
+    <td>Informes y analíticas que facilitan decisiones estratégicas basadas en datos</td>
+  </tr>
+  <tr>
+    <td align="center"><b>🔄 Comunicación centralizada</b></td>
+    <td>Toda la información relevante en un solo sistema accesible para el equipo</td>
+  </tr>
+  <tr>
+    <td align="center"><b>📈 Escalabilidad</b></td>
+    <td>Adaptable a empresas de construcción de cualquier tamaño</td>
+  </tr>
+</table>
 
-### Despliegue
-- Containerización con **Docker** para fácil despliegue y escalabilidad
-- Docker Compose para orquestar configuración multi-contenedor
+## ✨ Características
+
+<div align="center">
+  
+  | 👥 Gestión de Empleados | 🏢 Gestión de Proyectos | ✅ Gestión de Tareas | 💲 Gestión de Presupuestos |
+  |-------------------------|--------------------------|----------------------|----------------------------|
+  
+</div>
+
+### 👥 Gestión de Empleados
+- 📝 Añadir, editar y eliminar perfiles de empleados
+- 🔐 Gestionar roles y permisos de empleados
+- 📅 Seguimiento de disponibilidad y asignaciones de empleados
+- 📈 Monitoreo del rendimiento de los empleados
+
+### 🏢 Gestión de Proyectos
+- 🆕 Crear y gestionar proyectos de construcción
+- ⏱️ Seguimiento del estado, plazos y fechas límite de los proyectos
+- 👤 Asignar personal responsable a los proyectos
+- 📊 Monitoreo del progreso del proyecto
+
+### ✅ Gestión de Tareas
+- 📋 Crear, asignar y hacer seguimiento de tareas
+- 🔗 Vincular tareas a proyectos específicos
+- ⚡ Establecer prioridades, plazos y dependencias de tareas
+- 🎯 Monitoreo de finalización y rendimiento de tareas
+
+### 💲 Gestión de Presupuestos
+- 📒 Crear y gestionar presupuestos de proyectos
+- 💹 Seguimiento de gastos y costos
+- 📑 Generar informes financieros
+- 📉 Monitoreo de variaciones presupuestarias
+
+## 🛠️ Stack Tecnológico
+
+<div align="center">
+  
+  ### 🖥️ Frontend
+  
+  ![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
+  ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+  ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+  ![Vue Router](https://img.shields.io/badge/Vue_Router-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
+  ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
+  ![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chart.js&logoColor=white)
+  
+  ### ⚙️ Backend
+  
+  ![PHP](https://img.shields.io/badge/PHP-8-777BB4?style=for-the-badge&logo=php&logoColor=white)
+  ![MVC](https://img.shields.io/badge/MVC-Architecture-lightgrey?style=for-the-badge)
+  ![RESTful API](https://img.shields.io/badge/RESTful-API-009688?style=for-the-badge)
+  ![JWT](https://img.shields.io/badge/JWT-Authentication-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
+  
+  ### 🗄️ Base de Datos
+  
+  ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+  
+  ### 🚀 Despliegue
+  
+  ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+  ![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+  
+</div>
+
+---
 
 ## Estructura del Proyecto
 
@@ -108,6 +209,24 @@ sistema-erp-construccion/
 ### Configuración de Base de Datos
 
 La base de datos se inicializará automáticamente con el esquema y los datos iniciales de `db/sistemaERP.sql`.
+
+## Capturas de Pantalla
+
+### Dashboard Principal
+![Dashboard Principal](https://via.placeholder.com/800x400?text=Dashboard+Principal)
+*Vista general del panel de control con métricas clave y proyectos activos*
+
+### Gestión de Proyectos
+![Gestión de Proyectos](https://via.placeholder.com/800x400?text=Gestion+de+Proyectos)
+*Interfaz de administración de proyectos mostrando la lista y estado de los proyectos actuales*
+
+### Asignación de Tareas
+![Asignación de Tareas](https://via.placeholder.com/800x400?text=Asignacion+de+Tareas)
+*Pantalla de asignación y seguimiento de tareas para los empleados*
+
+### Vista de Presupuestos
+![Vista de Presupuestos](https://via.placeholder.com/800x400?text=Vista+de+Presupuestos)
+*Panel de control financiero mostrando presupuestos y gastos actuales*
 
 ## Uso
 
