@@ -1,5 +1,4 @@
 <template>
-  <!-- ProjectManagementView.vue -->
   <div class="flex flex-col justify-center items-center min-h-screen p-8 transition-colors duration-300">
     <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
       <!-- Encabezado y acción -->
@@ -39,9 +38,9 @@
         <div class="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
         <p class="text-gray-600 dark:text-gray-300 text-center">Cargando proyectos...</p>
       </div>
-  
+
       <!-- Vista Mobile: Card view -->
-      <div v-else class="block md:hidden">
+      <div v-else-if="!loading" class="block md:hidden">
         <div
           v-for="project in paginatedProjects"
           :key="project.proyectos_id"
@@ -74,9 +73,9 @@
         <!-- Divs vacíos para mantener el espacio de 5 elementos -->
         <div v-for="n in missingRows" :key="'empty-' + n" class="h-20"></div>
       </div>
-  
+
       <!-- Vista Desktop: Tabla -->
-      <div v-else class="hidden md:block overflow-x-auto">
+      <div v-else-if="!loading" class="hidden md:block overflow-x-auto">
         <table class="min-w-full">
           <thead>
             <tr class="bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 text-green-800 dark:text-green-200">

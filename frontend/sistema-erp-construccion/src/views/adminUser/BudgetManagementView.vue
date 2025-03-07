@@ -31,7 +31,7 @@
       </div>
 
       <!-- Vista Mobile: Tarjetas -->
-      <div v-else class="block sm:hidden w-full">
+      <div v-else-if="!loading" class="block sm:hidden w-full">
         <div
           v-for="budget in paginatedBudgets"
           :key="budget.presupuestos_id"
@@ -63,7 +63,7 @@
       </div>
 
       <!-- Vista Desktop: Tabla -->
-      <div v-else class="hidden sm:block w-full overflow-x-auto">
+      <div v-else-if="!loading" class="hidden sm:block w-full overflow-x-auto">
         <table class="min-w-full">
           <thead>
             <tr class="bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 text-yellow-800 dark:text-yellow-200">
@@ -104,6 +104,10 @@
               <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                 No se encontraron presupuestos.
               </td>
+            </tr>
+            <!-- Filas vacías para mantener el espacio -->
+            <tr v-for="n in missingRows" :key="'empty-' + n" class="h-20 bg-transparent">
+              <td colspan="7" class="px-6 py-4"></td>
             </tr>
           </tbody>
         </table>
