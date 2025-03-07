@@ -76,6 +76,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getEmployeeData } from '@/service/authService';
 import { logout as authLogout } from '@/service/authStore';
+import { throttle } from '@/utils/index';
 import EmployeeProfileComponent from "@/components/normalUser/EmployeeProfileComponent.vue";
 import EmployeeTasksComponent from "@/components/normalUser/EmployeeTasksComponent.vue";
 import EmployeeTasksGraph from "@/components/normalUser/EmployeeTasksGraph.vue";
@@ -96,11 +97,9 @@ onMounted(async () => {
       // Mostrar un mensaje en la consola de que se está cargando
       console.log("Cargando datos del empleado...");
       
-      // Obtener los datos del empleado
+      // Obtener los datos del empleado (ahora con caché)
       const employeeData = await getEmployeeData(user.empleados_id, localStorage.getItem('token'));
       
-      console.log("Tipo de datos:", typeof employeeData);
-
       // Asignación segura de valores
       if (employeeData && typeof employeeData === 'object') {
         employeeId.value = employeeData.empleados_id ?? null;
@@ -124,13 +123,17 @@ onMounted(async () => {
   }
 });
 
-const logout = () => {
+// Throttle para el logout (evita múltiples clics accidentales)
+const throttledLogout = throttle(() => {
   authLogout();
   employeeId.value = null;
   employeeName.value = "Empleado Desconocido";
   employeePhoto.value = defaultEmployeePhoto;
   router.push('/');
-};
+}, 1000);
+
+// Reemplazar la función logout original
+const logout = () => throttledLogout();
 
 const pendingTasksLink = computed(() => {
   return {

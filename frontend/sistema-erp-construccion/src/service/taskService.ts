@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { setLocalStorageWithExpiry, getLocalStorageWithExpiry } from '@/utils';
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Obtener las tareas pendientes
@@ -8,13 +10,28 @@ export const getPendingTasks = async (employeeId: number | null) => {
   }
 
   try {
+    // Verificar si hay caché
+    const cacheKey = `pending-tasks-${employeeId}`;
+    const cachedData = getLocalStorageWithExpiry(cacheKey);
+    
+    // Usar caché si existe
+    if (cachedData) {
+      console.log('Usando tareas pendientes desde caché');
+      return cachedData;
+    }
+    
     const response = await axios.get(`${API_URL}/employee-tasks/pending-tasks/${employeeId}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
     });
     
-    return response.data.data;
+    const data = response.data.data;
+    
+    // Guardar en caché por 5 minutos (300000 ms)
+    setLocalStorageWithExpiry(cacheKey, data, 300000);
+    
+    return data;
   } catch (error: any) {
     console.error('Error al obtener tareas pendientes:', error);
     throw new Error(error.response?.data?.message || 'Error al obtener tareas pendientes');
@@ -23,17 +40,44 @@ export const getPendingTasks = async (employeeId: number | null) => {
 
 // Obtener todas las tareas de un empleado
 export const getAllTasks = async (employeeId: any) => {
+  if (!employeeId) {
+    return [];
+  }
+  
   try {
-    const response = await axios.get(`${API_URL}/employee-tasks/employees/${employeeId}`);
+    // Verificar si hay caché
+    const cacheKey = `all-tasks-${employeeId}`;
+    const cachedData = getLocalStorageWithExpiry(cacheKey);
+    
+    // Usar caché si existe
+    if (cachedData) {
+      console.log('Usando todas las tareas desde caché');
+      return cachedData;
+    }
+    
+    const token = localStorage.getItem('token');
+    
+    const response = await axios.get(`${API_URL}/employee-tasks/employees/${employeeId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+    
+    let data;
     if (response.data && Array.isArray(response.data.data)) {
-      return response.data.data;
+      data = response.data.data;
     } else if (Array.isArray(response.data)) {
-      return response.data;
+      data = response.data;
     } else {
       console.warn('Formato inesperado en la respuesta de getAllTasks:', response.data);
-      return [];
+      data = [];
     }
-  } catch (error) {
+    
+    // Guardar en caché por 5 minutos
+    setLocalStorageWithExpiry(cacheKey, data, 300000);
+    
+    return data;
+  } catch (error: any) {
     console.error('Error al obtener las tareas:', error);
     return [];
   }
@@ -51,6 +95,24 @@ export const updateTask = async (taskId: number, data: any) => {
         'Authorization': `Bearer ${token}`,
       },
     });
+    
+    // Invalidar cachés relacionadas con tareas
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (
+          key.startsWith('all-tasks-') || 
+          key.startsWith('pending-tasks-') || 
+          key.startsWith('company-tasks') || 
+          key.startsWith('responsible-tasks-')
+        )) {
+        keysToRemove.push(key);
+      }
+    }
+    
+    // Remover las claves encontradas
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+    
     return response.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al actualizar la tarea');
@@ -59,17 +121,38 @@ export const updateTask = async (taskId: number, data: any) => {
 
 // Obtener tareas por responsable
 export const getTasksByResponsible = async (employeeId: any) => {
+  if (!employeeId) {
+    return [];
+  }
+  
   try {
+    // Verificar si hay caché
+    const cacheKey = `responsible-tasks-${employeeId}`;
+    const cachedData = getLocalStorageWithExpiry(cacheKey);
+    
+    // Usar caché si existe
+    if (cachedData) {
+      console.log('Usando tareas por responsable desde caché');
+      return cachedData;
+    }
+    
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('No se encontró el token.');
     }
+    
     const response = await axios.get(`${API_URL}/employee-tasks/responsible/${employeeId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
     });
-    return Array.isArray(response.data.data) ? response.data.data : [];
+    
+    const data = Array.isArray(response.data.data) ? response.data.data : [];
+    
+    // Guardar en caché por 5 minutos
+    setLocalStorageWithExpiry(cacheKey, data, 300000);
+    
+    return data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al obtener tareas por responsable');
   }

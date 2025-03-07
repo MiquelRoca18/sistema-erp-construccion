@@ -216,10 +216,13 @@
   </div>
 </template>
 
+// Fragmento a modificar en TasksView.vue
+
 <script setup>
 import { ref, onMounted, computed, watch, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { getAllTasks, getTasksByResponsible } from '@/service/taskService';
+import { debounce } from '@/utils'; // Importar debounce para optimización
 import TaskDetailModal from '@/components/normalUser/TaskDetailModal.vue';
 import TaskDetailModalOthers from '@/components/normalUser/TaskDetailModalOthers.vue';
 
@@ -247,40 +250,25 @@ const selectedTask = ref(null);
 const currentPage = ref(1);
 const resetPagination = () => { currentPage.value = 1; };
 
-const uniqueProjects = computed(() => {
-  const projectMap = new Map();
-  tasks.value.forEach(task => {
-    if (task.proyectos_id && task.nombre_proyecto) {
-      projectMap.set(task.proyectos_id, { id: task.proyectos_id, nombre: task.nombre_proyecto });
-    }
-  });
-  return Array.from(projectMap.values());
-});
+// Debounce para los filtros - importante para optimizar peticiones
+const debouncedFetchTasks = debounce(() => {
+  fetchTasks();
+}, 500);
 
-const availableStatuses = computed(() => {
-  const statusesSet = new Set();
-  tasks.value.forEach(task => {
-    if (task.estado) statusesSet.add(task.estado);
-  });
-  statusesSet.add("en progreso");
-  statusesSet.add("finalizado");
-  return Array.from(statusesSet);
-});
+// Observar cambios en los filtros con debounce para evitar múltiples peticiones
+watch([
+  selectedProject, 
+  selectedStatus, 
+  selectedTaskType, 
+  startDate, 
+  endDate
+], () => {
+  resetPagination();
+  debouncedFetchTasks();
+}, { deep: true });
 
-const screenWidth = ref(window.innerWidth);
-const isMobile = computed(() => screenWidth.value < 640);
-const isTablet = computed(() => screenWidth.value >= 640 && screenWidth.value < 1024);
-const isOneColumn = computed(() => isMobile.value || isTablet.value);
-const itemsPerPage = computed(() => (isOneColumn.value ? 3 : 6));
-
-// Espacios vacíos para mantener grid
-const emptySlots = computed(() => {
-  const slots = itemsPerPage.value - paginatedTasks.value.length;
-  return slots > 0 ? slots : 0;
-});
-
-// Sincronizar filtros con la URL 
-watch([selectedProject, selectedStatus, selectedTaskType, startDate, endDate], ([newProject, newStatus, newTaskType, newStartDate, newEndDate]) => {
+// Sincronizar filtros con la URL de manera eficiente con debounce
+const debouncedUpdateUrl = debounce(([newProject, newStatus, newTaskType, newStartDate, newEndDate]) => {
   router.replace({
     query: {
       ...route.query,
@@ -291,7 +279,13 @@ watch([selectedProject, selectedStatus, selectedTaskType, startDate, endDate], (
       endDate: newEndDate || undefined,
     },
   });
-}, { deep: true });
+}, 300);
+
+// Usar debouncedUpdateUrl para la URL
+watch([selectedProject, selectedStatus, selectedTaskType, startDate, endDate], 
+  (newValues) => debouncedUpdateUrl(newValues), 
+  { deep: true }
+);
 
 watch(() => route.query.status, (newStatus) => {
   if (newStatus === 'pendiente') {
@@ -310,9 +304,6 @@ const fetchTasks = async () => {
   error.value = '';
 
   try {
-    // Simulamos una pequeña demora para mostrar el loader (remover en producción)
-    // await new Promise(resolve => setTimeout(resolve, 200));
-    
     let response;
     if (selectedTaskType.value === 'otros') {
       response = await getTasksByResponsible(employeeId.value);
@@ -327,8 +318,73 @@ const fetchTasks = async () => {
     loading.value = false;
     isFetching.value = false;
   }
-  resetPagination();
 };
+
+// Cache para los resultados de cálculos costosos
+const cachedData = {
+  uniqueProjects: null,
+  availableStatuses: null
+};
+
+// Añadir memoización para cálculos costosos
+const uniqueProjects = computed(() => {
+  // Si ya tenemos un valor cacheado y las tareas no han cambiado, devolver el valor cacheado
+  if (cachedData.uniqueProjects && cachedData.lastTasksLength === tasks.value.length) {
+    return cachedData.uniqueProjects;
+  }
+
+  // Calcular nuevos valores
+  const projectMap = new Map();
+  tasks.value.forEach(task => {
+    if (task.proyectos_id && task.nombre_proyecto) {
+      projectMap.set(task.proyectos_id, { id: task.proyectos_id, nombre: task.nombre_proyecto });
+    }
+  });
+  
+  // Guardar en caché
+  cachedData.uniqueProjects = Array.from(projectMap.values());
+  cachedData.lastTasksLength = tasks.value.length;
+  
+  return cachedData.uniqueProjects;
+});
+
+const availableStatuses = computed(() => {
+  // Si ya tenemos un valor cacheado y las tareas no han cambiado, devolver el valor cacheado
+  if (cachedData.availableStatuses && cachedData.lastTasksLength === tasks.value.length) {
+    return cachedData.availableStatuses;
+  }
+
+  // Calcular nuevos valores
+  const statusesSet = new Set();
+  tasks.value.forEach(task => {
+    if (task.estado) statusesSet.add(task.estado);
+  });
+  statusesSet.add("en progreso");
+  statusesSet.add("finalizado");
+  
+  // Guardar en caché
+  cachedData.availableStatuses = Array.from(statusesSet);
+  cachedData.lastTasksLength = tasks.value.length;
+  
+  return cachedData.availableStatuses;
+});
+
+const screenWidth = ref(window.innerWidth);
+const isMobile = computed(() => screenWidth.value < 640);
+const isTablet = computed(() => screenWidth.value >= 640 && screenWidth.value < 1024);
+const isOneColumn = computed(() => isMobile.value || isTablet.value);
+const itemsPerPage = computed(() => (isOneColumn.value ? 3 : 6));
+
+// Espacios vacíos para mantener grid
+const emptySlots = computed(() => {
+  const slots = itemsPerPage.value - paginatedTasks.value.length;
+  return slots > 0 ? slots : 0;
+});
+
+// Utilizamos función optimizada para actualizar el ancho de pantalla (throttled)
+const updateScreenWidth = debounce(() => {
+  screenWidth.value = window.innerWidth;
+}, 100);
 
 onMounted(() => {
   fetchTasks();
@@ -339,15 +395,34 @@ onUnmounted(() => {
   window.removeEventListener('resize', updateScreenWidth);
 });
 
-// Filtro local
+// Optimización de la función de filtrado con memoización
+let lastFilteredTasks = null;
+let lastFilterCriteria = null;
+
+// Filtro local optimizado
 const filteredTasks = computed(() => {
-  return tasks.value.filter(task => {
+  // Creamos un criterio de filtrado como string para comparación
+  const currentCriteria = `${selectedProject.value}|${selectedStatus.value}|${startDate.value}|${endDate.value}`;
+  
+  // Si los criterios no han cambiado, devolvemos los resultados cacheados
+  if (lastFilterCriteria === currentCriteria && lastFilteredTasks) {
+    return lastFilteredTasks;
+  }
+  
+  // Si los criterios cambiaron, calculamos nuevos resultados
+  const filteredResults = tasks.value.filter(task => {
     const matchesProject = !selectedProject.value || task.proyectos_id == selectedProject.value;
     const matchesStatus = !selectedStatus.value || task.estado === selectedStatus.value;
     const matchesStartDate = !startDate.value || new Date(task.fecha_inicio) >= new Date(startDate.value);
     const matchesEndDate = !endDate.value || new Date(task.fecha_fin) <= new Date(endDate.value);
     return matchesProject && matchesStatus && matchesStartDate && matchesEndDate;
   });
+  
+  // Guardamos los resultados y criterios para la próxima vez
+  lastFilteredTasks = filteredResults;
+  lastFilterCriteria = currentCriteria;
+  
+  return filteredResults;
 });
 
 const totalPages = computed(() => Math.ceil(filteredTasks.value.length / itemsPerPage.value));
@@ -381,18 +456,26 @@ const goToPage = (page) => { currentPage.value = page; };
 
 const openTaskModal = (task) => { selectedTask.value = task; };
 
+// Optimizar updateTask para evitar solicitudes innecesarias
 const handleTaskUpdate = async (updatedTask) => {
   const index = tasks.value.findIndex(t => t.tareas_id === updatedTask.tareas_id);
   if (index !== -1) {
+    // Actualizar la tarea en el array local
     tasks.value[index] = updatedTask;
+    
+    // Invalidar las cachés
+    lastFilteredTasks = null;
+    lastFilterCriteria = null;
+    cachedData.uniqueProjects = null;
+    cachedData.availableStatuses = null;
   }
   selectedTask.value = null;
   
-  // Refrescar los datos después de una actualización
-  await fetchTasks();
+  // Solo recargar los datos si es necesario
+  if (updatedTask.estado !== tasks.value[index]?.estado) {
+    await fetchTasks();
+  }
 };
-
-const updateScreenWidth = () => { screenWidth.value = window.innerWidth; };
 </script>
 
 <style>
