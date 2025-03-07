@@ -9,7 +9,7 @@
 </div>
 
 <p align="center">
-  <img src="https://imgur.com/a/uQHjKq4" alt="Sistema ERP para Construcción" width="800">
+  [Imgur](https://i.imgur.com/tNvszjJ.png)
 </p>
 
 <div align="center">
