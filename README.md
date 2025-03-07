@@ -9,7 +9,7 @@
 </div>
 
 <p align="center">
-  <img src="https://via.placeholder.com/800x400?text=Sistema+ERP+Construccion" alt="Sistema ERP para Construcción" width="800">
+  <img src="https://imgur.com/a/uQHjKq4" alt="Sistema ERP para Construcción" width="800">
 </p>
 
 <div align="center">
@@ -23,7 +23,7 @@
   <a href="#-resumen-para-empresas">Resumen</a> •
   <a href="#-características">Características</a> •
   <a href="#%EF%B8%8F-stack-tecnológico">Tecnologías</a> •
-  <a href="#estructura-del-proyecto">Estructura</a> •
+  <a href="#estructura-del-proyecto">Estructura</a>
 </div>
 
 ---
