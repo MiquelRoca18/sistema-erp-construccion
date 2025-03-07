@@ -17,24 +17,24 @@
 </div>
 
 <div align="center">
-  <a href="#descripcion-general">Descripción</a> •
-  <a href="#acceso-a-produccion">Acceso</a> •
+  <a href="#descripción-general">Descripción</a> •
+  <a href="#acceso-a-producción">Acceso</a> •
   <a href="#credenciales-de-prueba">Credenciales</a> •
   <a href="#resumen-para-empresas">Resumen</a> •
-  <a href="#caracteristicas">Características</a> •
-  <a href="#stack-tecnologico">Tecnologías</a> •
-  <a href="#instrucciones-de-configuracion">Instalación</a> •
+  <a href="#características">Características</a> •
+  <a href="#stack-tecnológico">Tecnologías</a> •
+  <a href="#instrucciones-de-configuración">Instalación</a> •
   <a href="#capturas-de-pantalla">Capturas</a> •
   <a href="#uso">Uso</a>
 </div>
 
 ---
 
-## 📋 Descripcion General
+## 📋 Descripción General
 
 Este Sistema ERP para Construcción proporciona una solución completa para que las empresas de construcción gestionen sus recursos, proyectos y finanzas. El sistema cuenta con una interfaz amigable construida con Vue.js y Tailwind CSS, respaldada por una robusta arquitectura PHP MVC, permitiendo a los gerentes de construcción y empleados optimizar sus operaciones y mejorar la productividad.
 
-## 🌐 Acceso a Produccion
+## 🌐 Acceso a Producción
 
 Puedes acceder a la versión en línea del sistema en:
 <div align="center">
@@ -62,16 +62,39 @@ Para probar la aplicación, puedes utilizar cualquiera de los siguientes usuario
 
 </div>
 
-## 💼 Resumen para Empresas
+## 📊 Resumen para Empresas
 
-<p><i>Este sistema ERP ha sido diseñado específicamente para optimizar las operaciones de empresas de construcción</i></p>
+<p align="center"><i>Este sistema ERP ha sido diseñado específicamente para optimizar las operaciones de empresas de construcción</i></p>
 
-<table>
+<table align="center">
   <tr>
-    <td><b>🚀 Eficiencia en gestión de proyectos</b></td>
-    <td>Control total sobre el ciclo de vida de cada proyecto de construcción
+    <td align="center"><b>🚀 🚀 Eficiencia en gestión de proyectos</b></td>
+    <td align="center">Control t## ✨ Características
+e vida de cada proyecto de construcción</td>
+  </tr>
+  <tr>
+    <td align="center"><b>👥 👥 Optimización de recursos humanos</b></td>
+    <td align="center">Asignación eficiente de personal y seguimiento de productividad</td>
+  </tr>
+  <tr>
+    <td align="center"><b>💰 💰 Control financiero preciso</b></td>
+    <td align="center">Gestión detallada de presupuestos y costos de proyectos</td>
+  </tr>
+  <tr>
+    <td align="center"><b>📈 📈 Mejora en la toma de decisiones</b></td>
+    <td align="center">Informes y análisis en tiempo real para decisiones estratégicas</td>
+  </tr>
+  <tr>
+    <td align="center"><b>🔄 🔄 Comunicación centralizada</b></td>
+    <td align="center">Plataforma unificada para toda la información del proyecto</td>
+  </tr>
+  <tr>
+    <td align="center"><b>⚡ ⚡ Escalabilidad</b></td>
+    <td align="center">Adaptable a empresas de construcción de cualquier tamaño</td>
+  </tr>
+</table>
 
-## ✨ Caracteristicas
+## ✨ Características
 
 ### 👥 Gestión de Empleados
 - 📝 Añadir, editar y eliminar perfiles de empleados
@@ -97,7 +120,7 @@ Para probar la aplicación, puedes utilizar cualquiera de los siguientes usuario
 - 📑 Generar informes financieros
 - 📉 Monitoreo de variaciones presupuestarias
 
-## 🛠️ Stack Tecnologico
+## 🛠️ Stack Tecnológico
 
 <div align="center">
 
@@ -150,7 +173,7 @@ sistema-erp-construccion/
     └── sistemaERP.sql        # Esquema de base de datos y datos iniciales
 ```
 
-## Instrucciones de Configuracion
+## 🔧 Instrucciones de Configuración
 
 ### Requisitos Previos
 - Docker y Docker Compose instalados
@@ -177,7 +200,7 @@ sistema-erp-construccion/
 
 La base de datos se inicializará automáticamente con el esquema y los datos iniciales de `db/sistemaERP.sql`.
 
-## Capturas de Pantalla
+## 📷 Capturas de Pantalla
 
 ### Dashboard Principal
 ![Dashboard Principal](https://via.placeholder.com/800x400?text=Dashboard+Principal)
@@ -195,7 +218,7 @@ La base de datos se inicializará automáticamente con el esquema y los datos in
 ![Vista de Presupuestos](https://via.placeholder.com/800x400?text=Vista+de+Presupuestos)
 *Panel de control financiero mostrando presupuestos y gastos actuales*
 
-## Uso
+## 📝 Uso
 
 ### Usuarios Administradores
 1. Inicie sesión con credenciales de administrador
@@ -209,7 +232,7 @@ La base de datos se inicializará automáticamente con el esquema y los datos in
 3. Actualice el estado y progreso de las tareas
 4. Vea métricas de rendimiento personal
 
-## Contribuir
+## 🤝 Contribuir
 
 1. Haga un fork del repositorio
 2. Cree una rama de características (`git checkout -b feature/caracteristica-asombrosa`)
@@ -217,11 +240,11 @@ La base de datos se inicializará automáticamente con el esquema y los datos in
 4. Haga push a la rama (`git push origin feature/caracteristica-asombrosa`)
 5. Abra una Solicitud de Extracción (Pull Request)
 
-## Licencia
+## 📄 Licencia
 
 Este proyecto está licenciado bajo la Licencia MIT - vea el archivo LICENSE para más detalles.
 
-## Contacto
+## 📬 Contacto
 
 Enlace del Proyecto: [https://github.com/yourusername/sistema-erp-construccion](https://github.com/yourusername/sistema-erp-construccion)
 
