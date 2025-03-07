@@ -8,9 +8,8 @@
 
 </div>
 
-<p align="center">
-  <img src="https://i.imgur.com/tNvszjJ.png" alt="Sistema ERP para Construcción" width="800">
-</p>
+![Sistema ERP para Construcción](https://i.imgur.com/tNvszjJ.png)
+
 
 <div align="center">
   <b>Un sistema de Planificación de Recursos Empresariales completo diseñado específicamente para empresas de construcción</b>
