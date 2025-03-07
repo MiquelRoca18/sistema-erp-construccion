@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: sistema-erp-construccion-frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_ENV
+        value: production
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
