@@ -22,10 +22,8 @@
   <a href="#-credenciales-de-prueba">Credenciales</a> •
   <a href="#-resumen-para-empresas">Resumen</a> •
   <a href="#-características">Características</a> •
-  <a href="#-stack-tecnológico">Tecnologías</a> •
-  <a href="#-instrucciones-de-configuración">Instalación</a> •
-  <a href="#-capturas-de-pantalla">Capturas</a> •
-  <a href="#-uso">Uso</a>
+  <a href="#%EF%B8%8F-stack-tecnológico">Tecnologías</a> •
+  <a href="#estructura-del-proyecto">Estructura</a> •
 </div>
 
 ---
