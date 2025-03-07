@@ -1,6 +1,6 @@
 <div align="center">
   
-# 🏗️ Sistema ERP para Construcción 🏗️
+# 🏗️ Sistema ERP para Construcción
 
 ![License](https://img.shields.io/badge/Licencia-MIT-blue)
 ![Version](https://img.shields.io/badge/Versión-1.0-green)
@@ -17,28 +17,28 @@
 </div>
 
 <div align="center">
-  <a href="#descripción-general">Descripción</a> •
-  <a href="#acceso-a-producción">Acceso</a> •
-  <a href="#características">Características</a> •
-  <a href="#stack-tecnológico">Tecnologías</a> •
-  <a href="#instrucciones-de-configuración">Instalación</a> •
+  <a href="#descripcion-general">Descripción</a> •
+  <a href="#acceso-a-produccion">Acceso</a> •
+  <a href="#credenciales-de-prueba">Credenciales</a> •
+  <a href="#resumen-para-empresas">Resumen</a> •
+  <a href="#caracteristicas">Características</a> •
+  <a href="#stack-tecnologico">Tecnologías</a> •
+  <a href="#instrucciones-de-configuracion">Instalación</a> •
   <a href="#capturas-de-pantalla">Capturas</a> •
   <a href="#uso">Uso</a>
 </div>
 
 ---
 
-## 📋 Descripción General
+## 📋 Descripcion General
 
 Este Sistema ERP para Construcción proporciona una solución completa para que las empresas de construcción gestionen sus recursos, proyectos y finanzas. El sistema cuenta con una interfaz amigable construida con Vue.js y Tailwind CSS, respaldada por una robusta arquitectura PHP MVC, permitiendo a los gerentes de construcción y empleados optimizar sus operaciones y mejorar la productividad.
 
-## 🌐 Acceso a Producción
+## 🌐 Acceso a Produccion
 
 Puedes acceder a la versión en línea del sistema en:
 <div align="center">
-  
   [🔗 https://sistema-erp-construccion-1.onrender.com/](https://sistema-erp-construccion-1.onrender.com/)
-  
 </div>
 
 ## 🔑 Credenciales de Prueba
@@ -46,7 +46,7 @@ Puedes acceder a la versión en línea del sistema en:
 Para probar la aplicación, puedes utilizar cualquiera de los siguientes usuarios:
 
 <div align="center">
-  
+
 | 👤 Usuario | 🔒 Contraseña |
 |:----------:|:-------------:|
 | `juan.perez` | `jupe` |
@@ -64,43 +64,14 @@ Para probar la aplicación, puedes utilizar cualquiera de los siguientes usuario
 
 ## 💼 Resumen para Empresas
 
-<p align="center"><i>Este sistema ERP ha sido diseñado específicamente para optimizar las operaciones de empresas de construcción</i></p>
+<p><i>Este sistema ERP ha sido diseñado específicamente para optimizar las operaciones de empresas de construcción</i></p>
 
-<table align="center">
+<table>
   <tr>
-    <td align="center"><b>🚀 Eficiencia en gestión de proyectos</b></td>
-    <td>Control total sobre el ciclo de vida de cada proyecto de construcción</td>
-  </tr>
-  <tr>
-    <td align="center"><b>👥 Optimización de recursos humanos</b></td>
-    <td>Asignación inteligente de personal según habilidades y disponibilidad</td>
-  </tr>
-  <tr>
-    <td align="center"><b>💰 Control financiero preciso</b></td>
-    <td>Seguimiento detallado de presupuestos y gastos en tiempo real</td>
-  </tr>
-  <tr>
-    <td align="center"><b>📊 Mejora en la toma de decisiones</b></td>
-    <td>Informes y analíticas que facilitan decisiones estratégicas basadas en datos</td>
-  </tr>
-  <tr>
-    <td align="center"><b>🔄 Comunicación centralizada</b></td>
-    <td>Toda la información relevante en un solo sistema accesible para el equipo</td>
-  </tr>
-  <tr>
-    <td align="center"><b>📈 Escalabilidad</b></td>
-    <td>Adaptable a empresas de construcción de cualquier tamaño</td>
-  </tr>
-</table>
+    <td><b>🚀 Eficiencia en gestión de proyectos</b></td>
+    <td>Control total sobre el ciclo de vida de cada proyecto de construcción
 
-## ✨ Características
-
-<div align="center">
-  
-  | 👥 Gestión de Empleados | 🏢 Gestión de Proyectos | ✅ Gestión de Tareas | 💲 Gestión de Presupuestos |
-  |-------------------------|--------------------------|----------------------|----------------------------|
-  
-</div>
+## ✨ Caracteristicas
 
 ### 👥 Gestión de Empleados
 - 📝 Añadir, editar y eliminar perfiles de empleados
@@ -126,35 +97,31 @@ Para probar la aplicación, puedes utilizar cualquiera de los siguientes usuario
 - 📑 Generar informes financieros
 - 📉 Monitoreo de variaciones presupuestarias
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Stack Tecnologico
 
 <div align="center">
-  
-  ### 🖥️ Frontend
-  
-  ![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
-  ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-  ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-  ![Vue Router](https://img.shields.io/badge/Vue_Router-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
-  ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
-  ![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chart.js&logoColor=white)
-  
-  ### ⚙️ Backend
-  
-  ![PHP](https://img.shields.io/badge/PHP-8-777BB4?style=for-the-badge&logo=php&logoColor=white)
-  ![MVC](https://img.shields.io/badge/MVC-Architecture-lightgrey?style=for-the-badge)
-  ![RESTful API](https://img.shields.io/badge/RESTful-API-009688?style=for-the-badge)
-  ![JWT](https://img.shields.io/badge/JWT-Authentication-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
-  
-  ### 🗄️ Base de Datos
-  
-  ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-  
-  ### 🚀 Despliegue
-  
-  ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-  ![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-  
+
+### 🖥️ Frontend
+![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Vue Router](https://img.shields.io/badge/Vue_Router-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white)
+![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chart.js&logoColor=white)
+
+### ⚙️ Backend
+![PHP](https://img.shields.io/badge/PHP-8-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![MVC](https://img.shields.io/badge/MVC-Architecture-lightgrey?style=for-the-badge)
+![RESTful API](https://img.shields.io/badge/RESTful-API-009688?style=for-the-badge)
+![JWT](https://img.shields.io/badge/JWT-Authentication-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
+
+### 🗄️ Base de Datos
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+
+### 🚀 Despliegue
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
 </div>
 
 ---
@@ -183,7 +150,7 @@ sistema-erp-construccion/
     └── sistemaERP.sql        # Esquema de base de datos y datos iniciales
 ```
 
-## Instrucciones de Configuración
+## Instrucciones de Configuracion
 
 ### Requisitos Previos
 - Docker y Docker Compose instalados
