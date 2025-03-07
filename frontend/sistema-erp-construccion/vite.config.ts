@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  publicDir: 'public',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)), // Configura el alias para apuntar a la carpeta src
