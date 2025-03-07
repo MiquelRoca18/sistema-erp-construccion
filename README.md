@@ -17,15 +17,15 @@
 </div>
 
 <div align="center">
-  <a href="#descripción-general">Descripción</a> •
-  <a href="#acceso-a-producción">Acceso</a> •
-  <a href="#credenciales-de-prueba">Credenciales</a> •
-  <a href="#resumen-para-empresas">Resumen</a> •
-  <a href="#características">Características</a> •
-  <a href="#stack-tecnológico">Tecnologías</a> •
-  <a href="#instrucciones-de-configuración">Instalación</a> •
-  <a href="#capturas-de-pantalla">Capturas</a> •
-  <a href="#uso">Uso</a>
+  <a href="#-descripción-general">Descripción</a> •
+  <a href="#-acceso-a-producción">Acceso</a> •
+  <a href="#-credenciales-de-prueba">Credenciales</a> •
+  <a href="#-resumen-para-empresas">Resumen</a> •
+  <a href="#-características">Características</a> •
+  <a href="#-stack-tecnológico">Tecnologías</a> •
+  <a href="#-instrucciones-de-configuración">Instalación</a> •
+  <a href="#-capturas-de-pantalla">Capturas</a> •
+  <a href="#-uso">Uso</a>
 </div>
 
 ---
@@ -38,7 +38,7 @@ Este Sistema ERP para Construcción proporciona una solución completa para que 
 
 Puedes acceder a la versión en línea del sistema en:
 <div align="center">
-  [🔗 https://sistema-erp-construccion-1.onrender.com/](https://sistema-erp-construccion-1.onrender.com/)
+  🔗 https://sistema-erp-construccion-1.onrender.com/
 </div>
 
 ## 🔑 Credenciales de Prueba
@@ -172,79 +172,3 @@ sistema-erp-construccion/
 └── db/                       # Scripts de base de datos
     └── sistemaERP.sql        # Esquema de base de datos y datos iniciales
 ```
-
-## 🔧 Instrucciones de Configuración
-
-### Requisitos Previos
-- Docker y Docker Compose instalados
-- Git para clonar el repositorio
-
-### Instalación
-
-1. Clonar el repositorio:
-   ```bash
-   git clone https://github.com/yourusername/sistema-erp-construccion.git
-   cd sistema-erp-construccion
-   ```
-
-2. Construir e iniciar los contenedores Docker:
-   ```bash
-   docker-compose up -d
-   ```
-
-3. La aplicación estará disponible en:
-   - Frontend: http://localhost:8080
-   - API Backend: http://localhost:9000
-
-### Configuración de Base de Datos
-
-La base de datos se inicializará automáticamente con el esquema y los datos iniciales de `db/sistemaERP.sql`.
-
-## 📷 Capturas de Pantalla
-
-### Dashboard Principal
-![Dashboard Principal](https://via.placeholder.com/800x400?text=Dashboard+Principal)
-*Vista general del panel de control con métricas clave y proyectos activos*
-
-### Gestión de Proyectos
-![Gestión de Proyectos](https://via.placeholder.com/800x400?text=Gestion+de+Proyectos)
-*Interfaz de administración de proyectos mostrando la lista y estado de los proyectos actuales*
-
-### Asignación de Tareas
-![Asignación de Tareas](https://via.placeholder.com/800x400?text=Asignacion+de+Tareas)
-*Pantalla de asignación y seguimiento de tareas para los empleados*
-
-### Vista de Presupuestos
-![Vista de Presupuestos](https://via.placeholder.com/800x400?text=Vista+de+Presupuestos)
-*Panel de control financiero mostrando presupuestos y gastos actuales*
-
-## 📝 Uso
-
-### Usuarios Administradores
-1. Inicie sesión con credenciales de administrador
-2. Acceda al panel de administración
-3. Gestione empleados, proyectos, tareas y presupuestos
-4. Genere informes y analice el rendimiento
-
-### Usuarios Regulares
-1. Inicie sesión con sus credenciales de empleado
-2. Vea tareas y proyectos asignados
-3. Actualice el estado y progreso de las tareas
-4. Vea métricas de rendimiento personal
-
-## 🤝 Contribuir
-
-1. Haga un fork del repositorio
-2. Cree una rama de características (`git checkout -b feature/caracteristica-asombrosa`)
-3. Confirme sus cambios (`git commit -m 'Añadir alguna característica asombrosa'`)
-4. Haga push a la rama (`git push origin feature/caracteristica-asombrosa`)
-5. Abra una Solicitud de Extracción (Pull Request)
-
-## 📄 Licencia
-
-Este proyecto está licenciado bajo la Licencia MIT - vea el archivo LICENSE para más detalles.
-
-## 📬 Contacto
-
-Enlace del Proyecto: [https://github.com/yourusername/sistema-erp-construccion](https://github.com/yourusername/sistema-erp-construccion)
-
