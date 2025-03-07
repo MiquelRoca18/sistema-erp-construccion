@@ -30,87 +30,89 @@
         <p class="text-gray-600 dark:text-gray-300">Cargando presupuestos...</p>
       </div>
 
-      <!-- Vista Mobile: Tarjetas -->
-      <div v-else-if="!loading" class="block sm:hidden w-full">
-        <div
-          v-for="budget in paginatedBudgets"
-          :key="budget.presupuestos_id"
-          class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 cursor-pointer transition-colors duration-300 hover:bg-yellow-100 dark:hover:bg-yellow-800/40"
-          @click="openViewModal(budget)"
-        >
-          <div class="flex justify-between items-center">
-            <div>
-              <p class="text-base font-bold text-yellow-800 dark:text-yellow-200">
-                {{ budget.nombre_proyecto }}
-              </p>
-              <p class="text-sm text-gray-700 dark:text-gray-300">Total: ${{ budget.total }}</p>
-            </div>
-            <div>
-              <button
-                @click.stop="openEditModal(budget)"
-                class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
-              >
-                Editar
-              </button>
+      <div v-else>
+        <!-- Vista Mobile: Tarjetas -->
+        <div class="sm:hidden w-full">
+          <div
+            v-for="budget in paginatedBudgets"
+            :key="budget.presupuestos_id"
+            class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 cursor-pointer transition-colors duration-300 hover:bg-yellow-100 dark:hover:bg-yellow-800/40"
+            @click="openViewModal(budget)"
+          >
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="text-base font-bold text-yellow-800 dark:text-yellow-200">
+                  {{ budget.nombre_proyecto }}
+                </p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">Total: ${{ budget.total }}</p>
+              </div>
+              <div>
+                <button
+                  @click.stop="openEditModal(budget)"
+                  class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
+                >
+                  Editar
+                </button>
+              </div>
             </div>
           </div>
+          <div v-if="paginatedBudgets.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-6">
+            No se encontraron presupuestos.
+          </div>
+          <!-- Divs vacíos para mantener el espacio de 5 elementos -->
+          <div v-for="n in missingRows" :key="'empty-' + n" class="h-20"></div>
         </div>
-        <div v-if="paginatedBudgets.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-6">
-          No se encontraron presupuestos.
-        </div>
-        <!-- Divs vacíos para mantener el espacio de 5 elementos -->
-        <div v-for="n in missingRows" :key="'empty-' + n" class="h-20"></div>
-      </div>
 
-      <!-- Vista Desktop: Tabla -->
-      <div v-else-if="!loading" class="hidden sm:block w-full overflow-x-auto">
-        <table class="min-w-full">
-          <thead>
-            <tr class="bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 text-yellow-800 dark:text-yellow-200">
-              <th class="px-6 py-3 text-left font-semibold">ID</th>
-              <th class="px-6 py-3 text-left font-semibold">Proyecto</th>
-              <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Equipos</th>
-              <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Mano de obra</th>
-              <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Materiales</th>
-              <th class="px-6 py-3 text-left font-semibold">Total</th>
-              <th class="px-6 py-3 text-left font-semibold">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="budget in paginatedBudgets"
-              :key="budget.presupuestos_id"
-              class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-yellow-100 dark:hover:bg-yellow-800/40"
-              @click="openViewModal(budget)"
-            >
-              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ budget.presupuestos_id }}</td>
-              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ budget.nombre_proyecto }}</td>
-              <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ budget.equipos }}</td>
-              <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ budget.mano_obra }}</td>
-              <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ budget.materiales }}</td>
-              <td class="px-6 py-4 font-bold text-gray-800 dark:text-yellow-200">{{ budget.total }}</td>
-              <td class="px-6 py-4">
-                <div class="flex flex-col sm:flex-row gap-1 sm:gap-2" @click.stop>
-                  <button
-                    @click="openEditModal(budget)"
-                    class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs sm:text-sm"
-                  >
-                    Editar
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr v-if="paginatedBudgets.length === 0">
-              <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                No se encontraron presupuestos.
-              </td>
-            </tr>
-            <!-- Filas vacías para mantener el espacio -->
-            <tr v-for="n in missingRows" :key="'empty-' + n" class="h-20 bg-transparent">
-              <td colspan="7" class="px-6 py-4"></td>
-            </tr>
-          </tbody>
-        </table>
+        <!-- Vista Desktop: Tabla -->
+        <div class="hidden sm:block w-full overflow-x-auto">
+          <table class="min-w-full">
+            <thead>
+              <tr class="bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 text-yellow-800 dark:text-yellow-200">
+                <th class="px-6 py-3 text-left font-semibold">ID</th>
+                <th class="px-6 py-3 text-left font-semibold">Proyecto</th>
+                <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Equipos</th>
+                <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Mano de obra</th>
+                <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Materiales</th>
+                <th class="px-6 py-3 text-left font-semibold">Total</th>
+                <th class="px-6 py-3 text-left font-semibold">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="budget in paginatedBudgets"
+                :key="budget.presupuestos_id"
+                class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-yellow-100 dark:hover:bg-yellow-800/40"
+                @click="openViewModal(budget)"
+              >
+                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ budget.presupuestos_id }}</td>
+                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ budget.nombre_proyecto }}</td>
+                <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ budget.equipos }}</td>
+                <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ budget.mano_obra }}</td>
+                <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ budget.materiales }}</td>
+                <td class="px-6 py-4 font-bold text-gray-800 dark:text-yellow-200">{{ budget.total }}</td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-col sm:flex-row gap-1 sm:gap-2" @click.stop>
+                    <button
+                      @click="openEditModal(budget)"
+                      class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs sm:text-sm"
+                    >
+                      Editar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr v-if="paginatedBudgets.length === 0">
+                <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                  No se encontraron presupuestos.
+                </td>
+              </tr>
+              <!-- Filas vacías para mantener el espacio -->
+              <tr v-for="n in missingRows" :key="'empty-' + n" class="h-20 bg-transparent">
+                <td colspan="7" class="px-6 py-4"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
   
       <!-- Paginación -->

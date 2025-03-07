@@ -39,98 +39,100 @@
         <p class="text-gray-600 dark:text-gray-300 text-center">Cargando proyectos...</p>
       </div>
 
-      <!-- Vista Mobile: Card view -->
-      <div v-else-if="!loading" class="block md:hidden">
-        <div
-          v-for="project in paginatedProjects"
-          :key="project.proyectos_id"
-          class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors duration-300"
-          @click="openViewModal(project)"
-        >
-          <div>
-            <p class="text-base font-medium text-green-600 dark:text-green-400">{{ project.nombre_proyecto }}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-300">Estado: {{ project.estado }}</p>
+      <div v-else>
+        <!-- Vista Mobile: Card view -->
+        <div class="md:hidden">
+          <div
+            v-for="project in paginatedProjects"
+            :key="project.proyectos_id"
+            class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors duration-300"
+            @click="openViewModal(project)"
+          >
+            <div>
+              <p class="text-base font-medium text-green-600 dark:text-green-400">{{ project.nombre_proyecto }}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-300">Estado: {{ project.estado }}</p>
+            </div>
+            <!-- Botones para editar y eliminar -->
+            <div class="mt-2 flex space-x-2">
+              <button
+                @click.stop="openEditModal(project)"
+                class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
+              >
+                Editar
+              </button>
+              <button
+                @click.stop="openDeleteModal(project)"
+                class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-sm"
+              >
+                Eliminar
+              </button>
+            </div>
           </div>
-          <!-- Botones para editar y eliminar -->
-          <div class="mt-2 flex space-x-2">
-            <button
-              @click.stop="openEditModal(project)"
-              class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
-            >
-              Editar
-            </button>
-            <button
-              @click.stop="openDeleteModal(project)"
-              class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-sm"
-            >
-              Eliminar
-            </button>
+          <div v-if="paginatedProjects.length === 0" class="text-center text-gray-500 dark:text-gray-400">
+            No se encontraron proyectos.
           </div>
+          <!-- Divs vacíos para mantener el espacio de 5 elementos -->
+          <div v-for="n in missingRows" :key="'empty-' + n" class="h-20"></div>
         </div>
-        <div v-if="paginatedProjects.length === 0" class="text-center text-gray-500 dark:text-gray-400">
-          No se encontraron proyectos.
-        </div>
-        <!-- Divs vacíos para mantener el espacio de 5 elementos -->
-        <div v-for="n in missingRows" :key="'empty-' + n" class="h-20"></div>
-      </div>
 
-      <!-- Vista Desktop: Tabla -->
-      <div v-else-if="!loading" class="hidden md:block overflow-x-auto">
-        <table class="min-w-full">
-          <thead>
-            <tr class="bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 text-green-800 dark:text-green-200">
-              <th class="px-6 py-3 text-left font-semibold">ID</th>
-              <th class="px-6 py-3 text-left font-semibold">Nombre</th>
-              <th class="px-6 py-3 text-left font-semibold hidden lg:table-cell">Estado</th>
-              <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell whitespace-nowrap">Inicio</th>
-              <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell whitespace-nowrap">Fin</th>
-              <th class="px-6 py-3 text-left font-semibold">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="project in paginatedProjects"
-              :key="project.proyectos_id"
-              class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/30"
-              @click="openViewModal(project)"
-            >
-              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ project.proyectos_id }}</td>
-              <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ project.nombre_proyecto }}</td>
-              <td class="px-6 py-4 hidden lg:table-cell text-gray-800 dark:text-gray-200">{{ project.estado }}</td>
-              <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap text-gray-800 dark:text-gray-200">{{ project.fecha_inicio }}</td>
-              <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap text-gray-800 dark:text-gray-200">{{ project.fecha_fin }}</td>
-              <td class="px-6 py-4">
-                <div class="flex flex-col md:flex-row gap-1 md:gap-2" @click.stop>
-                  <button
-                    @click="openEditModal(project)"
-                    class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs md:text-sm"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    @click="openDeleteModal(project)"
-                    class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-xs md:text-sm"
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr v-if="paginatedProjects.length === 0">
-              <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                No se encontraron proyectos.
-              </td>
-            </tr>
-            <!-- Filas vacías para mantener 5 filas siempre -->
-            <tr
-              v-for="n in missingRows"
-              :key="'empty-' + n"
-              class="h-20 bg-transparent"
-            >
-              <td class="px-6 py-4" colspan="6"></td>
-            </tr>
-          </tbody>
-        </table>
+        <!-- Vista Desktop: Tabla -->
+        <div class="hidden md:block overflow-x-auto">
+          <table class="min-w-full">
+            <thead>
+              <tr class="bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 text-green-800 dark:text-green-200">
+                <th class="px-6 py-3 text-left font-semibold">ID</th>
+                <th class="px-6 py-3 text-left font-semibold">Nombre</th>
+                <th class="px-6 py-3 text-left font-semibold hidden lg:table-cell">Estado</th>
+                <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell whitespace-nowrap">Inicio</th>
+                <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell whitespace-nowrap">Fin</th>
+                <th class="px-6 py-3 text-left font-semibold">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="project in paginatedProjects"
+                :key="project.proyectos_id"
+                class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/30"
+                @click="openViewModal(project)"
+              >
+                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ project.proyectos_id }}</td>
+                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ project.nombre_proyecto }}</td>
+                <td class="px-6 py-4 hidden lg:table-cell text-gray-800 dark:text-gray-200">{{ project.estado }}</td>
+                <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap text-gray-800 dark:text-gray-200">{{ project.fecha_inicio }}</td>
+                <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap text-gray-800 dark:text-gray-200">{{ project.fecha_fin }}</td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-col md:flex-row gap-1 md:gap-2" @click.stop>
+                    <button
+                      @click="openEditModal(project)"
+                      class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs md:text-sm"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      @click="openDeleteModal(project)"
+                      class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-xs md:text-sm"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr v-if="paginatedProjects.length === 0">
+                <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                  No se encontraron proyectos.
+                </td>
+              </tr>
+              <!-- Filas vacías para mantener 5 filas siempre -->
+              <tr
+                v-for="n in missingRows"
+                :key="'empty-' + n"
+                class="h-20 bg-transparent"
+              >
+                <td class="px-6 py-4" colspan="6"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
   
       <!-- Paginación -->

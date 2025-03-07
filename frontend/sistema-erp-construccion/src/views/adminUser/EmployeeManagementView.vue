@@ -237,6 +237,7 @@ import { debounce } from '@/utils/index';
 import CreateEmployeeModal from '@/components/adminUser/employee/CreateEmployeeModal.vue';
 import EditEmployeeModal from '@/components/adminUser/employee/EditEmployeeModal.vue';
 import DeleteEmployeeModal from '@/components/adminUser/employee/DeleteEmployeeModal.vue';
+
 const employees = ref<any[]>([]);
 const loading = ref(true);
 const error = ref('');
@@ -271,17 +272,6 @@ const fetchEmployees = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-// Debounce para búsqueda
-const debounce = (fn: Function, delay: number) => {
-  let timeout: number | null = null;
-  return (...args: any[]) => {
-    if (timeout) clearTimeout(timeout);
-    timeout = window.setTimeout(() => {
-      fn(...args);
-    }, delay);
-  };
 };
 
 const debouncedSearch = debounce(() => {
