@@ -48,7 +48,6 @@ class EmployeeTask {
 
     // Obtener tareas asignadas a un empleado con el nombre del proyecto
     public function getTasksByEmployee($empleados_id) {
-        // Optimización: Seleccionar solo columnas necesarias y agregar orden
         $query = 'SELECT 
             t.tareas_id, 
             t.estado, 
@@ -72,7 +71,6 @@ class EmployeeTask {
 
     // Obtener empleados asignados a una tarea
     public function getEmployeesByTask($tareas_id) {
-        // Optimización: Seleccionar solo columnas necesarias
         $query = 'SELECT 
                     e.empleados_id, 
                     e.nombre, 
@@ -88,7 +86,6 @@ class EmployeeTask {
 
     // Obtener tareas asignadas a un empleado con filtro por estado
     public function getPendingTasksByEmployee($empleados_id, $estado = 'pendiente') {
-        // Optimización: Seleccionar solo columnas necesarias y agregar orden
         $query = '
             SELECT 
                 t.tareas_id, 
@@ -114,7 +111,6 @@ class EmployeeTask {
     
     // Obtener tareas asignadas de otros empleados por empleado responsable
     public function getTasksByResponsible($employeeId) {
-        // Optimización: Reordenar JOIN, empezar desde la tabla de proyectos
         $query = "
             SELECT 
                 t.tareas_id, 

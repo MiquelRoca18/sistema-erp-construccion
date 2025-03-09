@@ -34,7 +34,7 @@
           </p>
         </div>
       </div>
-      <!-- El degradado se coloca en el área reservada, sin sobreponerse al contenido -->
+      <!-- Degradado -->
       <div class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-b from-transparent to-white dark:to-gray-800 pointer-events-none transform"></div>
     </div>
   </div>
@@ -57,7 +57,7 @@ const error = ref('');
 const router = useRouter();
 
 const fetchTasks = async () => {
-  // Si no hay employeeId, no intentes cargar tareas
+  // Si no hay employeeId, no intentar cargar tareas
   if (!props.employeeId) {
     loading.value = false;
     return;

@@ -172,7 +172,7 @@ const updateEmployeeData = async () => {
   
   try {
     await updateEmployee(employeeId, employee.value);
-    passwordSuccess.value = true; // Mostrar notificación de éxito
+    passwordSuccess.value = true;
     
     // Ocultamos el mensaje después de 3 segundos
     setTimeout(() => {
@@ -206,7 +206,7 @@ const changePassword = async () => {
       confirmPassword: confirmPassword.value
     });
 
-    passwordSuccess.value = true; // Mostrar mensaje de éxito
+    passwordSuccess.value = true;
     showChangePasswordModal.value = false;
     currentPassword.value = '';
     newPassword.value = '';

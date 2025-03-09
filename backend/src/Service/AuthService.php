@@ -19,7 +19,7 @@ class AuthService extends BaseService {
             return ['status' => 400, 'message' => 'El nombre de usuario y la contraseña son obligatorios'];
         }
 
-        // Verificar las credenciales (incluyendo el JOIN para obtener el rol)
+        // Verificar las credenciales
         $user = $this->authModel->getUserByUsername($data->username);
         
         if (!$user || !password_verify($data->password_hash, $user['password_hash'])) {

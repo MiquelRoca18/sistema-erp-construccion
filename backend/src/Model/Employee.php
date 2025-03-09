@@ -8,7 +8,6 @@ class Employee extends BaseModel {
     }
 
     public function getByRole($role) {
-        // Optimización: Selección específica de columnas y orden
         $query = 'SELECT 
                     empleados_id, 
                     nombre, 

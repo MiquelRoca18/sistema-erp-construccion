@@ -1,7 +1,7 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300">
-      <!-- Encabezado con degradado verde -->
+      <!-- Encabezado -->
       <div class="bg-gradient-to-r from-green-500 to-green-400 dark:from-green-700 dark:to-green-600 p-4 rounded-t-2xl">
         <div class="flex justify-between items-center">
           <h2 class="text-white text-2xl font-bold">Crear Nuevo Proyecto</h2>
@@ -138,7 +138,7 @@ const fecha_fin = ref('');
 const emit = defineEmits(['close', 'created']);
 
 const closeModal = () => {
-  if (loading.value) return; // Prevenir cierre durante carga
+  if (loading.value) return;
   emit('close');
 };
 

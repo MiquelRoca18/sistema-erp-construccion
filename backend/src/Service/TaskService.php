@@ -122,7 +122,6 @@ class TaskService extends BaseService{
     }
     
     // Elimina todas las asociaciones en la tabla empleados_tareas para la tarea dada.
-    
     private function deleteTaskAssociations($taskId) {
         try {
              $db = (new \App\Config\Database())->getConnection();

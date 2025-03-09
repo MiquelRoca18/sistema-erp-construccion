@@ -172,7 +172,7 @@ class EmployeeService extends BaseService {
             }
             $fechaContratacion = strtotime($data->fecha_contratacion);
             $hoy = strtotime(date('Y-m-d'));
-            $limite = strtotime('-10 years'); // Permitir fechas hasta 10 años en el pasado
+            $limite = strtotime('-10 years');
     
             if ($fechaContratacion > $hoy) {
                 return ['status' => 400, 'message' => 'La fecha de contratación no puede ser futura.'];

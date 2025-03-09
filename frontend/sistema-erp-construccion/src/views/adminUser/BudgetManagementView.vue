@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col justify-center items-center min-h-screen p-8">
     <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
-      <!-- Encabezado sin botón de crear -->
+      <!-- Encabezado -->
       <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-yellow-800 dark:text-yellow-200 text-center sm:text-left">
           Gestión de Presupuestos
@@ -170,7 +170,7 @@ import { getBudgets } from '@/service/budgetService';
 import EditBudgetModal from '@/components/adminUser/budget/EditBudgetModal.vue';
   
 const budgets = ref<any[]>([]);
-const loading = ref(true); // Iniciar como true para mostrar el loader inmediatamente
+const loading = ref(true);
 const error = ref('');
 const searchProject = ref('');
 const searchTotal = ref(''); 
@@ -183,7 +183,7 @@ const showViewModal = ref(false);
 const selectedBudget = ref(null);
   
 // Tiempo de espera mínimo para mostrar el loader
-const minLoadingTime = 500; // ms
+const minLoadingTime = 500; 
 
 const fetchBudgets = async () => {
   const startTime = Date.now();

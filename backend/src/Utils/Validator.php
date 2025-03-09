@@ -43,7 +43,7 @@ class Validator {
         $year = (int)date('Y', strtotime($date));
         
         // Si no se proporciona una fecha máxima, establecerla como mañana
-        $maxDate = $maxDate ?? date('Y-m-d', strtotime('+1 day')); // Fecha de mañana
+        $maxDate = $maxDate ?? date('Y-m-d', strtotime('+1 day'));
     
         // Comprobar si la fecha está dentro de los límites permitidos
         if ($year < $minYear) {

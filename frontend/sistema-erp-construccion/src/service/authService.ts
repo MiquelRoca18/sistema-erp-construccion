@@ -14,7 +14,7 @@ export const login = async (credentials: { username: string; password_hash: stri
       headers: {
         'Content-Type': 'application/json',
       },
-      withCredentials: true  // Añade esta línea
+      withCredentials: true 
     });
     
     return response.data.data;

@@ -11,7 +11,6 @@ class Task extends BaseModel{
 
     // Obtener tareas con el nombre del empleado
     public function getTasksWithEmployee() {
-        // Optimización: Seleccionar solo columnas necesarias y ordenar por fecha
         $query = "SELECT 
                     t.tareas_id, 
                     t.estado, 

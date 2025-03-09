@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { setLocalStorageWithExpiry, getLocalStorageWithExpiry } from '@/utils';
 
-// Definir la interfaz Project aquí mismo para tenerla disponible
 export interface Project {
   nombre_proyecto: string;
   estado?: string;

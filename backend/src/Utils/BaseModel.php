@@ -24,7 +24,7 @@ class BaseModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    // Obtener registros paginados (nuevo método)
+    // Obtener registros paginados
     public function getPaginated($page = 1, $itemsPerPage = 10, $orderBy = null) {
         $offset = ($page - 1) * $itemsPerPage;
         
@@ -39,7 +39,7 @@ class BaseModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    // Contar registros para paginación (nuevo método)
+    // Contar registros para paginación
     public function count($whereClause = '1') {
         $query = 'SELECT COUNT(*) FROM ' . $this->table . ' WHERE ' . $whereClause;
         $stmt = $this->db->prepare($query);
@@ -125,7 +125,7 @@ class BaseModel {
         return $stmt->rowCount() > 0;
     }
     
-    // Buscar registros genéricos (nuevo método)
+    // Buscar registros genéricos
     public function search($column, $term, $limit = 20) {
         $query = "SELECT * FROM {$this->table} WHERE {$column} LIKE :term LIMIT :limit";
         $term = "%{$term}%";

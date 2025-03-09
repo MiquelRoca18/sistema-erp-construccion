@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col justify-center items-center min-h-screen p-8 transition-colors duration-300">
     <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
-      <!-- Encabezado y acción -->
+      <!-- Encabezado -->
       <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center sm:text-left mb-4 sm:mb-0 transition-colors duration-300">
           Gestión de Tareas
@@ -270,7 +270,7 @@
         </button>
       </div>
 
-      <!-- Error message -->
+      <!-- Mensaje de error -->
       <div v-if="error" class="mt-6 p-4 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -367,7 +367,7 @@ const clearFilters = () => {
 const fetchTasks = async () => {
   try {
     loading.value = true;
-    error.value = ''; // Limpiar errores anteriores
+    error.value = '';
     
     // Simulamos un retardo mínimo para evitar parpadeos en cargas muy rápidas
     const startTime = Date.now();

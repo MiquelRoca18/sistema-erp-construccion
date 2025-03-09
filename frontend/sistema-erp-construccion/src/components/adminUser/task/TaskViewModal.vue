@@ -1,8 +1,7 @@
 <template>
-  <!-- TaskViewModal.vue -->
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300">
-      <!-- Encabezado con degradado -->
+      <!-- Encabezado -->
       <div class="bg-gradient-to-r from-orange-500 to-orange-400 dark:from-orange-700 dark:to-orange-600 p-4">
         <div class="flex justify-between items-center">
           <h2 class="text-white text-2xl font-bold">Detalles de la Tarea</h2>

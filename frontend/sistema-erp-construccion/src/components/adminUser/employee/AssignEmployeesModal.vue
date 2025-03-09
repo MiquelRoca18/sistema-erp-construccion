@@ -1,7 +1,7 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 transition-colors duration-300">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl dark:shadow-gray-900/50 max-w-lg w-full overflow-hidden transform transition-all duration-300">
-      <!-- Encabezado con degradado -->
+      <!-- Encabezado -->
       <div class="bg-gradient-to-r from-orange-500 to-orange-400 dark:from-orange-600 dark:to-orange-500 p-4 rounded-t-2xl">
         <div class="flex justify-between items-center">
           <h2 class="text-white text-2xl font-bold">Asignar Empleados a la Tarea</h2>

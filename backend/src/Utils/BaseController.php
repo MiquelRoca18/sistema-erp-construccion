@@ -2,7 +2,7 @@
 namespace App\Utils;
 
 class BaseController {
-    // Envía una respuesta JSON con el código de estado proporcionado.
+    // Envía una respuesta JSON con el código de estado proporcionado
     protected function sendResponse($status, $message, $data = null) {
         http_response_code($status);
         
@@ -18,7 +18,7 @@ class BaseController {
         echo json_encode($response, JSON_UNESCAPED_UNICODE);
     }
 
-    // Obtiene los datos del cuerpo de la solicitud en formato JSON.
+    // Obtiene los datos del cuerpo de la solicitud en formato JSON
     protected function getRequestData() {
         return json_decode(file_get_contents('php://input'));
     }

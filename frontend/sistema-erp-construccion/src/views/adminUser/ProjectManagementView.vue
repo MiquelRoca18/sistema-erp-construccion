@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col justify-center items-center min-h-screen p-8 transition-colors duration-300">
     <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
-      <!-- Encabezado y acción -->
+      <!-- Encabezado -->
       <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
         <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center sm:text-left mb-4 sm:mb-0 transition-colors duration-300">
           Gestión de Proyectos

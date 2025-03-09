@@ -1,7 +1,7 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden transform transition-all duration-300">
-      <!-- Encabezado con degradado azul -->
+      <!-- Encabezado -->
       <div class="bg-gradient-to-r from-red-500 to-red-400 dark:from-red-700 dark:to-red-600 p-4 rounded-t-2xl">
         <div class="flex justify-between items-center">
           <h2 class="text-white text-2xl font-bold">Confirmar Borrado</h2>
@@ -57,7 +57,7 @@ const loading = ref(false);
 const errorMessage = ref('');
 
 const closeModal = () => {
-  if (loading.value) return; // Prevent closing while loading
+  if (loading.value) return;
   emit('close');
 };
 

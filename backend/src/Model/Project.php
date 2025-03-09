@@ -8,7 +8,6 @@ class Project extends BaseModel {
     }
 
     public function getByState($state) {
-        // Optimización: Selección específica de columnas y orden
         $query = 'SELECT 
                     proyectos_id, 
                     responsable_id, 
@@ -26,7 +25,6 @@ class Project extends BaseModel {
     
     // Obtener proyectos con el nombre del responsable
     public function getProjectsWithResponsable() {
-        // Optimización: Selección específica de columnas y orden
         $query = "SELECT 
                     p.proyectos_id, 
                     p.responsable_id, 

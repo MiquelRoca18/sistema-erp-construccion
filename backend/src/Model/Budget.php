@@ -10,7 +10,6 @@ class Budget extends BaseModel {
 
     // Retorna los presupuestos con el nombre del proyecto y la suma total de equipos, mano_obra y materiales
     public function getBudgetsWithDetails() {
-        // Optimización: Selección específica de columnas y orden para mejor rendimiento
         $query = "SELECT 
                     p.presupuestos_id, 
                     p.proyectos_id, 

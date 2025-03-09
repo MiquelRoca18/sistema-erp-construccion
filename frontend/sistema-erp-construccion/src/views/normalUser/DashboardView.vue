@@ -58,7 +58,7 @@
         <EmployeeTasksComponent :employeeId="employeeId" />
       </router-link>
     </div>
-    <!-- Botón de logout móvil - Visible solo en dispositivos pequeños -->
+    <!-- Botón de logout móvil -->
     <div class="md:hidden w-full max-w-3xl">
       <button
         @click="logout"
@@ -132,7 +132,6 @@ const throttledLogout = throttle(() => {
   router.push('/');
 }, 1000);
 
-// Reemplazar la función logout original
 const logout = () => throttledLogout();
 
 const pendingTasksLink = computed(() => {

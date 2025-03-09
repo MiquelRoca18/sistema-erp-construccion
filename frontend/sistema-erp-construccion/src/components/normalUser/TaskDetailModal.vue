@@ -16,7 +16,7 @@
         <p class="text-lg text-gray-500 dark:text-gray-400">Cargando detalles...</p>
       </div>
 
-      <!-- Contenido del modal (visible cuando no está cargando) -->
+      <!-- Contenido del modal -->
       <div v-else>
         <!-- Header del modal -->
         <div class="mb-4 border-b dark:border-gray-700 pb-4 flex justify-between items-center">
@@ -141,11 +141,11 @@ watch(() => props.task, (newTask) => {
 onMounted(() => {
   setTimeout(() => {
     isLoading.value = false;
-  }, 300); // 300ms de simulación de carga
+  }, 300);
 });
 
 const close = () => {
-  if (isSaving.value) return; // Evita cerrar mientras se guarda
+  if (isSaving.value) return;
   emit('close');
 };
 

@@ -16,7 +16,7 @@
         <p class="text-lg text-gray-500 dark:text-gray-400">Cargando detalles...</p>
       </div>
 
-      <!-- Contenido del modal (visible cuando no está cargando) -->
+      <!-- Contenido del modal -->
       <div v-else>
         <!-- Header del modal -->
         <div class="mb-4 border-b dark:border-gray-700 pb-4 flex justify-between items-center">
@@ -105,7 +105,7 @@
             </div>
           </div>
     
-          <!-- Empleado asignado (editable con select) -->
+          <!-- Empleado asignado -->
           <div>
             <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Asignado a</label>
             
@@ -196,8 +196,6 @@ const loadingEmployees = ref(true);
 const isSaving = ref(false);
 const errorMessage = ref('');
 
-// Inicializamos el select con el empleado asignado (empleados_id)
-// Si no está definido, intentamos obtenerlo usando nombre_empleado
 const selectedEmployeeId = ref(props.task.empleados_id);
 const employees = ref([]);
 
@@ -246,7 +244,7 @@ watch(() => props.task, (newTask) => {
 });
 
 const close = () => {
-  if (isSaving.value) return; // Evita cerrar mientras se guarda
+  if (isSaving.value) return;
   emit('close');
 };
 

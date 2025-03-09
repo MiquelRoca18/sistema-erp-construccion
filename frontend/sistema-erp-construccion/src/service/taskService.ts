@@ -28,7 +28,7 @@ export const getPendingTasks = async (employeeId: number | null) => {
     
     const data = response.data.data;
     
-    // Guardar en caché por 5 minutos (300000 ms)
+    // Guardar en caché por 5 minutos
     setLocalStorageWithExpiry(cacheKey, data, 300000);
     
     return data;
@@ -261,7 +261,6 @@ export const removeEmployeeFromTask = async (employeeId: number, taskId: number)
     if (!token) {
       throw new Error('No se encontró el token.');
     }
-    // En axios, para enviar un payload en una solicitud DELETE se incluye en la propiedad "data"
     const response = await axios.delete(`${API_URL}/employee-tasks`, {
       headers: {
         'Authorization': `Bearer ${token}`,

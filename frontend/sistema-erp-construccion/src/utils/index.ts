@@ -1,9 +1,3 @@
-/**
- * Genera una función con debounce que limita la frecuencia de ejecución
- * @param fn Función a ejecutar con debounce
- * @param delay Retraso en milisegundos
- * @returns Función con debounce
- */
 export const debounce = (fn: Function, delay: number) => {
     let timeout: ReturnType<typeof setTimeout> | null = null;
     
@@ -19,12 +13,6 @@ export const debounce = (fn: Function, delay: number) => {
     };
   };
   
-  /**
-   * Genera una función con throttle que limita la frecuencia de ejecución
-   * @param fn Función a ejecutar con throttle
-   * @param limit Límite de tiempo en milisegundos
-   * @returns Función con throttle
-   */
   export const throttle = (fn: Function, limit: number) => {
     let inThrottle: boolean = false;
     
@@ -38,13 +26,7 @@ export const debounce = (fn: Function, delay: number) => {
       }
     };
   };
-  
-  /**
-   * Función para cachear datos en localStorage
-   * @param key Clave de almacenamiento
-   * @param data Datos a almacenar
-   * @param ttl Tiempo de vida en milisegundos (10 minutos por defecto)
-   */
+
   export const setLocalStorageWithExpiry = (key: string, data: any, ttl: number = 600000) => {
     const item = {
       value: data,
@@ -53,11 +35,6 @@ export const debounce = (fn: Function, delay: number) => {
     localStorage.setItem(key, JSON.stringify(item));
   };
   
-  /**
-   * Función para obtener datos cacheados de localStorage
-   * @param key Clave de almacenamiento
-   * @returns Datos almacenados o null si no existen o han expirado
-   */
   export const getLocalStorageWithExpiry = (key: string) => {
     const itemStr = localStorage.getItem(key);
     

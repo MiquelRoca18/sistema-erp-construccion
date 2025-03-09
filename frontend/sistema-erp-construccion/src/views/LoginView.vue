@@ -50,7 +50,7 @@
           {{ isLoading ? 'Iniciando sesión...' : 'Ingresar' }}
         </button>
       </form>
-      <!-- Mensaje de error (con color adaptado al dark mode) -->
+      <!-- Mensaje de error -->
       <p v-if="errorMessage" class="text-red-500 dark:text-red-400 text-lg mt-4 text-center">
         {{ errorMessage }}
       </p>
@@ -81,7 +81,6 @@ const handleSubmit = async () => {
     const response = await apiLogin({ username: username.value, password_hash: password_hash.value });
     authLogin({ token: response.token, empleados_id: response.empleados_id, rol: response.rol });
     
-    // Pequeño retraso para mostrar el loader (opcional - puedes eliminar esto)
     await new Promise(resolve => setTimeout(resolve, 300));
     
     router.push('/dashboard');
@@ -89,7 +88,6 @@ const handleSubmit = async () => {
     errorMessage.value = error.message || 'Ocurrió un error. Por favor, inténtalo de nuevo.';
   } finally {
     // Desactivar el loader en caso de error
-    // (en caso de éxito, el usuario será redirigido)
     isLoading.value = false;
   }
 };

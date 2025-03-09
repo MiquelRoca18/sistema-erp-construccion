@@ -1,16 +1,10 @@
 <?php
-
-error_log("Solicitud recibida desde: " . ($_SERVER['HTTP_ORIGIN'] ?? 'No definido'));
-error_log("Método de solicitud: " . $_SERVER['REQUEST_METHOD']);
     // Mostrar errores para depuración
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
-    error_log("Solicitud recibida desde: " . ($_SERVER['HTTP_ORIGIN'] ?? 'No definido'));
-error_log("Mét  odo de solicitud: " . $_SERVER['REQUEST_METHOD']);
-
-    // Habilitar CORS - ACTUALIZADO para permitir solicitudes desde el frontend desplegado
+    // Habilitar CORS
     header('Access-Control-Allow-Origin: https://sistema-erp-construccion-1.onrender.com');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
     header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
@@ -159,12 +153,6 @@ error_log("Mét  odo de solicitud: " . $_SERVER['REQUEST_METHOD']);
         $router->addRoute('PUT', 'employee-tasks/assignment/([0-9]+)', [$employeeTaskController, 'updateAssignment']);
 
         $router->addRoute('GET', 'health', function() {
-            error_log("==== HEALTH CHECK ROUTE ACCEDIDO ====");
-            error_log("Fecha/Hora: " . date('Y-m-d H:i:s'));
-            error_log("IP: " . $_SERVER['REMOTE_ADDR']);
-            error_log("User Agent: " . ($_SERVER['HTTP_USER_AGENT'] ?? 'No definido'));
-            error_log("Method: " . $_SERVER['REQUEST_METHOD']);
-            error_log("=============================");
             
             header('Content-Type: application/json');
             echo json_encode(['status' => 'ok']);
