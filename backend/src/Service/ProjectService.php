@@ -133,25 +133,31 @@ class ProjectService extends BaseService {
             $db = $this->model->getDb();
             $db->beginTransaction();
     
-            // Verificar y eliminar dependencias
-            // 1. Eliminar tareas asociadas al proyecto
-            $sqlTareas = "DELETE FROM empleados_tareas WHERE tareas_id IN (SELECT tareas_id FROM tareas WHERE proyectos_id = :projectId)";
-            $stmtTareas = $db->prepare($sqlTareas);
-            $stmtTareas->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
-            $stmtTareas->execute();
+            // 1. Eliminar las asociaciones de empleados en tareas del proyecto
+            $sqlEliminarAsociacionesTareas = "
+                DELETE FROM empleados_tareas 
+                WHERE tareas_id IN (
+                    SELECT tareas_id FROM tareas 
+                    WHERE proyectos_id = :projectId
+                )
+            ";
+            $stmtAsociacionesTareas = $db->prepare($sqlEliminarAsociacionesTareas);
+            $stmtAsociacionesTareas->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
+            $stmtAsociacionesTareas->execute();
     
+            // 2. Eliminar tareas asociadas al proyecto
             $sqlEliminarTareas = "DELETE FROM tareas WHERE proyectos_id = :projectId";
             $stmtEliminarTareas = $db->prepare($sqlEliminarTareas);
             $stmtEliminarTareas->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
             $stmtEliminarTareas->execute();
     
-            // 2. Eliminar presupuestos asociados al proyecto
-            $sqlPresupuestos = "DELETE FROM presupuestos WHERE proyectos_id = :projectId";
-            $stmtPresupuestos = $db->prepare($sqlPresupuestos);
-            $stmtPresupuestos->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
-            $stmtPresupuestos->execute();
+            // 3. Eliminar presupuestos asociados al proyecto
+            $sqlEliminarPresupuestos = "DELETE FROM presupuestos WHERE proyectos_id = :projectId";
+            $stmtEliminarPresupuestos = $db->prepare($sqlEliminarPresupuestos);
+            $stmtEliminarPresupuestos->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
+            $stmtEliminarPresupuestos->execute();
     
-            // 3. Eliminar el proyecto
+            // 4. Eliminar el proyecto
             $result = $this->model->delete($projectId);
     
             if ($result) {
@@ -162,7 +168,9 @@ class ProjectService extends BaseService {
                 return $this->responseError('No se pudo eliminar el proyecto');
             }
         } catch (\Exception $e) {
-            $db->rollBack();
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
             return [
                 'status' => 500, 
                 'message' => 'Error al eliminar el proyecto: ' . $e->getMessage()
