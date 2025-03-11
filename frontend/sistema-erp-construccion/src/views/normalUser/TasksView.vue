@@ -151,6 +151,7 @@
                 <strong>Asignado a:</strong> {{ task.nombre_empleado }}
               </p>
             </div>
+          </div>
         </div>
 
         <!-- Espacios vacíos para completar el grid -->
