@@ -157,14 +157,18 @@ class ProjectService extends BaseService {
             $stmtPresupuestos->bindParam(':project_id', $projectId, \PDO::PARAM_INT);
             $stmtPresupuestos->execute();
             
-            // 4. Actualizar cualquier proyecto que tenga este proyecto como responsable a NULL
+            // 4. Actualizar proyectos que tengan este proyecto como responsable
             $queryActualizarProyectos = "
                 UPDATE proyectos 
                 SET responsable_id = NULL 
                 WHERE responsable_id = (
-                    SELECT responsable_id 
-                    FROM proyectos 
-                    WHERE proyectos_id = :project_id
+                    SELECT empleados_id 
+                    FROM empleados 
+                    WHERE empleados_id IN (
+                        SELECT responsable_id 
+                        FROM proyectos 
+                        WHERE proyectos_id = :project_id
+                    )
                 )
             ";
             $stmtActualizarProyectos = $db->prepare($queryActualizarProyectos);
