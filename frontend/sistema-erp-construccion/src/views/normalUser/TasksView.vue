@@ -296,6 +296,7 @@ watch(() => route.query.status, (newStatus) => {
 
 // Función para obtener tareas según el filtro de tipo con control de estado de carga
 const fetchTasks = async () => {
+  // Evita múltiples solicitudes simultáneas
   if (isFetching.value) return;
   
   isFetching.value = true;
@@ -304,16 +305,19 @@ const fetchTasks = async () => {
 
   try {
     let response;
-
-    // Invalidar la caché relevante cuando se cambia el tipo de tarea
     if (selectedTaskType.value === 'otros') {
-      localStorage.removeItem(`responsible-tasks-${employeeId.value}`);
       response = await getTasksByResponsible(employeeId.value);
+      // Asegúrate de que todos los objetos de tarea tengan la propiedad nombre_empleado
+      response = response.map(task => {
+        // Si la tarea ya tiene nombre_empleado, dejarlo como está
+        if (!task.nombre_empleado && task.empleado_nombre) {
+          return { ...task, nombre_empleado: task.empleado_nombre };
+        }
+        return task;
+      });
     } else {
-      localStorage.removeItem(`all-tasks-${employeeId.value}`);
       response = await getAllTasks(employeeId.value);
     }
-    
     tasks.value = response;
   } catch (err) {
     console.error('Error al cargar las tareas:', err);
