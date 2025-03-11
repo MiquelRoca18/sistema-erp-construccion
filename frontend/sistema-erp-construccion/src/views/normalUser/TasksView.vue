@@ -150,12 +150,6 @@
               <p class="text-sm text-gray-600 dark:text-gray-300">
                 <strong>Asignado a:</strong> {{ task.nombre_empleado }}
               </p>
-              <div class="text-xs text-red-500">
-                <p>Debug - taskType: {{ selectedTaskType }}</p>
-                <p>Debug - task keys: {{ Object.keys(task).join(', ') }}</p>
-                <p>Debug - nombre_empleado exists: {{ task.hasOwnProperty('nombre_empleado') }}</p>
-                <p>Debug - value: "{{ task.nombre_empleado }}"</p>
-              </div>
             </div>
           </div>
         </div>
@@ -310,19 +304,15 @@ const fetchTasks = async () => {
 
   try {
     let response;
-    console.log('Selected Task Type:', selectedTaskType.value);
-    console.log('Employee ID:', employeeId.value);
-
+    
     if (selectedTaskType.value === 'otros') {
-      console.log('Fetching tasks by responsible');
       response = await getTasksByResponsible(employeeId.value);
     } else {
-      console.log('Fetching all tasks');
       response = await getAllTasks(employeeId.value);
     }
     
-    console.log('Fetched Tasks:', response);
-    tasks.value = response;
+    // Forzar reactividad haciendo una copia profunda de los datos
+    tasks.value = JSON.parse(JSON.stringify(response));
   } catch (err) {
     console.error('Error al cargar las tareas:', err);
     error.value = err.message || 'Error al obtener las tareas. Por favor, intente nuevamente.';
