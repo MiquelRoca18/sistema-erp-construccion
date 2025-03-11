@@ -135,10 +135,9 @@ const employeesLoading = ref(true);
 const fecha_inicio = ref('');
 const fecha_fin = ref('');
 
-const emit = defineEmits(['close', 'created']);
+const emit = defineEmits(['close', 'created', 'showSuccess', 'showError']);
 
 const closeModal = () => {
-  if (loading.value) return;
   emit('close');
 };
 
@@ -173,6 +172,7 @@ const handleSubmit = async () => {
       }
       
       emit('created');
+      emit('showSuccess', `Proyecto ${form.value.nombre_proyecto} creado exitosamente`);
       closeModal();
     } catch (error: any) {
       errorMessage.value = error.message || 'Error al crear el proyecto. Inténtalo de nuevo.';

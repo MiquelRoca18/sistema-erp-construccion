@@ -73,13 +73,12 @@ import { deleteProject } from '@/service/projectService';
 const props = defineProps({
   project: { type: Object, required: true }
 });
-const emit = defineEmits(['close', 'deleted']);
+const emit = defineEmits(['close', 'deleted', 'showSuccess', 'showError']);
 
 const loading = ref(false);
 const errorMessage = ref('');
 
 const closeModal = () => {
-  if (loading.value) return;
   emit('close');
 };
 
@@ -101,6 +100,7 @@ const confirmDelete = async () => {
     }
     
     emit('deleted');
+    emit('showSuccess', `El proyecto ${props.project.nombre_proyecto} ha sido eliminado exitosamente`);
     closeModal();
   } catch (error: any) {
     console.error('Error deleting project:', error);

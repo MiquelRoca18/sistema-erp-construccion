@@ -189,6 +189,8 @@
         v-if="showCreateModal" 
         @close="closeCreateModal" 
         @created="fetchProjects" 
+        @showSuccess="showSuccessMessage"
+        @showError="showErrorMessage"
       />
 
       <EditProjectModal 
@@ -196,6 +198,8 @@
         :project="projectToEdit" 
         @close="closeEditModal" 
         @updated="fetchProjects" 
+        @showSuccess="showSuccessMessage"
+        @showError="showErrorMessage"
       />
 
       <DeleteProjectModal 
@@ -203,12 +207,14 @@
         :project="projectToDelete" 
         @close="closeDeleteModal" 
         @deleted="deleteProjectConfirmed" 
+        @showSuccess="showSuccessMessage"
+        @showError="showErrorMessage"
       />
 
       <ProjectDetailsModal 
         v-if="projectToView" 
         :project="projectToView" 
-        @close="closeViewModal" 
+        @close="closeViewModal"
       />
 
       <!-- Loader de operaciones -->
@@ -245,6 +251,48 @@ const showCreateModal = ref(false);
 const projectToEdit = ref(null);
 const projectToDelete = ref(null);
 const projectToView = ref(null);
+const successMessage = ref('');
+const errorMessage = ref('');
+
+// Timer para el mensaje de éxito o error
+let messageTimer: ReturnType<typeof setTimeout> | null = null;
+
+const showSuccessMessage = (message: string) => {
+  // Limpiar el timer anterior si existe
+  if (messageTimer) {
+    clearTimeout(messageTimer);
+  }
+  
+  // Limpiar cualquier mensaje de error
+  errorMessage.value = '';
+  
+  // Mostrar el nuevo mensaje
+  successMessage.value = message;
+  
+  // Configurar un nuevo timer para ocultar el mensaje después de 3 segundos
+  messageTimer = setTimeout(() => {
+    successMessage.value = '';
+  }, 3000);
+};
+
+const showErrorMessage = (message: string) => {
+  // Limpiar el timer anterior si existe
+  if (messageTimer) {
+    clearTimeout(messageTimer);
+  }
+  
+  // Limpiar cualquier mensaje de éxito
+  successMessage.value = '';
+  
+  // Mostrar el nuevo mensaje de error
+  errorMessage.value = message;
+  
+  // Configurar un nuevo timer para ocultar el mensaje después de 3 segundos
+  messageTimer = setTimeout(() => {
+    errorMessage.value = '';
+  }, 3000);
+};
+
 
 const fetchProjects = async () => {
   try {

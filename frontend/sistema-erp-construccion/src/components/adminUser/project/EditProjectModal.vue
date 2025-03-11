@@ -171,7 +171,7 @@ const props = defineProps({
     required: true,
   },
 });
-const emit = defineEmits(['close', 'updated']);
+const emit = defineEmits(['close', 'updated', 'showSuccess', 'showError']);
 
 const form = ref({
   responsable_id: '',
@@ -230,7 +230,6 @@ const fetchEmployees = async () => {
 };
 
 const closeModal = () => {
-  if (loading.value) return;
   emit('close');
 };
 
@@ -252,6 +251,7 @@ const handleSubmit = async () => {
     }
     
     emit('updated');
+    emit('showSuccess', `Proyecto ${form.value.nombre_proyecto} actualizado exitosamente`);
     closeModal();
   } catch (error: any) {
     console.error('Error updating project:', error);

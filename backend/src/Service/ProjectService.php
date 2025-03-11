@@ -131,28 +131,42 @@ class ProjectService extends BaseService {
     
         try {
             $db = $this->model->getDb();
-
             $db->beginTransaction();
     
-            // Eliminar presupuestos asociados al proyecto
-            $sql = "DELETE FROM presupuestos WHERE proyectos_id = :projectId";
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
-            $stmt->execute();
+            // Verificar y eliminar dependencias
+            // 1. Eliminar tareas asociadas al proyecto
+            $sqlTareas = "DELETE FROM empleados_tareas WHERE tareas_id IN (SELECT tareas_id FROM tareas WHERE proyectos_id = :projectId)";
+            $stmtTareas = $db->prepare($sqlTareas);
+            $stmtTareas->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
+            $stmtTareas->execute();
     
-            // Eliminar el proyecto
+            $sqlEliminarTareas = "DELETE FROM tareas WHERE proyectos_id = :projectId";
+            $stmtEliminarTareas = $db->prepare($sqlEliminarTareas);
+            $stmtEliminarTareas->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
+            $stmtEliminarTareas->execute();
+    
+            // 2. Eliminar presupuestos asociados al proyecto
+            $sqlPresupuestos = "DELETE FROM presupuestos WHERE proyectos_id = :projectId";
+            $stmtPresupuestos = $db->prepare($sqlPresupuestos);
+            $stmtPresupuestos->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
+            $stmtPresupuestos->execute();
+    
+            // 3. Eliminar el proyecto
             $result = $this->model->delete($projectId);
     
             if ($result) {
                 $db->commit();
-                return $this->responseDeleted('Proyecto eliminado');
+                return $this->responseDeleted('Proyecto eliminado con todas sus dependencias');
             } else {
                 $db->rollBack();
-                return $this->responseError();
+                return $this->responseError('No se pudo eliminar el proyecto');
             }
         } catch (\Exception $e) {
-            $this->model->getDb()->rollBack();
-            return ['status' => 500, 'message' => 'Error al eliminar el proyecto: ' . $e->getMessage()];
+            $db->rollBack();
+            return [
+                'status' => 500, 
+                'message' => 'Error al eliminar el proyecto: ' . $e->getMessage()
+            ];
         }
     }
     
