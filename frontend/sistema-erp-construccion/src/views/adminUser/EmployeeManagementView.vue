@@ -336,7 +336,7 @@ const showErrorMessage = (message: string) => {
   }, 3000);
 };
 
-const fetchEmployees = async () => {
+const fetchEmployees = async (forceRefresh = false) => {
   error.value = '';
   loading.value = true;
   
@@ -344,7 +344,8 @@ const fetchEmployees = async () => {
     // Implementamos un timeout mínimo para evitar parpadeos en conexiones rápidas
     const startTime = Date.now();
     
-    const data = await getEmployees();
+    // Pasar el parámetro forceRefresh a la función getEmployees
+    const data = await getEmployees(forceRefresh);
     
     // Aseguramos que el loader se muestre por al menos 500ms para mejor UX
     const elapsedTime = Date.now() - startTime;
@@ -450,16 +451,12 @@ const closeDeleteModal = () => {
   employeeToDelete.value = null;
 };
 
-// Manejadores para las acciones que resetean la paginación a la página 1
 const handleEmployeeCreated = async () => {
   // Agregar un pequeño retardo para permitir que la API actualice sus datos
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  // Refrescar la lista de empleados
-  await fetchEmployees();
-  
-  // Forzar la reactividad asignando un nuevo arreglo
-  employees.value = [...employees.value];
+  // Forzar una actualización completa desde la API
+  await fetchEmployees(true);
   
   // Volver a la primera página
   currentPage.value = 1;
@@ -469,25 +466,16 @@ const handleEmployeeUpdated = async () => {
   // Agregar un pequeño retardo para permitir que la API actualice sus datos
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  // Refrescar la lista de empleados
-  await fetchEmployees();
-  
-  // Forzar la reactividad asignando un nuevo arreglo
-  employees.value = [...employees.value];
-  
-  // Mantener la página actual
-  // (o puedes volver a la primera página si prefieres)
+  // Forzar una actualización completa desde la API
+  await fetchEmployees(true);
 };
 
 const handleEmployeeDeleted = async () => {
   // Agregar un pequeño retardo para permitir que la API actualice sus datos
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  // Refrescar la lista de empleados
-  await fetchEmployees();
-  
-  // Forzar la reactividad asignando un nuevo arreglo
-  employees.value = [...employees.value];
+  // Forzar una actualización completa desde la API
+  await fetchEmployees(true);
   
   // Si estamos en una página que ya no existe después de eliminar,
   // volver a la última página disponible
