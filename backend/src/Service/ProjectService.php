@@ -123,12 +123,12 @@ class ProjectService extends BaseService {
         if ($error = $this->validateId($projectId)) {
             return $error;
         }
-    
+        
         // Validar existencia del proyecto
         if ($error = $this->validateExists($projectId)) {
             return $error;
         }
-    
+        
         try {
             $db = $this->model->getDb();
             $db->beginTransaction();
@@ -157,25 +157,7 @@ class ProjectService extends BaseService {
             $stmtPresupuestos->bindParam(':project_id', $projectId, \PDO::PARAM_INT);
             $stmtPresupuestos->execute();
             
-            // 4. Actualizar proyectos que tengan este proyecto como responsable
-            $queryActualizarProyectos = "
-                UPDATE proyectos 
-                SET responsable_id = NULL 
-                WHERE responsable_id = (
-                    SELECT empleados_id 
-                    FROM empleados 
-                    WHERE empleados_id IN (
-                        SELECT responsable_id 
-                        FROM proyectos 
-                        WHERE proyectos_id = :project_id
-                    )
-                )
-            ";
-            $stmtActualizarProyectos = $db->prepare($queryActualizarProyectos);
-            $stmtActualizarProyectos->bindParam(':project_id', $projectId, \PDO::PARAM_INT);
-            $stmtActualizarProyectos->execute();
-            
-            // 5. Finalmente eliminar el proyecto
+            // 4. Finalmente eliminar el proyecto
             $result = $this->model->delete($projectId);
             
             if ($result) {
@@ -192,7 +174,6 @@ class ProjectService extends BaseService {
             return $this->responseError('Error al eliminar el proyecto: ' . $e->getMessage());
         }
     }
-    
     
 }
 ?>
