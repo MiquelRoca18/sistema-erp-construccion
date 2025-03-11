@@ -121,19 +121,19 @@ class EmployeeTask {
                 t.fecha_inicio, 
                 t.fecha_fin, 
                 p.nombre_proyecto,
-                et.empleados_id,
-                e.nombre AS nombre_empleado
+                GROUP_CONCAT(e.nombre SEPARATOR ', ') AS nombre_empleado
             FROM proyectos p
             INNER JOIN tareas t ON p.proyectos_id = t.proyectos_id
             INNER JOIN empleados_tareas et ON t.tareas_id = et.tareas_id
             INNER JOIN empleados e ON et.empleados_id = e.empleados_id
             WHERE p.responsable_id = :employeeId
+            GROUP BY t.tareas_id, t.estado, t.nombre_tarea, t.descripcion, t.proyectos_id, t.fecha_inicio, t.fecha_fin, p.nombre_proyecto
         ";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':employeeId', $employeeId, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }    
+    }  
 
     // Actualizar asignación de tarea a empleado
     public function updateAssignment($taskId, $oldEmployeeId, $newEmployeeId) {

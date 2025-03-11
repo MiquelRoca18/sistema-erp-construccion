@@ -455,7 +455,7 @@ const fetchTasks = async () => {
     if (elapsedTime < 500) {
       await new Promise(resolve => setTimeout(resolve, 500 - elapsedTime));
     }
-    
+    console.log("Tareas cargadas:", data);
     tasks.value = data;
   } catch (err: any) {
     error.value = err.message || 'Error al obtener tareas';
