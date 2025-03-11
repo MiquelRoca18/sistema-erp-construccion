@@ -442,6 +442,9 @@ const deleteProjectConfirmed = async (success: boolean) => {
     // Limpiar referencia al proyecto antes de cualquier otra operación
     projectToDelete.value = null;
     
+    // Redirigir a la página 1
+    currentPage.value = 1;
+    
     // Recargar la lista de proyectos
     await fetchProjects();
     return;
@@ -462,6 +465,9 @@ const deleteProjectConfirmed = async (success: boolean) => {
     
     // Limpiamos la referencia al proyecto antes de recargar datos
     projectToDelete.value = null;
+    
+    // Redirigir a la página 1
+    currentPage.value = 1;
     
     // Recargar proyectos
     await fetchProjects();
