@@ -51,7 +51,7 @@ import { deleteEmployee } from '@/service/employeeService';
 const props = defineProps({
   employee: { type: Object, required: true },
 });
-const emit = defineEmits(['close', 'deleted']);
+const emit = defineEmits(['close', 'deleted', 'showSuccess']);
 
 const loading = ref(false);
 const errorMessage = ref('');
@@ -78,6 +78,7 @@ const confirmDelete = async () => {
     }
     
     emit('deleted');
+    emit('showSuccess', `El empleado ${props.employee.nombre} ha sido eliminado exitosamente`);
     closeModal();
   } catch (error: any) {
     console.error(error.message);

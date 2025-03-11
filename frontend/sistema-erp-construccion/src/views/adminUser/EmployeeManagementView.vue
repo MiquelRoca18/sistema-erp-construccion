@@ -19,6 +19,24 @@
         </button>
       </div>
 
+      <!-- Mensaje de éxito -->
+      <div 
+        v-if="successMessage" 
+        class="mb-6 p-4 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-lg text-green-700 dark:text-green-300 flex items-center justify-between fade-in-out"
+      >
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+          </svg>
+          {{ successMessage }}
+        </div>
+        <button @click="successMessage = ''" class="text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
       <!-- Filtro -->
       <div class="mb-6">
         <input
@@ -211,28 +229,35 @@
       </div>
 
       <!-- Modales -->
-      <CreateEmployeeModal v-if="showModal" @close="closeModal" @created="fetchEmployees" />
+      <CreateEmployeeModal 
+        v-if="showModal" 
+        @close="closeModal" 
+        @created="handleEmployeeCreated"
+        @showSuccess="showSuccessMessage" 
+      />
 
       <EditEmployeeModal
         v-if="employeeToEdit"
         :employee="employeeToEdit"
         @close="closeEditModal"
-        @updated="fetchEmployees"
+        @updated="handleEmployeeUpdated"
+        @showSuccess="showSuccessMessage"
       />
 
       <DeleteEmployeeModal
         v-if="employeeToDelete"
         :employee="employeeToDelete"
         @close="closeDeleteModal"
-        @deleted="deleteEmployeeConfirmed"
+        @deleted="handleEmployeeDeleted"
+        @showSuccess="showSuccessMessage"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
-import { getEmployees, deleteEmployee } from '@/service/employeeService';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { getEmployees } from '@/service/employeeService';
 import { debounce } from '@/utils/index'; 
 import CreateEmployeeModal from '@/components/adminUser/employee/CreateEmployeeModal.vue';
 import EditEmployeeModal from '@/components/adminUser/employee/EditEmployeeModal.vue';
@@ -248,6 +273,25 @@ const showModal = ref(false);
 const employeeToEdit = ref(null);
 const employeeToDelete = ref(null);
 const loadingButton = ref(false);
+const successMessage = ref('');
+
+// Timer para el mensaje de éxito
+let successTimer: ReturnType<typeof setTimeout> | null = null;
+
+const showSuccessMessage = (message: string) => {
+  // Limpiar el timer anterior si existe
+  if (successTimer) {
+    clearTimeout(successTimer);
+  }
+  
+  // Mostrar el nuevo mensaje
+  successMessage.value = message;
+  
+  // Configurar un nuevo timer para ocultar el mensaje después de 3 segundos
+  successTimer = setTimeout(() => {
+    successMessage.value = '';
+  }, 3000);
+};
 
 const fetchEmployees = async () => {
   error.value = '';
@@ -363,20 +407,28 @@ const closeDeleteModal = () => {
   employeeToDelete.value = null;
 };
 
-const deleteEmployeeConfirmed = async () => {
-  if (!employeeToDelete.value) return;
-  try {
-    loading.value = true;
-    await deleteEmployee(employeeToDelete.value.empleados_id);
-    await fetchEmployees();
-  } catch (err: any) {
-    console.error(err.message);
-    error.value = err.message || 'Error al eliminar el empleado.';
-    loading.value = false;
-  } finally {
-    employeeToDelete.value = null;
-  }
+// Manejadores para las acciones que resetean la paginación a la página 1
+const handleEmployeeCreated = async () => {
+  await fetchEmployees();
+  currentPage.value = 1;
 };
+
+const handleEmployeeUpdated = async () => {
+  await fetchEmployees();
+  currentPage.value = 1;
+};
+
+const handleEmployeeDeleted = async () => {
+  await fetchEmployees();
+  currentPage.value = 1;
+};
+
+// Limpieza del timer cuando el componente se desmonta
+onUnmounted(() => {
+  if (successTimer) {
+    clearTimeout(successTimer);
+  }
+});
 </script>
 
 <style scoped>
@@ -392,5 +444,17 @@ tbody tr {
 }
 tbody tr td {
   border: none;
+}
+
+/* Animación para el mensaje de éxito */
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.fade-in-out {
+  animation: fadeInOut 3s ease-in-out;
 }
 </style>

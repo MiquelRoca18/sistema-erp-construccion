@@ -199,9 +199,38 @@ class EmployeeService extends BaseService {
             return $error;
         }
 
-        // Eliminar el empleado
-        $result = $this->model->delete($employeeId);
-        return $result ? $this->responseDeleted('Tarea eliminada') : $this->responseError();   
+        try {
+            $db = $this->model->getDb();
+            $db->beginTransaction();
+            
+            // Primero verificamos si hay tareas asignadas a este empleado
+            $query = "DELETE FROM empleados_tareas WHERE empleados_id = :empleado_id";
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':empleado_id', $employeeId, \PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Luego eliminamos el registro de autenticación
+            $query = "DELETE FROM autenticacion WHERE empleados_id = :empleado_id";
+            $stmt = $db->prepare($query);
+            $stmt->bindParam(':empleado_id', $employeeId, \PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Finalmente eliminamos el empleado
+            $result = $this->model->delete($employeeId);
+            
+            if ($result) {
+                $db->commit();
+                return $this->responseDeleted('Empleado eliminado con éxito');
+            } else {
+                $db->rollBack();
+                return $this->responseError('No se pudo eliminar el empleado');
+            }
+        } catch (\PDOException $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            return $this->responseError('Error al eliminar el empleado: ' . $e->getMessage());
+        }
     }
 }
 ?>

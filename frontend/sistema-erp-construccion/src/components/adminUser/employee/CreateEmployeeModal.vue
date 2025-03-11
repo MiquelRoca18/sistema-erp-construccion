@@ -43,7 +43,6 @@
           <input
             v-model="form.fecha_contratacion"
             type="date"
-            required
             :disabled="loading"
             class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 
                    bg-white dark:bg-gray-700 
@@ -118,7 +117,7 @@ import { createEmployee } from '@/service/employeeService';
 const form = ref({
   nombre: '',
   rol: '',
-  fecha_contratacion: '',
+  fecha_contratacion: new Date().toISOString().split('T')[0],
   telefono: '',
   correo: '',
 });
@@ -126,7 +125,7 @@ const form = ref({
 const loading = ref(false);
 const errorMessage = ref('');
 
-const emit = defineEmits(['close', 'created']);
+const emit = defineEmits(['close', 'created', 'showSuccess']);
 
 const closeModal = () => {
   if (loading.value) return;
@@ -138,8 +137,19 @@ const handleSubmit = async () => {
   loading.value = true;
   
   try {
+    // Añadimos un tiempo mínimo para la carga
+    const startTime = Date.now();
+    
     await createEmployee(form.value);
+    
+    // Aseguramos que el loader se muestre por al menos 500ms para mejor UX
+    const elapsedTime = Date.now() - startTime;
+    if (elapsedTime < 500) {
+      await new Promise(resolve => setTimeout(resolve, 500 - elapsedTime));
+    }
+    
     emit('created');
+    emit('showSuccess', `Empleado ${form.value.nombre} creado exitosamente`);
     closeModal();
   } catch (error: any) {
     console.error(error.message);
