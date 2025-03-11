@@ -105,36 +105,12 @@
             </div>
           </div>
     
-          <!-- Empleado asignado -->
+          <!-- Empleado asignado - Ahora solo muestra el nombre -->
           <div>
             <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Asignado a</label>
-            
-            <!-- Loader mientras se cargan los empleados -->
-            <div v-if="loadingEmployees" class="h-10 flex items-center pl-2">
-              <svg class="animate-spin h-5 w-5 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span class="text-sm text-gray-500 dark:text-gray-400">Cargando empleados...</span>
-            </div>
-            
-            <select
-              v-else
-              v-model="selectedEmployeeId"
-              class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500
-                    bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-              :disabled="isSaving"
-            >
-              <option disabled value="" class="bg-white dark:bg-gray-700">Seleccione un empleado</option>
-              <option 
-                v-for="emp in employees" 
-                :key="emp.empleados_id" 
-                :value="emp.empleados_id"
-                class="bg-white dark:bg-gray-700"
-              >
-                {{ emp.nombre }}
-              </option>
-            </select>
+            <p class="mt-1 text-lg font-semibold text-gray-800 dark:text-gray-200">
+              {{ task.nombre_empleado || 'Sin asignar' }}
+            </p>
           </div>
         </div>
     
@@ -142,14 +118,13 @@
         <div class="mt-6 flex justify-end">
           <button 
             @click="close" 
-            class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 mr-2"
-            :disabled="isSaving"
+            class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500"
           >
-            Cancelar
+            Cerrar
           </button>
           <button 
             @click="updateTask" 
-            class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 flex items-center justify-center min-w-[120px]"
+            class="ml-2 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 flex items-center justify-center min-w-[120px]"
             :disabled="isSaving"
           >
             <template v-if="isSaving">
@@ -172,8 +147,6 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import { updateTask as updateTaskService } from '@/service/taskService';
-import { updateTaskAssignment } from '@/service/taskService';
-import { getEmployees } from '@/service/employeeService';
 
 const props = defineProps({
   task: {
@@ -192,54 +165,23 @@ const updatedFechaFin = ref(props.task.fecha_fin);
 
 // Estados de carga
 const isLoading = ref(true);
-const loadingEmployees = ref(true);
 const isSaving = ref(false);
 const errorMessage = ref('');
 
-const selectedEmployeeId = ref(props.task.empleados_id);
-const employees = ref([]);
-
-onMounted(async () => {
-  try {
-    // Simular carga inicial del modal
-    setTimeout(() => {
-      isLoading.value = false;
-    }, 300);
-    
-    // Cargar los empleados
-    loadingEmployees.value = true;
-    employees.value = await getEmployees();
-    
-    // Si no existe empleados_id pero existe nombre_empleado, buscamos en la lista
-    if (!props.task.empleados_id && props.task.nombre_empleado) {
-      const emp = employees.value.find(e => e.nombre === props.task.nombre_empleado);
-      if (emp) {
-        selectedEmployeeId.value = emp.empleados_id;
-      }
-    }
-  } catch (error) {
-    console.error("Error al obtener empleados:", error);
-    errorMessage.value = "Error al cargar la lista de empleados.";
-  } finally {
-    loadingEmployees.value = false;
-  }
+onMounted(() => {
+  // Simular carga inicial del modal
+  setTimeout(() => {
+    isLoading.value = false;
+  }, 300);
 });
 
 watch(() => props.task, (newTask) => {
+  console.log('Nueva tarea:', newTask);
   updatedNombreTarea.value = newTask.nombre_tarea;
   updatedStatus.value = newTask.estado;
   updatedDescripcion.value = newTask.descripcion;
   updatedFechaInicio.value = newTask.fecha_inicio;
   updatedFechaFin.value = newTask.fecha_fin;
-  // Actualizar el select con el empleado asignado
-  if (newTask.empleados_id) {
-    selectedEmployeeId.value = newTask.empleados_id;
-  } else if (newTask.nombre_empleado) {
-    const emp = employees.value.find(e => e.nombre === newTask.nombre_empleado);
-    if (emp) {
-      selectedEmployeeId.value = emp.empleados_id;
-    }
-  }
   errorMessage.value = '';
 });
 
@@ -265,16 +207,7 @@ const updateTask = async () => {
     
     await updateTaskService(props.task.tareas_id, taskData);
     
-    // Si la asignación ha cambiado, enviar los IDs correspondientes
-    if (selectedEmployeeId.value !== props.task.empleados_id) {
-      await updateTaskAssignment(props.task.tareas_id, props.task.empleados_id, selectedEmployeeId.value);
-    }
-    
-    const updatedTask = { ...props.task, ...taskData, empleados_id: selectedEmployeeId.value };
-    const emp = employees.value.find(e => e.empleados_id === selectedEmployeeId.value);
-    if (emp) {
-      updatedTask.nombre_empleado = emp.nombre;
-    }
+    const updatedTask = { ...props.task, ...taskData };
     
     emit('update', updatedTask);
     close();
