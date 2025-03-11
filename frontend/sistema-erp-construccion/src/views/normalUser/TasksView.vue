@@ -218,8 +218,6 @@
   </div>
 </template>
 
-// Fragmento a modificar en TasksView.vue
-
 <script setup>
 import { ref, onMounted, computed, watch, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
@@ -252,49 +250,15 @@ const selectedTask = ref(null);
 const currentPage = ref(1);
 const resetPagination = () => { currentPage.value = 1; };
 
-// Debounce para los filtros - importante para optimizar peticiones
-const debouncedFetchTasks = debounce(() => {
-  fetchTasks();
-}, 500);
+// Cache para los resultados de cálculos costosos
+const cachedData = {
+  uniqueProjects: null,
+  availableStatuses: null
+};
 
-// Observar cambios en los filtros con debounce para evitar múltiples peticiones
-watch([
-  selectedProject, 
-  selectedStatus, 
-  selectedTaskType, 
-  startDate, 
-  endDate
-], () => {
-  resetPagination();
-  debouncedFetchTasks();
-}, { deep: true });
-
-// Sincronizar filtros con la URL de manera eficiente con debounce
-const debouncedUpdateUrl = debounce(([newProject, newStatus, newTaskType, newStartDate, newEndDate]) => {
-  router.replace({
-    query: {
-      ...route.query,
-      project: newProject || undefined,
-      status: newStatus || undefined,
-      taskType: newTaskType || undefined,
-      startDate: newStartDate || undefined,
-      endDate: newEndDate || undefined,
-    },
-  });
-}, 300);
-
-// Usar debouncedUpdateUrl para la URL
-watch([selectedProject, selectedStatus, selectedTaskType, startDate, endDate], 
-  (newValues) => debouncedUpdateUrl(newValues), 
-  { deep: true }
-);
-
-watch(() => route.query.status, (newStatus) => {
-  if (newStatus === 'pendiente') {
-    selectedStatus.value = 'pendiente';
-    resetPagination();
-  }
-}, { immediate: true });
+// Optimización de la función de filtrado con memoización
+let lastFilteredTasks = null;
+let lastFilterCriteria = null;
 
 // Función para obtener tareas según el filtro de tipo con control de estado de carga
 const fetchTasks = async () => {
@@ -328,11 +292,72 @@ const fetchTasks = async () => {
   }
 };
 
-// Cache para los resultados de cálculos costosos
-const cachedData = {
-  uniqueProjects: null,
-  availableStatuses: null
+// Función para reiniciar y volver a cargar tareas
+const resetAndFetchTasks = async () => {
+  // Limpiar todas las cachés y estados
+  tasks.value = [];
+  lastFilteredTasks = null;
+  lastFilterCriteria = null;
+  cachedData.uniqueProjects = null;
+  cachedData.availableStatuses = null;
+  cachedData.lastTasksLength = 0;
+  currentPage.value = 1;
+  
+  // Pequeña pausa para asegurar que el DOM se actualice
+  await new Promise(resolve => setTimeout(resolve, 50));
+  
+  // Ahora cargar los datos nuevos
+  await fetchTasks();
 };
+
+// Debounce para los filtros - importante para optimizar peticiones
+const debouncedFetchTasks = debounce(() => {
+  fetchTasks();
+}, 500);
+
+// Observar cambios específicamente en selectedTaskType
+watch(selectedTaskType, () => {
+  console.log('Cambiando tipo de tarea a:', selectedTaskType.value);
+  resetAndFetchTasks();
+});
+
+// Observar cambios en los otros filtros con debounce para evitar múltiples peticiones
+watch([
+  selectedProject, 
+  selectedStatus, 
+  startDate, 
+  endDate
+], () => {
+  resetPagination();
+  debouncedFetchTasks();
+}, { deep: true });
+
+// Sincronizar filtros con la URL de manera eficiente con debounce
+const debouncedUpdateUrl = debounce(([newProject, newStatus, newTaskType, newStartDate, newEndDate]) => {
+  router.replace({
+    query: {
+      ...route.query,
+      project: newProject || undefined,
+      status: newStatus || undefined,
+      taskType: newTaskType || undefined,
+      startDate: newStartDate || undefined,
+      endDate: newEndDate || undefined,
+    },
+  });
+}, 300);
+
+// Usar debouncedUpdateUrl para la URL
+watch([selectedProject, selectedStatus, selectedTaskType, startDate, endDate], 
+  (newValues) => debouncedUpdateUrl(newValues), 
+  { deep: true }
+);
+
+watch(() => route.query.status, (newStatus) => {
+  if (newStatus === 'pendiente') {
+    selectedStatus.value = 'pendiente';
+    resetPagination();
+  }
+}, { immediate: true });
 
 // Añadir memoización para cálculos costosos
 const uniqueProjects = computed(() => {
@@ -403,17 +428,16 @@ onUnmounted(() => {
   window.removeEventListener('resize', updateScreenWidth);
 });
 
-// Optimización de la función de filtrado con memoización
-let lastFilteredTasks = null;
-let lastFilterCriteria = null;
-
 // Filtro local optimizado
 const filteredTasks = computed(() => {
+  console.log('Recalculando filteredTasks con tipo:', selectedTaskType.value);
+  console.log('Tareas actuales:', tasks.value);
+  
   // Creamos un criterio de filtrado como string para comparación
   const currentCriteria = `${selectedProject.value}|${selectedStatus.value}|${startDate.value}|${endDate.value}`;
   
   // Si los criterios no han cambiado, devolvemos los resultados cacheados
-  if (lastFilterCriteria === currentCriteria && lastFilteredTasks) {
+  if (lastFilterCriteria === currentCriteria && lastFilteredTasks && selectedTaskType.value === 'mis') {
     return lastFilteredTasks;
   }
   
