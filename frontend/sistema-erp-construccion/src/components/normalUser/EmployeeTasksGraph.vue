@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 bg-white dark:bg-gray-800" style="height: 300px;">
+  <div class="p-2 sm:p-4 bg-white dark:bg-gray-800" style="height: 250px; min-height: 250px; max-height: 300px;">
     <canvas ref="chartCanvas" style="width: 100%; height: 100%;"></canvas>
   </div>
 </template>
@@ -34,6 +34,11 @@ const getChartColors = () => {
   };
 };
 
+// Función para determinar si es móvil
+const isMobileView = () => {
+  return window.innerWidth < 640;
+};
+
 const fetchTasksAndRenderChart = async () => {
   if (!props.employeeId) return; // No hacer nada si employeeId es null
   try {
@@ -58,6 +63,9 @@ const fetchTasksAndRenderChart = async () => {
     
     const ctx = chartCanvas.value.getContext('2d');
     const colors = getChartColors();
+    
+    // Detector de dispositivo móvil para ajustar la configuración
+    const isMobile = isMobileView();
 
     chartInstance = new Chart(ctx, {
       type: 'pie',
@@ -74,17 +82,21 @@ const fetchTasksAndRenderChart = async () => {
         plugins: {
           legend: {
             position: 'bottom',
+            align: isMobile ? 'start' : 'center',
             labels: {
               color: colors.legend,
-              font: { size: 13 },
+              font: { size: isMobile ? 10 : 13 },
+              boxWidth: isMobile ? 12 : 15,
+              padding: isMobile ? 8 : 10
             },
             backgroundColor: colors.background,
           },
           title: {
             display: true,
             text: 'Distribución de Tareas',
-            font: { size: 24 },
+            font: { size: isMobile ? 16 : 24 },
             color: colors.title,
+            padding: { top: 0, bottom: isMobile ? 5 : 10 }
           },
         },
         color: colors.title,
@@ -115,6 +127,35 @@ const handleModeChange = () => {
   }
 };
 
+// Función debounce para optimizar eventos frecuentes
+function debounce(func, wait) {
+  let timeout;
+  return function() {
+    const context = this;
+    const args = arguments;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(context, args), wait);
+  };
+}
+
+// Manejador de cambio de tamaño de ventana
+const handleResize = debounce(() => {
+  if (chartInstance) {
+    const isMobile = isMobileView();
+    
+    // Actualizar la configuración basada en el tamaño de la pantalla
+    chartInstance.options.plugins.legend.labels.font.size = isMobile ? 10 : 13;
+    chartInstance.options.plugins.legend.labels.boxWidth = isMobile ? 12 : 15;
+    chartInstance.options.plugins.legend.labels.padding = isMobile ? 8 : 10;
+    chartInstance.options.plugins.legend.align = isMobile ? 'start' : 'center';
+    chartInstance.options.plugins.title.font.size = isMobile ? 16 : 24;
+    chartInstance.options.plugins.title.padding.bottom = isMobile ? 5 : 10;
+    
+    // Actualizar el gráfico
+    chartInstance.update();
+  }
+}, 250);
+
 // Añadir event listener para cambios de modo
 const modeObserver = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
@@ -132,11 +173,15 @@ onMounted(() => {
     attributes: true, 
     attributeFilter: ['class'] 
   });
+  
+  // Añadir event listener para el resize
+  window.addEventListener('resize', handleResize);
 });
 
 // Limpiar el observer cuando el componente se desmonte
 onUnmounted(() => {
   modeObserver.disconnect();
+  window.removeEventListener('resize', handleResize);
   if (chartInstance) {
     chartInstance.destroy();
   }

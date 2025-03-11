@@ -1,102 +1,72 @@
 <template>
-  <div class="flex flex-col justify-center items-center min-h-screen p-8">
-    <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
+  <div class="flex flex-col justify-center items-center min-h-screen p-4 sm:p-8">
+    <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300 w-full">
       <!-- Encabezado -->
-      <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-yellow-800 dark:text-yellow-200 text-center sm:text-left">
+      <div class="flex flex-col sm:flex-row items-center justify-between mb-4 sm:mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-yellow-800 dark:text-yellow-200 text-center sm:text-left mb-4 sm:mb-0">
           Gestión de Presupuestos
         </h1>
       </div>
 
-      <!-- Mensaje de éxito -->
-      <div 
-        v-if="successMessage" 
-        class="mb-6 p-4 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-lg text-green-700 dark:text-green-300 flex items-center justify-between fade-in-out"
-      >
-        <div class="flex items-center">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-          </svg>
-          {{ successMessage }}
-        </div>
-        <button @click="successMessage = ''" class="text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Mensaje de error -->
-      <div 
-        v-if="errorMessage" 
-        class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300 flex items-center justify-between fade-in-out"
-      >
-        <div class="flex items-center">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-          </svg>
-          {{ errorMessage }}
-        </div>
-        <button @click="errorMessage = ''" class="text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Filtros -->
-      <div class="mb-6 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Filtros - Reducido para móvil -->
+      <div class="mb-4 sm:mb-6 w-full grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         <input
           type="text"
           v-model="searchProject"
           placeholder="Buscar por proyecto..."
-          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-400 transition-colors duration-300"
+          class="w-full p-2 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm 
+                 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 
+                 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-400 
+                 transition-colors duration-300"
         />
         <input
           type="number"
           v-model.number="searchTotal"
           placeholder="Filtrar por total (máximo)..."
-          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-400 transition-colors duration-300"
+          class="w-full p-2 sm:p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm
+                 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 
+                 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-400 
+                 transition-colors duration-300"
         />
       </div>
 
       <!-- Loader principal mientras se cargan los presupuestos -->
-      <div v-if="loading" class="flex flex-col items-center justify-center py-10">
-        <div class="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="text-gray-600 dark:text-gray-300">Cargando presupuestos...</p>
+      <div v-if="loading" class="flex flex-col items-center justify-center py-8 sm:py-10">
+        <div class="w-10 h-10 sm:w-12 sm:h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-3 sm:mb-4"></div>
+        <p class="text-sm sm:text-base text-gray-600 dark:text-gray-300">Cargando presupuestos...</p>
       </div>
 
       <div v-else>
-        <!-- Vista Mobile: Tarjetas -->
+        <!-- Vista Mobile: Tarjetas - Simplificadas -->
         <div class="sm:hidden w-full">
           <div
             v-for="budget in paginatedBudgets"
             :key="budget.presupuestos_id"
-            class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 cursor-pointer transition-colors duration-300 hover:bg-yellow-100 dark:hover:bg-yellow-800/40"
+            class="bg-white dark:bg-gray-700 p-3 rounded-lg shadow dark:shadow-gray-900/20 mb-3 cursor-pointer transition-colors duration-300 hover:bg-yellow-100 dark:hover:bg-yellow-800/40"
             @click="openViewModal(budget)"
           >
             <div class="flex justify-between items-center">
               <div>
-                <p class="text-base font-bold text-yellow-800 dark:text-yellow-200">
+                <p class="text-sm font-bold text-yellow-800 dark:text-yellow-200">
                   {{ budget.nombre_proyecto }}
                 </p>
-                <p class="text-sm text-gray-700 dark:text-gray-300">Total: ${{ budget.total }}</p>
+                <p class="text-xs text-gray-700 dark:text-gray-300">Total: {{ budget.total }}</p>
               </div>
               <div>
                 <button
                   @click.stop="openEditModal(budget)"
-                  class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
+                  class="px-2 py-1 bg-green-500 dark:bg-green-600 text-white rounded text-xs hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300"
                 >
                   Editar
                 </button>
               </div>
             </div>
           </div>
-          <div v-if="paginatedBudgets.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-6">
+          <div v-if="paginatedBudgets.length === 0" class="text-center text-sm text-gray-500 dark:text-gray-400 py-6">
             No se encontraron presupuestos.
           </div>
-          <!-- Divs vacíos para mantener el espacio de 5 elementos -->
-          <div v-for="n in missingRows" :key="'empty-' + n" class="h-20"></div>
+          <!-- Divs vacíos para mantener el espacio de 5 elementos en mobile -->
+          <div v-for="n in missingRows" :key="'empty-' + n" class="h-16"></div>
         </div>
 
         <!-- Vista Desktop: Tabla -->
@@ -104,13 +74,13 @@
           <table class="min-w-full">
             <thead>
               <tr class="bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 text-yellow-800 dark:text-yellow-200">
-                <th class="px-6 py-3 text-left font-semibold">ID</th>
-                <th class="px-6 py-3 text-left font-semibold">Proyecto</th>
-                <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Equipos</th>
-                <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Mano de obra</th>
-                <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Materiales</th>
-                <th class="px-6 py-3 text-left font-semibold">Total</th>
-                <th class="px-6 py-3 text-left font-semibold">Acciones</th>
+                <th class="px-4 sm:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold">ID</th>
+                <th class="px-4 sm:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold">Proyecto</th>
+                <th class="px-4 sm:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold hidden [@media(min-width:1200px)]:table-cell">Equipos</th>
+                <th class="px-4 sm:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold hidden [@media(min-width:1200px)]:table-cell">Mano de obra</th>
+                <th class="px-4 sm:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold hidden [@media(min-width:1200px)]:table-cell">Materiales</th>
+                <th class="px-4 sm:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold">Total</th>
+                <th class="px-4 sm:px-6 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -120,17 +90,17 @@
                 class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-yellow-100 dark:hover:bg-yellow-800/40"
                 @click="openViewModal(budget)"
               >
-                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ budget.presupuestos_id }}</td>
-                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ budget.nombre_proyecto }}</td>
-                <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ budget.equipos }}</td>
-                <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ budget.mano_obra }}</td>
-                <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ budget.materiales }}</td>
-                <td class="px-6 py-4 font-bold text-gray-800 dark:text-yellow-200">{{ budget.total }}</td>
-                <td class="px-6 py-4">
+                <td class="px-4 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-800 dark:text-gray-200">{{ budget.presupuestos_id }}</td>
+                <td class="px-4 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-800 dark:text-gray-200">{{ budget.nombre_proyecto }}</td>
+                <td class="px-4 sm:px-6 py-3 sm:py-4 hidden [@media(min-width:1200px)]:table-cell text-xs sm:text-sm text-gray-800 dark:text-gray-200">{{ budget.equipos }}</td>
+                <td class="px-4 sm:px-6 py-3 sm:py-4 hidden [@media(min-width:1200px)]:table-cell text-xs sm:text-sm text-gray-800 dark:text-gray-200">{{ budget.mano_obra }}</td>
+                <td class="px-4 sm:px-6 py-3 sm:py-4 hidden [@media(min-width:1200px)]:table-cell text-xs sm:text-sm text-gray-800 dark:text-gray-200">{{ budget.materiales }}</td>
+                <td class="px-4 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm font-bold text-gray-800 dark:text-yellow-200">{{ budget.total }}</td>
+                <td class="px-4 sm:px-6 py-3 sm:py-4">
                   <div class="flex flex-col sm:flex-row gap-1 sm:gap-2" @click.stop>
                     <button
                       @click="openEditModal(budget)"
-                      class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs sm:text-sm"
+                      class="px-2 py-1 sm:px-3 sm:py-1 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs"
                     >
                       Editar
                     </button>
@@ -138,36 +108,36 @@
                 </td>
               </tr>
               <tr v-if="paginatedBudgets.length === 0">
-                <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                <td colspan="7" class="px-4 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                   No se encontraron presupuestos.
                 </td>
               </tr>
               <!-- Filas vacías para mantener el espacio -->
-              <tr v-for="n in missingRows" :key="'empty-' + n" class="h-20 bg-transparent">
-                <td colspan="7" class="px-6 py-4"></td>
+              <tr v-for="n in missingRows" :key="'empty-' + n" class="h-16 sm:h-20 bg-transparent">
+                <td colspan="7" class="px-4 sm:px-6 py-2 sm:py-4"></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
   
-      <!-- Paginación -->
-      <div v-if="totalPages > 1 && !loading" class="mt-6 flex items-center justify-center space-x-2">
+      <!-- Paginación - Adaptada para móvil -->
+      <div v-if="totalPages > 1 && !loading" class="mt-4 sm:mt-6 flex items-center justify-center space-x-1 sm:space-x-2">
         <button 
           @click="prevPage" 
           :disabled="currentPage === 1"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-600 dark:bg-yellow-500 text-white hover:bg-yellow-700 dark:hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-300"
+          class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-600 dark:bg-yellow-500 text-white hover:bg-yellow-700 dark:hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-300"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <div class="flex space-x-2">
+        <div class="flex space-x-1 sm:space-x-2">
           <button 
             v-for="page in pages" 
             :key="page" 
             @click="goToPage(page)" 
-            class="w-10 h-10 rounded-full border border-yellow-600 dark:border-yellow-500 flex items-center justify-center transition-colors duration-300 font-medium"
+            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-yellow-600 dark:border-yellow-500 flex items-center justify-center transition-colors duration-300 text-xs sm:text-sm font-medium"
             :class="page === currentPage 
               ? 'bg-yellow-600 dark:bg-yellow-500 text-white' 
               : 'bg-white dark:bg-gray-800 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-600 dark:hover:bg-yellow-500 hover:text-white'"
@@ -178,25 +148,50 @@
         <button 
           @click="nextPage" 
           :disabled="currentPage === totalPages"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-600 dark:bg-yellow-500 text-white hover:bg-yellow-700 dark:hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-300"
+          class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-yellow-600 dark:bg-yellow-500 text-white hover:bg-yellow-700 dark:hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-300"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
       </div>
   
+      <!-- Mensaje de éxito -->
+      <div v-if="showSuccess" class="mt-4 p-3 bg-green-100 dark:bg-green-900/40 border border-green-300 dark:border-green-700 rounded-lg text-green-700 dark:text-green-300 text-xs sm:text-sm flex items-center justify-between">
+        <div class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+          {{ successMessage }}
+        </div>
+        <button @click="showSuccess = false" class="text-green-500 hover:text-green-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
       <!-- Mensaje de error -->
-      <div v-if="error" class="mt-4 p-3 bg-red-100 dark:bg-red-900/40 border border-red-300 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300 text-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-        </svg>
-        {{ error }}
+      <div v-if="error" class="mt-4 p-3 bg-red-100 dark:bg-red-900/40 border border-red-300 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300 text-xs sm:text-sm flex items-center justify-between">
+        <div class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+          {{ error }}
+        </div>
+        <button @click="error = ''" class="text-red-500 hover:text-red-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
     </div>
   
     <!-- Modales -->
-    <EditBudgetModal v-if="showEditModal" :budget="budgetToEdit" @close="closeEditModal" @updated="fetchBudgets" />
+    <EditBudgetModal v-if="showEditModal" :budget="budgetToEdit" @close="closeEditModal" @updated="fetchBudgets" @showSuccess="handleSuccess" @showError="handleError" />
+    <BudgetDetailsModal v-if="showViewModal" :budget="selectedBudget" @close="closeViewModal" />
+    <!-- Notificación Toast -->
+    <ToastNotification v-if="showToast" :message="toastMessage" :type="toastType" @close="closeToast" />
   </div>
 </template>
   
@@ -204,6 +199,8 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { getBudgets } from '@/service/budgetService';
 import EditBudgetModal from '@/components/adminUser/budget/EditBudgetModal.vue';
+import BudgetDetailsModal from '@/components/adminUser/budget/BudgetDetailsModal.vue';
+import ToastNotification from '@/components/ToastNotification.vue';
   
 const budgets = ref<any[]>([]);
 const loading = ref(true);
@@ -217,48 +214,13 @@ const showEditModal = ref(false);
 const budgetToEdit = ref(null);
 const showViewModal = ref(false);
 const selectedBudget = ref(null);
-
 const successMessage = ref('');
-const errorMessage = ref('');
+const showSuccess = ref(false);
 
-// Timer para el mensaje de éxito o error
-let messageTimer: ReturnType<typeof setTimeout> | null = null;
-
-const showSuccessMessage = (message: string) => {
-  // Limpiar el timer anterior si existe
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
-  
-  // Limpiar cualquier mensaje de error
-  errorMessage.value = '';
-  
-  // Mostrar el nuevo mensaje
-  successMessage.value = message;
-  
-  // Configurar un nuevo timer para ocultar el mensaje después de 3 segundos
-  messageTimer = setTimeout(() => {
-    successMessage.value = '';
-  }, 3000);
-};
-
-const showErrorMessage = (message: string) => {
-  // Limpiar el timer anterior si existe
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
-  
-  // Limpiar cualquier mensaje de éxito
-  successMessage.value = '';
-  
-  // Mostrar el nuevo mensaje de error
-  errorMessage.value = message;
-  
-  // Configurar un nuevo timer para ocultar el mensaje después de 3 segundos
-  messageTimer = setTimeout(() => {
-    errorMessage.value = '';
-  }, 3000);
-};
+// Para notificaciones Toast
+const showToast = ref(false);
+const toastMessage = ref('');
+const toastType = ref('success');
   
 // Tiempo de espera mínimo para mostrar el loader
 const minLoadingTime = 500; 
@@ -350,15 +312,58 @@ const openEditModal = (budget: any) => {
   budgetToEdit.value = budget;
   showEditModal.value = true;
 };
-  
+
 const closeEditModal = () => {
   showEditModal.value = false;
   budgetToEdit.value = null;
 };
-
+  
 const openViewModal = (budget: any) => {
   selectedBudget.value = budget;
   showViewModal.value = true;
+};
+
+const closeViewModal = () => {
+  showViewModal.value = false;
+  selectedBudget.value = null;
+};
+
+// Manejo de notificaciones toast
+const showToastNotification = (message: string, type: string = 'success') => {
+  toastMessage.value = message;
+  toastType.value = type;
+  showToast.value = true;
+};
+
+const closeToast = () => {
+  showToast.value = false;
+};
+
+// Manejo de mensajes de éxito y error
+const handleSuccess = (message: string) => {
+  successMessage.value = message;
+  showSuccess.value = true;
+  
+  // Mostrar también como toast para mejor visibilidad en móvil
+  showToastNotification(message, 'success');
+  
+  // Ocultar el mensaje después de 3 segundos
+  setTimeout(() => {
+    showSuccess.value = false;
+    successMessage.value = '';
+  }, 3000);
+};
+
+const handleError = (message: string) => {
+  error.value = message;
+  
+  // Mostrar también como toast para mejor visibilidad en móvil
+  showToastNotification(message, 'error');
+  
+  // Ocultar el mensaje después de 5 segundos
+  setTimeout(() => {
+    error.value = '';
+  }, 5000);
 };
 </script>
   
