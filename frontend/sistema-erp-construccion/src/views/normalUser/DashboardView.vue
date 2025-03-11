@@ -94,8 +94,6 @@ onMounted(async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     
     if (user) {
-      // Mostrar un mensaje en la consola de que se está cargando
-      console.log("Cargando datos del empleado...");
       
       // Obtener los datos del empleado (ahora con caché)
       const employeeData = await getEmployeeData(user.empleados_id, localStorage.getItem('token'));

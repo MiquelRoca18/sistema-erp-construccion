@@ -3,22 +3,25 @@ import { setLocalStorageWithExpiry, getLocalStorageWithExpiry } from '@/utils';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const getEmployees = async () => {
+export const getEmployees = async (forceRefresh = false) => {
   try {
+    // Si forceRefresh es true, ignorar la caché
+    if (forceRefresh) {
+      localStorage.removeItem('employees-cache');
+    }
+    
     // Comprobar si hay datos en caché
     const cachedData = getLocalStorageWithExpiry('employees-cache');
     
-    // Usar caché si existe
-    if (cachedData) {
-      console.log('Usando datos de empleados desde caché');
+    // Usar caché si existe y no se forzó una actualización
+    if (cachedData && !forceRefresh) {
       return cachedData;
     }
     
-    // Si no hay caché, hacer la solicitud HTTP
+    // Si no hay caché o se forzó actualización, hacer la solicitud HTTP
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No se encontró el token.');
     
-    console.log('Obteniendo datos de empleados desde API');
     const response = await axios.get(`${API_URL}/employees`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
@@ -34,7 +37,6 @@ export const getEmployees = async () => {
     const cachedData = localStorage.getItem('employees-cache');
     if (cachedData) {
       try {
-        console.log('Error al obtener empleados, usando caché obsoleta');
         return JSON.parse(cachedData).value;
       } catch (e) {
         // Si hay un error al parsear la caché, eliminarla
@@ -119,7 +121,6 @@ export const getEmployeeData = async (employeeId: number, token: string = '') =>
     
     // Usar caché si existe
     if (cachedData) {
-      console.log('Usando datos específicos de empleado desde caché');
       return cachedData;
     }
     
@@ -132,7 +133,6 @@ export const getEmployeeData = async (employeeId: number, token: string = '') =>
       throw new Error('No se encontró el token de autenticación');
     }
     
-    console.log('Obteniendo datos específicos de empleado desde API');
     const response = await axios.get(`${API_URL}/employees/${employeeId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,

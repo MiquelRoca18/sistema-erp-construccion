@@ -19,7 +19,6 @@ export const getProjects = async () => {
     
     // Usar caché si existe
     if (cachedData) {
-      console.log('Usando datos de proyectos desde caché');
       return cachedData;
     }
     
@@ -28,7 +27,6 @@ export const getProjects = async () => {
       throw new Error('No se encontró el token.');
     }
     
-    console.log('Obteniendo datos de proyectos desde API');
     const response = await axios.get(`${API_URL}/projects`, {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -46,7 +44,6 @@ export const getProjects = async () => {
     const cachedData = localStorage.getItem('projects-cache');
     if (cachedData) {
       try {
-        console.log('Error al obtener proyectos, usando caché obsoleta');
         return JSON.parse(cachedData).value;
       } catch (e) {
         localStorage.removeItem('projects-cache');

@@ -16,7 +16,6 @@ export const getPendingTasks = async (employeeId: number | null) => {
     
     // Usar caché si existe
     if (cachedData) {
-      console.log('Usando tareas pendientes desde caché');
       return cachedData;
     }
     
@@ -51,7 +50,6 @@ export const getAllTasks = async (employeeId: any) => {
     
     // Usar caché si existe
     if (cachedData) {
-      console.log('Usando todas las tareas desde caché');
       return cachedData;
     }
     
@@ -132,7 +130,6 @@ export const getTasksByResponsible = async (employeeId: any) => {
     
     // Usar caché si existe
     if (cachedData) {
-      console.log('Usando tareas por responsable desde caché');
       return cachedData;
     }
     
