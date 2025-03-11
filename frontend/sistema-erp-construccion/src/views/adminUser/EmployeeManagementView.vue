@@ -452,21 +452,48 @@ const closeDeleteModal = () => {
 
 // Manejadores para las acciones que resetean la paginación a la página 1
 const handleEmployeeCreated = async () => {
-  closeModal(); // Cierra explícitamente el modal
+  // Agregar un pequeño retardo para permitir que la API actualice sus datos
+  await new Promise(resolve => setTimeout(resolve, 300));
+  
+  // Refrescar la lista de empleados
   await fetchEmployees();
+  
+  // Forzar la reactividad asignando un nuevo arreglo
+  employees.value = [...employees.value];
+  
+  // Volver a la primera página
   currentPage.value = 1;
 };
 
 const handleEmployeeUpdated = async () => {
-  closeEditModal(); // Cierra explícitamente el modal
+  // Agregar un pequeño retardo para permitir que la API actualice sus datos
+  await new Promise(resolve => setTimeout(resolve, 300));
+  
+  // Refrescar la lista de empleados
   await fetchEmployees();
-  currentPage.value = 1;
+  
+  // Forzar la reactividad asignando un nuevo arreglo
+  employees.value = [...employees.value];
+  
+  // Mantener la página actual
+  // (o puedes volver a la primera página si prefieres)
 };
 
 const handleEmployeeDeleted = async () => {
-  closeDeleteModal(); // Cierra explícitamente el modal
+  // Agregar un pequeño retardo para permitir que la API actualice sus datos
+  await new Promise(resolve => setTimeout(resolve, 300));
+  
+  // Refrescar la lista de empleados
   await fetchEmployees();
-  currentPage.value = 1;
+  
+  // Forzar la reactividad asignando un nuevo arreglo
+  employees.value = [...employees.value];
+  
+  // Si estamos en una página que ya no existe después de eliminar,
+  // volver a la última página disponible
+  if (currentPage.value > totalPages.value && totalPages.value > 0) {
+    currentPage.value = totalPages.value;
+  }
 };
 
 // Limpieza del timer cuando el componente se desmonta
