@@ -51,7 +51,7 @@ import { deleteEmployee } from '@/service/employeeService';
 const props = defineProps({
   employee: { type: Object, required: true },
 });
-const emit = defineEmits(['close', 'deleted', 'showSuccess']);
+const emit = defineEmits(['close', 'deleted', 'showSuccess', 'showError']);
 
 const loading = ref(false);
 const errorMessage = ref('');
@@ -64,6 +64,9 @@ const closeModal = () => {
 const confirmDelete = async () => {
   loading.value = true;
   errorMessage.value = '';
+  
+  // Cerramos el modal inmediatamente después de presionar "Eliminar"
+  closeModal();
   
   try {
     // Agregamos un pequeño retraso mínimo para mejor UX
@@ -79,10 +82,9 @@ const confirmDelete = async () => {
     
     emit('deleted');
     emit('showSuccess', `El empleado ${props.employee.nombre} ha sido eliminado exitosamente`);
-    closeModal();
   } catch (error: any) {
     console.error(error.message);
-    errorMessage.value = error.message || 'Error al eliminar empleado';
+    emit('showError', error.message || 'Error al eliminar empleado');
   } finally {
     loading.value = false;
   }

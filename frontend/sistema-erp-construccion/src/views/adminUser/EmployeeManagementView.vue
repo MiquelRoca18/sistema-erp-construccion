@@ -37,6 +37,24 @@
         </button>
       </div>
 
+      <!-- Mensaje de error -->
+      <div 
+        v-if="errorMessage" 
+        class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300 flex items-center justify-between fade-in-out"
+      >
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+          </svg>
+          {{ errorMessage }}
+        </div>
+        <button @click="errorMessage = ''" class="text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
       <!-- Filtro -->
       <div class="mb-6">
         <input
@@ -233,7 +251,8 @@
         v-if="showModal" 
         @close="closeModal" 
         @created="handleEmployeeCreated"
-        @showSuccess="showSuccessMessage" 
+        @showSuccess="showSuccessMessage"
+        @showError="showErrorMessage"
       />
 
       <EditEmployeeModal
@@ -242,6 +261,7 @@
         @close="closeEditModal"
         @updated="handleEmployeeUpdated"
         @showSuccess="showSuccessMessage"
+        @showError="showErrorMessage"
       />
 
       <DeleteEmployeeModal
@@ -250,6 +270,7 @@
         @close="closeDeleteModal"
         @deleted="handleEmployeeDeleted"
         @showSuccess="showSuccessMessage"
+        @showError="showErrorMessage"
       />
     </div>
   </div>
@@ -274,22 +295,44 @@ const employeeToEdit = ref(null);
 const employeeToDelete = ref(null);
 const loadingButton = ref(false);
 const successMessage = ref('');
+const errorMessage = ref('');
 
-// Timer para el mensaje de éxito
-let successTimer: ReturnType<typeof setTimeout> | null = null;
+// Timer para el mensaje de éxito o error
+let messageTimer: ReturnType<typeof setTimeout> | null = null;
 
 const showSuccessMessage = (message: string) => {
   // Limpiar el timer anterior si existe
-  if (successTimer) {
-    clearTimeout(successTimer);
+  if (messageTimer) {
+    clearTimeout(messageTimer);
   }
+  
+  // Limpiar cualquier mensaje de error
+  errorMessage.value = '';
   
   // Mostrar el nuevo mensaje
   successMessage.value = message;
   
   // Configurar un nuevo timer para ocultar el mensaje después de 3 segundos
-  successTimer = setTimeout(() => {
+  messageTimer = setTimeout(() => {
     successMessage.value = '';
+  }, 3000);
+};
+
+const showErrorMessage = (message: string) => {
+  // Limpiar el timer anterior si existe
+  if (messageTimer) {
+    clearTimeout(messageTimer);
+  }
+  
+  // Limpiar cualquier mensaje de éxito
+  successMessage.value = '';
+  
+  // Mostrar el nuevo mensaje de error
+  errorMessage.value = message;
+  
+  // Configurar un nuevo timer para ocultar el mensaje después de 3 segundos
+  messageTimer = setTimeout(() => {
+    errorMessage.value = '';
   }, 3000);
 };
 
@@ -425,8 +468,8 @@ const handleEmployeeDeleted = async () => {
 
 // Limpieza del timer cuando el componente se desmonta
 onUnmounted(() => {
-  if (successTimer) {
-    clearTimeout(successTimer);
+  if (messageTimer) {
+    clearTimeout(messageTimer);
   }
 });
 </script>

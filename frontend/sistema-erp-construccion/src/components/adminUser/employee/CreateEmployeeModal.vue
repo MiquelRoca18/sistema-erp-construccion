@@ -125,7 +125,7 @@ const form = ref({
 const loading = ref(false);
 const errorMessage = ref('');
 
-const emit = defineEmits(['close', 'created', 'showSuccess']);
+const emit = defineEmits(['close', 'created', 'showSuccess', 'showError']);
 
 const closeModal = () => {
   if (loading.value) return;
@@ -135,6 +135,9 @@ const closeModal = () => {
 const handleSubmit = async () => {
   errorMessage.value = '';
   loading.value = true;
+  
+  // Cerramos el modal inmediatamente después de presionar "Crear"
+  closeModal();
   
   try {
     // Añadimos un tiempo mínimo para la carga
@@ -150,10 +153,9 @@ const handleSubmit = async () => {
     
     emit('created');
     emit('showSuccess', `Empleado ${form.value.nombre} creado exitosamente`);
-    closeModal();
   } catch (error: any) {
     console.error(error.message);
-    errorMessage.value = error.message || 'Error al crear empleado';
+    emit('showError', error.message || 'Error al crear empleado');
   } finally {
     loading.value = false;
   }
