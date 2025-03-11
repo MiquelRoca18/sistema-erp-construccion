@@ -99,12 +99,14 @@ const confirmDelete = async () => {
       await new Promise(resolve => setTimeout(resolve, 500 - elapsedTime));
     }
     
-    emit('deleted');
+    emit('deleted', true); 
     emit('showSuccess', `El proyecto ${props.project.nombre_proyecto} ha sido eliminado exitosamente`);
     closeModal();
   } catch (error: any) {
     console.error('Error deleting project:', error);
     errorMessage.value = error.message || 'Error al eliminar proyecto. Inténtalo de nuevo.';
+    emit('showError', error.message || 'Error al eliminar proyecto. Inténtalo de nuevo.');
+    emit('deleted', false); 
   } finally {
     loading.value = false;
   }

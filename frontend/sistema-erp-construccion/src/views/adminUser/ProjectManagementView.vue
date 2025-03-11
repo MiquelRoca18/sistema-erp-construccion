@@ -434,9 +434,20 @@ const closeDeleteModal = () => {
   projectToDelete.value = null;
 };
 
-const deleteProjectConfirmed = async () => {
-  if (!projectToDelete.value) return;
+const deleteProjectConfirmed = async (success: boolean) => {
+  const projectName = projectToDelete.value?.nombre_proyecto || '';
   
+  // Si ya se manejó exitosamente en el modal, solo limpiamos el estado
+  if (success) {
+    // Limpiar referencia al proyecto antes de cualquier otra operación
+    projectToDelete.value = null;
+    
+    // Recargar la lista de proyectos
+    await fetchProjects();
+    return;
+  }
+  
+  // Este código solo se ejecuta si el modal reporta una eliminación fallida
   try {
     operationLoading.value = true;
     operationMessage.value = 'Eliminando proyecto...';
@@ -446,6 +457,13 @@ const deleteProjectConfirmed = async () => {
     // Pequeña pausa antes de recargar los proyectos
     await new Promise(resolve => setTimeout(resolve, 300));
     
+    // Mostrar mensaje de éxito
+    showSuccessMessage(`El proyecto ${projectName} ha sido eliminado exitosamente`);
+    
+    // Limpiamos la referencia al proyecto antes de recargar datos
+    projectToDelete.value = null;
+    
+    // Recargar proyectos
     await fetchProjects();
   } catch (err: any) {
     error.value = `Error al eliminar proyecto: ${err.message || 'Inténtalo de nuevo'}`;
