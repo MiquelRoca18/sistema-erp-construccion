@@ -146,12 +146,11 @@
               <p><strong>Fin:</strong> {{ task.fecha_fin }}</p>
             </div>
             <!-- Para "Tareas de otros": se muestra el nombre del empleado asignado -->
-            <div v-else class="mt-2">
+            <div v-if="selectedTaskType === 'otros'" class="mt-2">
               <p class="text-sm text-gray-600 dark:text-gray-300">
                 <strong>Asignado a:</strong> {{ task.nombre_empleado }}
               </p>
             </div>
-          </div>
         </div>
 
         <!-- Espacios vacíos para completar el grid -->
