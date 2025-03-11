@@ -120,9 +120,20 @@ class BaseModel {
         $query = 'DELETE FROM ' . $this->table . ' WHERE ' . $this->table . '_id = :id';
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':id', $id);
-        $stmt->execute();
-
-        return $stmt->rowCount() > 0;
+        try {
+            $stmt->execute();
+            // Verificar explícitamente si el registro existía
+            $rowCount = $stmt->rowCount();
+            if ($rowCount === 0) {
+                // Si no se eliminó ninguna fila, significa que el registro no existía
+                return false;
+            }
+            return true;
+        } catch (\PDOException $e) {
+            // Log del error si es necesario
+            error_log('Error al eliminar registro: ' . $e->getMessage());
+            return false;
+        }
     }
     
     // Buscar registros genéricos

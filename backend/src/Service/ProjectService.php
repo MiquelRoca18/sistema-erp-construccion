@@ -124,11 +124,6 @@ class ProjectService extends BaseService {
             return $error;
         }
     
-        // Validar existencia del proyecto
-        if ($error = $this->validateExists($projectId)) {
-            return $error;
-        }
-    
         try {
             $db = $this->model->getDb();
             $db->beginTransaction();
@@ -164,8 +159,12 @@ class ProjectService extends BaseService {
                 $db->commit();
                 return $this->responseDeleted('Proyecto eliminado con todas sus dependencias');
             } else {
+                // Si $result es false, significa que el proyecto ya no existía
                 $db->rollBack();
-                return $this->responseError('No se pudo eliminar el proyecto');
+                return [
+                    'status' => 404, 
+                    'message' => 'El proyecto ya no existe o fue eliminado previamente'
+                ];
             }
         } catch (\Exception $e) {
             if ($db->inTransaction()) {
