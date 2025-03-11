@@ -63,10 +63,10 @@ const closeModal = () => {
 
 const confirmDelete = async () => {
   loading.value = true;
-  // Cerrar el modal inmediatamente
-  emit('close');
+  errorMessage.value = '';
   
-  loading.value = true;
+  // Cerramos el modal inmediatamente después de presionar "Eliminar"
+  closeModal();
   
   try {
     // Agregamos un pequeño retraso mínimo para mejor UX

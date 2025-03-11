@@ -236,7 +236,7 @@
           {{ error }}
         </div>
         <button 
-        @click="() => fetchEmployees(true)" 
+          @click="fetchEmployees" 
           class="mt-2 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm flex items-center"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -336,7 +336,7 @@ const showErrorMessage = (message: string) => {
   }, 3000);
 };
 
-const fetchEmployees = async (forceRefresh = false) => {
+const fetchEmployees = async () => {
   error.value = '';
   loading.value = true;
   
@@ -344,8 +344,7 @@ const fetchEmployees = async (forceRefresh = false) => {
     // Implementamos un timeout mínimo para evitar parpadeos en conexiones rápidas
     const startTime = Date.now();
     
-    // Pasar el parámetro forceRefresh a la función getEmployees
-    const data = await getEmployees(forceRefresh);
+    const data = await getEmployees();
     
     // Aseguramos que el loader se muestre por al menos 500ms para mejor UX
     const elapsedTime = Date.now() - startTime;
@@ -451,37 +450,20 @@ const closeDeleteModal = () => {
   employeeToDelete.value = null;
 };
 
+// Manejadores para las acciones que resetean la paginación a la página 1
 const handleEmployeeCreated = async () => {
-  // Agregar un pequeño retardo para permitir que la API actualice sus datos
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  // Forzar una actualización completa desde la API
-  await fetchEmployees(true);
-  
-  // Volver a la primera página
+  await fetchEmployees();
   currentPage.value = 1;
 };
 
 const handleEmployeeUpdated = async () => {
-  // Agregar un pequeño retardo para permitir que la API actualice sus datos
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  // Forzar una actualización completa desde la API
-  await fetchEmployees(true);
+  await fetchEmployees();
+  currentPage.value = 1;
 };
 
 const handleEmployeeDeleted = async () => {
-  // Agregar un pequeño retardo para permitir que la API actualice sus datos
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  // Forzar una actualización completa desde la API
-  await fetchEmployees(true);
-  
-  // Si estamos en una página que ya no existe después de eliminar,
-  // volver a la última página disponible
-  if (currentPage.value > totalPages.value && totalPages.value > 0) {
-    currentPage.value = totalPages.value;
-  }
+  await fetchEmployees();
+  currentPage.value = 1;
 };
 
 // Limpieza del timer cuando el componente se desmonta

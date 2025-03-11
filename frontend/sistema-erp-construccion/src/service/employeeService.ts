@@ -3,22 +3,17 @@ import { setLocalStorageWithExpiry, getLocalStorageWithExpiry } from '@/utils';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const getEmployees = async (forceRefresh = false) => {
+export const getEmployees = async () => {
   try {
-    // Si forceRefresh es true, ignorar la caché
-    if (forceRefresh) {
-      localStorage.removeItem('employees-cache');
-    }
-    
     // Comprobar si hay datos en caché
     const cachedData = getLocalStorageWithExpiry('employees-cache');
     
-    // Usar caché si existe y no se forzó una actualización
-    if (cachedData && !forceRefresh) {
+    // Usar caché si existe
+    if (cachedData) {
       return cachedData;
     }
     
-    // Si no hay caché o se forzó actualización, hacer la solicitud HTTP
+    // Si no hay caché, hacer la solicitud HTTP
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No se encontró el token.');
     
