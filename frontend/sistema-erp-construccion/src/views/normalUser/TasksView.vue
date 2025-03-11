@@ -304,15 +304,17 @@ const fetchTasks = async () => {
 
   try {
     let response;
-    
+
+    // Invalidar la caché relevante cuando se cambia el tipo de tarea
     if (selectedTaskType.value === 'otros') {
+      localStorage.removeItem(`responsible-tasks-${employeeId.value}`);
       response = await getTasksByResponsible(employeeId.value);
     } else {
+      localStorage.removeItem(`all-tasks-${employeeId.value}`);
       response = await getAllTasks(employeeId.value);
     }
     
-    // Forzar reactividad haciendo una copia profunda de los datos
-    tasks.value = JSON.parse(JSON.stringify(response));
+    tasks.value = response;
   } catch (err) {
     console.error('Error al cargar las tareas:', err);
     error.value = err.message || 'Error al obtener las tareas. Por favor, intente nuevamente.';
