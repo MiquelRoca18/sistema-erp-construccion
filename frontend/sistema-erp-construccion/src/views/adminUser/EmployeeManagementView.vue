@@ -452,16 +452,19 @@ const closeDeleteModal = () => {
 
 // Manejadores para las acciones que resetean la paginación a la página 1
 const handleEmployeeCreated = async () => {
+  closeModal(); // Cierra explícitamente el modal
   await fetchEmployees();
   currentPage.value = 1;
 };
 
 const handleEmployeeUpdated = async () => {
+  closeEditModal(); // Cierra explícitamente el modal
   await fetchEmployees();
   currentPage.value = 1;
 };
 
 const handleEmployeeDeleted = async () => {
+  closeDeleteModal(); // Cierra explícitamente el modal
   await fetchEmployees();
   currentPage.value = 1;
 };

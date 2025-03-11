@@ -159,10 +159,10 @@ const closeModal = () => {
 
 const handleSubmit = async () => {
   errorMessage.value = '';
-  loading.value = true;
+  // Cerrar el modal inmediatamente
+  emit('close');
   
-  // Cerramos el modal inmediatamente después de presionar "Guardar Cambios"
-  closeModal();
+  loading.value = true;
   
   try {
     // Añadimos un tiempo mínimo para mostrar el loader

@@ -134,10 +134,9 @@ const closeModal = () => {
 
 const handleSubmit = async () => {
   errorMessage.value = '';
-  loading.value = true;
+  emit('close');
   
-  // Cerramos el modal inmediatamente después de presionar "Crear"
-  closeModal();
+  loading.value = true;
   
   try {
     // Añadimos un tiempo mínimo para la carga
