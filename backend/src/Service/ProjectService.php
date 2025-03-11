@@ -124,56 +124,68 @@ class ProjectService extends BaseService {
             return $error;
         }
     
+        // Validar existencia del proyecto
+        if ($error = $this->validateExists($projectId)) {
+            return $error;
+        }
+    
         try {
             $db = $this->model->getDb();
             $db->beginTransaction();
-    
-            // 1. Eliminar las asociaciones de empleados en tareas del proyecto
-            $sqlEliminarAsociacionesTareas = "
+            
+            // 1. Eliminar asociaciones de empleados con tareas del proyecto
+            $queryEmpleadosTareas = "
                 DELETE FROM empleados_tareas 
                 WHERE tareas_id IN (
                     SELECT tareas_id FROM tareas 
-                    WHERE proyectos_id = :projectId
+                    WHERE proyectos_id = :project_id
                 )
             ";
-            $stmtAsociacionesTareas = $db->prepare($sqlEliminarAsociacionesTareas);
-            $stmtAsociacionesTareas->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
-            $stmtAsociacionesTareas->execute();
-    
-            // 2. Eliminar tareas asociadas al proyecto
-            $sqlEliminarTareas = "DELETE FROM tareas WHERE proyectos_id = :projectId";
-            $stmtEliminarTareas = $db->prepare($sqlEliminarTareas);
-            $stmtEliminarTareas->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
-            $stmtEliminarTareas->execute();
-    
-            // 3. Eliminar presupuestos asociados al proyecto
-            $sqlEliminarPresupuestos = "DELETE FROM presupuestos WHERE proyectos_id = :projectId";
-            $stmtEliminarPresupuestos = $db->prepare($sqlEliminarPresupuestos);
-            $stmtEliminarPresupuestos->bindParam(':projectId', $projectId, \PDO::PARAM_INT);
-            $stmtEliminarPresupuestos->execute();
-    
-            // 4. Eliminar el proyecto
+            $stmtEmpleadosTareas = $db->prepare($queryEmpleadosTareas);
+            $stmtEmpleadosTareas->bindParam(':project_id', $projectId, \PDO::PARAM_INT);
+            $stmtEmpleadosTareas->execute();
+            
+            // 2. Eliminar tareas del proyecto
+            $queryTareas = "DELETE FROM tareas WHERE proyectos_id = :project_id";
+            $stmtTareas = $db->prepare($queryTareas);
+            $stmtTareas->bindParam(':project_id', $projectId, \PDO::PARAM_INT);
+            $stmtTareas->execute();
+            
+            // 3. Eliminar presupuestos del proyecto
+            $queryPresupuestos = "DELETE FROM presupuestos WHERE proyectos_id = :project_id";
+            $stmtPresupuestos = $db->prepare($queryPresupuestos);
+            $stmtPresupuestos->bindParam(':project_id', $projectId, \PDO::PARAM_INT);
+            $stmtPresupuestos->execute();
+            
+            // 4. Actualizar cualquier proyecto que tenga este proyecto como responsable a NULL
+            $queryActualizarProyectos = "
+                UPDATE proyectos 
+                SET responsable_id = NULL 
+                WHERE responsable_id = (
+                    SELECT responsable_id 
+                    FROM proyectos 
+                    WHERE proyectos_id = :project_id
+                )
+            ";
+            $stmtActualizarProyectos = $db->prepare($queryActualizarProyectos);
+            $stmtActualizarProyectos->bindParam(':project_id', $projectId, \PDO::PARAM_INT);
+            $stmtActualizarProyectos->execute();
+            
+            // 5. Finalmente eliminar el proyecto
             $result = $this->model->delete($projectId);
-    
+            
             if ($result) {
                 $db->commit();
-                return $this->responseDeleted('Proyecto eliminado con todas sus dependencias');
+                return $this->responseDeleted('Proyecto eliminado con éxito');
             } else {
-                // Si $result es false, significa que el proyecto ya no existía
                 $db->rollBack();
-                return [
-                    'status' => 404, 
-                    'message' => 'El proyecto ya no existe o fue eliminado previamente'
-                ];
+                return $this->responseError('No se pudo eliminar el proyecto');
             }
-        } catch (\Exception $e) {
+        } catch (\PDOException $e) {
             if ($db->inTransaction()) {
                 $db->rollBack();
             }
-            return [
-                'status' => 500, 
-                'message' => 'Error al eliminar el proyecto: ' . $e->getMessage()
-            ];
+            return $this->responseError('Error al eliminar el proyecto: ' . $e->getMessage());
         }
     }
     
