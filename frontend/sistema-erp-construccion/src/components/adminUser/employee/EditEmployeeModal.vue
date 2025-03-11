@@ -175,7 +175,7 @@ const handleSubmit = async () => {
     
     emit('updated');
     emit('showSuccess', `Empleado ${form.value.nombre} actualizado exitosamente`);
-    emit('close'); // Aseguramos que el modal se cierre después de la operación
+    emit('close'); 
   } catch (error: any) {
     console.error(error.message);
     emit('showError', error.message || 'Error al actualizar empleado');

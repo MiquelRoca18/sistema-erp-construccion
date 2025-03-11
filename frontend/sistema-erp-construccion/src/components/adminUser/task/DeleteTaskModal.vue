@@ -85,12 +85,11 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['close', 'deleted']);
+const emit = defineEmits(['close', 'deleted', 'showSuccess', 'showError']);
 const errorMessage = ref('');
 const loading = ref(false);
 
 const closeModal = () => {
-  if (loading.value) return;
   emit('close');
 };
 
@@ -113,6 +112,8 @@ const confirmDeletion = async () => {
     }
     
     emit('deleted');
+    emit('showSuccess', `La tarea ${props.task.nombre_tarea} ha sido eliminada exitosamente`);
+    emit('close'); 
   } catch (error: any) {
     console.error('Error al eliminar la tarea:', error.message);
     errorMessage.value = error.message || 'Error al eliminar la tarea';

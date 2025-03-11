@@ -95,7 +95,7 @@
           </button>
           <button 
             type="submit" 
-            class="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300 text-sm min-w-[90px] flex items-center justify-center"
+            class="px-4 py-2 bg-orange-600 dark:bg-orange-500 text-white rounded hover:bg-orange-700 dark:hover:bg-orange-600 transition-colors duration-300 text-sm min-w-[90px] flex items-center justify-center"
             :disabled="loading"
           >
             <span v-if="loading">

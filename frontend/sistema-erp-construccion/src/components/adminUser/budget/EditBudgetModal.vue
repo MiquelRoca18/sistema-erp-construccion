@@ -113,7 +113,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['close', 'updated']);
+const emit = defineEmits(['close', 'updated', 'showSuccess', 'showError']);
 
 const form = ref({
   proyectos_id: '',
@@ -135,8 +135,6 @@ onMounted(() => {
 });
 
 const closeModal = () => {
-  // No permitir cerrar el modal durante el envío
-  if (isSubmitting.value) return;
   emit('close');
 };
 
@@ -153,6 +151,7 @@ const handleSubmit = async () => {
     await Promise.all([updatePromise, minDelay]);
     
     emit('updated');
+    emit('showSuccess', `Presupuesto del proyecto con ID ${form.value.proyectos_id} actualizado exitosamente`);
     emit('close');
   } catch (error: any) {
     errorMessage.value = error.message || 'Error al actualizar presupuesto';

@@ -173,7 +173,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['close', 'updated']);
+const emit = defineEmits(['close', 'updated', 'showSuccess', 'showError']);
 
 const form = ref({
   nombre_tarea: '',
@@ -226,6 +226,7 @@ const handleSubmit = async () => {
     
     await updateTask(props.task.tareas_id, payload);
     emit('updated');
+    emit('showSuccess', `Tarea ${form.value.nombre_tarea} actualizada exitosamente`);
     close();
   } catch (error: any) {
     console.error('Error al actualizar la tarea:', error.message);

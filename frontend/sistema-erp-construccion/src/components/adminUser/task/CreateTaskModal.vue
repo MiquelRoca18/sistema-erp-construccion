@@ -120,7 +120,7 @@ import { ref, onMounted } from 'vue';
 import { createTask } from '@/service/taskService';
 import { getProjects } from '@/service/projectService';
 
-const emit = defineEmits(['close', 'created']);
+const emit = defineEmits(['close', 'created', 'showSuccess', 'showError']);
 
 const form = ref({
   nombre_tarea: '',
@@ -145,6 +145,7 @@ const handleSubmit = async () => {
     errorMessage.value = '';
     await createTask(form.value);
     emit('created');
+    emit('showSuccess', `Tarea ${form.value.nombre_tarea} creada exitosamente`);
     closeModal();
   } catch (error: any) {
     console.error('Error al crear la tarea:', error.message);
