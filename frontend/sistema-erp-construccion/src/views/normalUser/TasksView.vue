@@ -296,7 +296,6 @@ watch(() => route.query.status, (newStatus) => {
 
 // Función para obtener tareas según el filtro de tipo con control de estado de carga
 const fetchTasks = async () => {
-  // Evita múltiples solicitudes simultáneas
   if (isFetching.value) return;
   
   isFetching.value = true;
@@ -305,11 +304,18 @@ const fetchTasks = async () => {
 
   try {
     let response;
+    console.log('Selected Task Type:', selectedTaskType.value);
+    console.log('Employee ID:', employeeId.value);
+
     if (selectedTaskType.value === 'otros') {
+      console.log('Fetching tasks by responsible');
       response = await getTasksByResponsible(employeeId.value);
     } else {
+      console.log('Fetching all tasks');
       response = await getAllTasks(employeeId.value);
     }
+    
+    console.log('Fetched Tasks:', response);
     tasks.value = response;
   } catch (err) {
     console.error('Error al cargar las tareas:', err);
