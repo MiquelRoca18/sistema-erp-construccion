@@ -150,6 +150,12 @@
               <p class="text-sm text-gray-600 dark:text-gray-300">
                 <strong>Asignado a:</strong> {{ task.nombre_empleado }}
               </p>
+              <div class="text-xs text-red-500">
+                <p>Debug - taskType: {{ selectedTaskType }}</p>
+                <p>Debug - task keys: {{ Object.keys(task).join(', ') }}</p>
+                <p>Debug - nombre_empleado exists: {{ task.hasOwnProperty('nombre_empleado') }}</p>
+                <p>Debug - value: "{{ task.nombre_empleado }}"</p>
+              </div>
             </div>
           </div>
         </div>
