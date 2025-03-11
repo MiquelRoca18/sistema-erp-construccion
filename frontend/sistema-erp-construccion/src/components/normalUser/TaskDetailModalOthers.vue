@@ -173,10 +173,12 @@ onMounted(() => {
   setTimeout(() => {
     isLoading.value = false;
   }, 300);
+
+  // Mostrar por consola toda la información de la tarea
+  console.log('Información completa de la tarea:', props.task);
 });
 
 watch(() => props.task, (newTask) => {
-  console.log('Nueva tarea:', newTask);
   updatedNombreTarea.value = newTask.nombre_tarea;
   updatedStatus.value = newTask.estado;
   updatedDescripcion.value = newTask.descripcion;
