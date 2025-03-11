@@ -56,17 +56,14 @@ const emit = defineEmits(['close', 'deleted', 'showSuccess', 'showError']);
 const loading = ref(false);
 const errorMessage = ref('');
 
+// Modificamos esta función para permitir cerrar siempre el modal
 const closeModal = () => {
-  if (loading.value) return;
   emit('close');
 };
 
 const confirmDelete = async () => {
   loading.value = true;
   errorMessage.value = '';
-  
-  // Cerramos el modal inmediatamente después de presionar "Eliminar"
-  closeModal();
   
   try {
     // Agregamos un pequeño retraso mínimo para mejor UX
@@ -82,6 +79,7 @@ const confirmDelete = async () => {
     
     emit('deleted');
     emit('showSuccess', `El empleado ${props.employee.nombre} ha sido eliminado exitosamente`);
+    emit('close'); // Aseguramos que el modal se cierre después de la operación
   } catch (error: any) {
     console.error(error.message);
     emit('showError', error.message || 'Error al eliminar empleado');

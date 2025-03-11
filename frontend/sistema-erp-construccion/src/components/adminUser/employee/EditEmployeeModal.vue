@@ -152,17 +152,14 @@ watch(() => props.employee, () => {
   initializeForm();
 });
 
+// Modificamos esta función para permitir cerrar siempre el modal
 const closeModal = () => {
-  if (loading.value) return; 
   emit('close');
 };
 
 const handleSubmit = async () => {
   errorMessage.value = '';
   loading.value = true;
-  
-  // Cerramos el modal inmediatamente después de presionar "Guardar Cambios"
-  closeModal();
   
   try {
     // Añadimos un tiempo mínimo para mostrar el loader
@@ -178,6 +175,7 @@ const handleSubmit = async () => {
     
     emit('updated');
     emit('showSuccess', `Empleado ${form.value.nombre} actualizado exitosamente`);
+    emit('close'); // Aseguramos que el modal se cierre después de la operación
   } catch (error: any) {
     console.error(error.message);
     emit('showError', error.message || 'Error al actualizar empleado');
