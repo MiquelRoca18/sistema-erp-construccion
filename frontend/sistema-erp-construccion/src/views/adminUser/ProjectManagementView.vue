@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col justify-center items-center min-h-screen p-8 transition-colors duration-300">
-    <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
+  <div class="flex flex-col justify-center items-center min-h-screen p-4 md:p-8 transition-colors duration-300">
+    <div class="w-full max-w-5xl mx-auto bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
       <!-- Encabezado -->
-      <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center sm:text-left mb-4 sm:mb-0 transition-colors duration-300">
+      <div class="flex flex-col sm:flex-row items-center justify-between mb-4 md:mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white text-center sm:text-left mb-3 sm:mb-0 transition-colors duration-300">
           Gestión de Proyectos
         </h1>
         <button
           @click="openCreateModal"
-          class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300"
+          class="px-3 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 transition-colors duration-300 text-sm"
           :disabled="loading"
         >
           <span v-if="!loading">Nuevo Proyecto</span>
@@ -22,198 +22,83 @@
         </button>
       </div>
   
-      <!-- Mensaje de éxito -->
-      <div 
-        v-if="successMessage" 
-        class="mb-6 p-4 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-lg text-green-700 dark:text-green-300 flex items-center justify-between fade-in-out"
-      >
-        <div class="flex items-center">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-          </svg>
-          {{ successMessage }}
-        </div>
-        <button @click="successMessage = ''" class="text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Mensaje de error -->
-      <div 
-        v-if="errorMessage" 
-        class="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300 flex items-center justify-between fade-in-out"
-      >
-        <div class="flex items-center">
-          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-          </svg>
-          {{ errorMessage }}
-        </div>
-        <button @click="errorMessage = ''" class="text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-      
       <!-- Filtro -->
-      <div class="mb-6">
+      <div class="mb-4 md:mb-6">
         <input
           type="text"
           v-model="searchTerm"
           placeholder="Buscar por nombre de proyecto..."
-          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400 dark:focus:ring-green-500 transition-colors duration-300"
+          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400 dark:focus:ring-green-500 transition-colors duration-300 text-sm"
           :disabled="loading"
         />
       </div>
   
       <!-- Loader principal para la carga inicial -->
-      <div v-if="loading" class="flex flex-col items-center justify-center py-12">
+      <div v-if="loading" class="flex flex-col items-center justify-center py-8">
         <div class="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
         <p class="text-gray-600 dark:text-gray-300 text-center">Cargando proyectos...</p>
       </div>
 
+      <!-- Tabla Responsiva -->
       <div v-else>
-        <!-- Vista Mobile: Card view -->
-        <div class="md:hidden">
-          <div
-            v-for="project in paginatedProjects"
-            :key="project.proyectos_id"
-            class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors duration-300"
-            @click="openViewModal(project)"
-          >
-            <div>
-              <p class="text-base font-medium text-green-600 dark:text-green-400">{{ project.nombre_proyecto }}</p>
-              <p class="text-sm text-gray-600 dark:text-gray-300">Estado: {{ project.estado }}</p>
-            </div>
-            <!-- Botones para editar y eliminar -->
-            <div class="mt-2 flex space-x-2">
-              <button
-                @click.stop="openEditModal(project)"
-                class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
-              >
-                Editar
-              </button>
-              <button
-                @click.stop="openDeleteModal(project)"
-                class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-sm"
-              >
-                Eliminar
-              </button>
-            </div>
-          </div>
-          <div v-if="paginatedProjects.length === 0" class="text-center text-gray-500 dark:text-gray-400">
-            No se encontraron proyectos.
-          </div>
-          <!-- Divs vacíos para mantener el espacio de 5 elementos -->
-          <div v-for="n in missingRows" :key="'empty-' + n" class="h-20"></div>
-        </div>
-
-        <!-- Vista Desktop: Tabla -->
-        <div class="hidden md:block overflow-x-auto">
-          <table class="min-w-full">
-            <thead>
-              <tr class="bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 text-green-800 dark:text-green-200">
-                <th class="px-6 py-3 text-left font-semibold">ID</th>
-                <th class="px-6 py-3 text-left font-semibold">Nombre</th>
-                <th class="px-6 py-3 text-left font-semibold hidden lg:table-cell">Estado</th>
-                <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell whitespace-nowrap">Inicio</th>
-                <th class="px-6 py-3 text-left font-semibold hidden xl:table-cell whitespace-nowrap">Fin</th>
-                <th class="px-6 py-3 text-left font-semibold">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="project in paginatedProjects"
-                :key="project.proyectos_id"
-                class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-green-50 dark:hover:bg-green-900/30"
-                @click="openViewModal(project)"
-              >
-                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ project.proyectos_id }}</td>
-                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ project.nombre_proyecto }}</td>
-                <td class="px-6 py-4 hidden lg:table-cell text-gray-800 dark:text-gray-200">{{ project.estado }}</td>
-                <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap text-gray-800 dark:text-gray-200">{{ project.fecha_inicio }}</td>
-                <td class="px-6 py-4 hidden xl:table-cell whitespace-nowrap text-gray-800 dark:text-gray-200">{{ project.fecha_fin }}</td>
-                <td class="px-6 py-4">
-                  <div class="flex flex-col md:flex-row gap-1 md:gap-2" @click.stop>
-                    <button
-                      @click="openEditModal(project)"
-                      class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs md:text-sm"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      @click="openDeleteModal(project)"
-                      class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-xs md:text-sm"
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr v-if="paginatedProjects.length === 0">
-                <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                  No se encontraron proyectos.
-                </td>
-              </tr>
-              <!-- Filas vacías para mantener 5 filas siempre -->
-              <tr
-                v-for="n in missingRows"
-                :key="'empty-' + n"
-                class="h-20 bg-transparent"
-              >
-                <td class="px-6 py-4" colspan="6"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-  
-      <!-- Paginación -->
-      <div v-if="!loading && totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
-        <!-- Botón Anterior -->
-        <button 
-          @click="prevPage" 
-          :disabled="currentPage === 1 || loading"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-green-600 dark:bg-green-500 text-white hover:bg-green-700 dark:hover:bg-green-600 disabled:opacity-50 transition-colors duration-300"
+        <ResponsiveTable
+          :items="paginatedProjects"
+          :headers="tableHeaders"
+          headerClass="bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 text-green-800 dark:text-green-200"
+          :has-pagination="true"
+          :current-page="currentPage"
+          :total-pages="totalPages"
+          :mobile-properties="['nombre_proyecto', 'estado', 'fecha_inicio', 'fecha_fin']"
+          empty-message="No se encontraron proyectos."
+          @edit="openEditModal"
+          @delete="openDeleteModal"
+          @item-click="openViewModal"
+          @prev-page="prevPage"
+          @next-page="nextPage"
+          @go-to-page="goToPage"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-  
-        <!-- Botones Numerados -->
-        <div class="flex space-x-2">
-          <button 
-            v-for="page in pages" 
-            :key="page" 
-            @click="goToPage(page)" 
-            :disabled="loading"
-            class="w-10 h-10 rounded-full border border-green-600 dark:border-green-500 flex items-center justify-center transition-colors duration-300 font-medium"
-            :class="page === currentPage 
-              ? 'bg-green-600 dark:bg-green-500 text-white' 
-              : 'bg-white dark:bg-gray-800 text-green-600 dark:text-green-400 hover:bg-green-600 dark:hover:bg-green-500 hover:text-white'"
-          >
-            <span>{{ page }}</span>
-          </button>
-        </div>
-  
-        <!-- Botón Siguiente -->
-        <button 
-          @click="nextPage" 
-          :disabled="currentPage === totalPages || loading"
-          class="flex items-center justify-center w-10 h-10 rounded-full bg-green-600 dark:bg-green-500 text-white hover:bg-green-700 dark:hover:bg-green-600 disabled:opacity-50 transition-colors duration-300"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+          <!-- Personalización de celdas -->
+          <template #cell-estado="{ value }">
+            <span 
+              class="px-2 py-1 rounded-full text-xs font-medium" 
+              :class="{
+                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200': value === 'pendiente',
+                'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200': value === 'en progreso',
+                'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200': value === 'finalizado'
+              }"
+            >
+              {{ value }}
+            </span>
+          </template>
+          
+          <!-- Personalización de elementos para móvil -->
+          <template #mobile-item="{ item }">
+            <div class="flex flex-col">
+              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ item.nombre_proyecto }}</h3>
+              <div class="flex items-center mt-1">
+                <span class="text-xs mr-1">Estado:</span>
+                <span 
+                  class="px-2 py-0.5 rounded-full text-xs" 
+                  :class="{
+                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200': item.estado === 'pendiente',
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200': item.estado === 'en progreso',
+                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200': item.estado === 'finalizado'
+                  }"
+                >
+                  {{ item.estado }}
+                </span>
+              </div>
+              <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <p>Inicio: {{ formatDate(item.fecha_inicio) }}</p>
+                <p v-if="item.fecha_fin">Fin: {{ formatDate(item.fecha_fin) }}</p>
+              </div>
+            </div>
+          </template>
+        </ResponsiveTable>
       </div>
   
       <!-- Error mensaje -->
-      <div v-if="error" class="mt-6 p-4 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-center flex items-center justify-center">
+      <div v-if="error" class="mt-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-center flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
@@ -225,8 +110,6 @@
         v-if="showCreateModal" 
         @close="closeCreateModal" 
         @created="fetchProjects" 
-        @showSuccess="showSuccessMessage"
-        @showError="showErrorMessage"
       />
 
       <EditProjectModal 
@@ -234,8 +117,6 @@
         :project="projectToEdit" 
         @close="closeEditModal" 
         @updated="fetchProjects" 
-        @showSuccess="showSuccessMessage"
-        @showError="showErrorMessage"
       />
 
       <DeleteProjectModal 
@@ -243,14 +124,12 @@
         :project="projectToDelete" 
         @close="closeDeleteModal" 
         @deleted="deleteProjectConfirmed" 
-        @showSuccess="showSuccessMessage"
-        @showError="showErrorMessage"
       />
 
       <ProjectDetailsModal 
         v-if="projectToView" 
         :project="projectToView" 
-        @close="closeViewModal"
+        @close="closeViewModal" 
       />
 
       <!-- Loader de operaciones -->
@@ -274,6 +153,7 @@ import CreateProjectModal from '@/components/adminUser/project/CreateProjectModa
 import EditProjectModal from '@/components/adminUser/project/EditProjectModal.vue';
 import DeleteProjectModal from '@/components/adminUser/project/DeleteProjectModal.vue';
 import ProjectDetailsModal from '@/components/adminUser/project/ProjectDetailsModal.vue';
+import ResponsiveTable from '@/components/ResponsiveTable.vue';
 
 const projects = ref<any[]>([]);
 const loading = ref(true);
@@ -287,48 +167,15 @@ const showCreateModal = ref(false);
 const projectToEdit = ref(null);
 const projectToDelete = ref(null);
 const projectToView = ref(null);
-const successMessage = ref('');
-const errorMessage = ref('');
 
-// Timer para el mensaje de éxito o error
-let messageTimer: ReturnType<typeof setTimeout> | null = null;
-
-const showSuccessMessage = (message: string) => {
-  // Limpiar el timer anterior si existe
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
-  
-  // Limpiar cualquier mensaje de error
-  errorMessage.value = '';
-  
-  // Mostrar el nuevo mensaje
-  successMessage.value = message;
-  
-  // Configurar un nuevo timer para ocultar el mensaje después de 3 segundos
-  messageTimer = setTimeout(() => {
-    successMessage.value = '';
-  }, 3000);
-};
-
-const showErrorMessage = (message: string) => {
-  // Limpiar el timer anterior si existe
-  if (messageTimer) {
-    clearTimeout(messageTimer);
-  }
-  
-  // Limpiar cualquier mensaje de éxito
-  successMessage.value = '';
-  
-  // Mostrar el nuevo mensaje de error
-  errorMessage.value = message;
-  
-  // Configurar un nuevo timer para ocultar el mensaje después de 3 segundos
-  messageTimer = setTimeout(() => {
-    errorMessage.value = '';
-  }, 3000);
-};
-
+// Definición de cabeceras para la tabla
+const tableHeaders = [
+  { key: 'proyectos_id', title: 'ID' },
+  { key: 'nombre_proyecto', title: 'Nombre' },
+  { key: 'estado', title: 'Estado', class: 'hidden lg:table-cell' },
+  { key: 'fecha_inicio', title: 'Inicio', class: 'hidden xl:table-cell whitespace-nowrap' },
+  { key: 'fecha_fin', title: 'Fin', class: 'hidden xl:table-cell whitespace-nowrap' }
+];
 
 const fetchProjects = async () => {
   try {
@@ -377,27 +224,6 @@ const paginatedProjects = computed(() => {
   return filteredProjects.value.slice(start, start + pageSize);
 });
 
-// Filas vacías para mantener 5 filas siempre
-const missingRows = computed(() => {
-  const missing = pageSize - paginatedProjects.value.length;
-  return missing > 0 ? missing : 0;
-});
-
-// Paginación: Limitar a 5 números de página
-const pages = computed(() => {
-  const total = totalPages.value;
-  const current = currentPage.value;
-  if (total <= 5) {
-    return Array.from({ length: total }, (_, i) => i + 1);
-  } else if (current <= 3) {
-    return [1, 2, 3, 4, 5];
-  } else if (current >= total - 2) {
-    return [total - 4, total - 3, total - 2, total - 1, total];
-  } else {
-    return [current - 2, current - 1, current, current + 1, current + 2];
-  }
-});
-
 const prevPage = () => {
   if (currentPage.value > 1) currentPage.value--;
 };
@@ -434,23 +260,9 @@ const closeDeleteModal = () => {
   projectToDelete.value = null;
 };
 
-const deleteProjectConfirmed = async (success: boolean) => {
-  const projectName = projectToDelete.value?.nombre_proyecto || '';
+const deleteProjectConfirmed = async () => {
+  if (!projectToDelete.value) return;
   
-  // Si ya se manejó exitosamente en el modal, solo limpiamos el estado
-  if (success) {
-    // Limpiar referencia al proyecto antes de cualquier otra operación
-    projectToDelete.value = null;
-    
-    // Redirigir a la página 1
-    currentPage.value = 1;
-    
-    // Recargar la lista de proyectos
-    await fetchProjects();
-    return;
-  }
-  
-  // Este código solo se ejecuta si el modal reporta una eliminación fallida
   try {
     operationLoading.value = true;
     operationMessage.value = 'Eliminando proyecto...';
@@ -460,16 +272,6 @@ const deleteProjectConfirmed = async (success: boolean) => {
     // Pequeña pausa antes de recargar los proyectos
     await new Promise(resolve => setTimeout(resolve, 300));
     
-    // Mostrar mensaje de éxito
-    showSuccessMessage(`El proyecto ${projectName} ha sido eliminado exitosamente`);
-    
-    // Limpiamos la referencia al proyecto antes de recargar datos
-    projectToDelete.value = null;
-    
-    // Redirigir a la página 1
-    currentPage.value = 1;
-    
-    // Recargar proyectos
     await fetchProjects();
   } catch (err: any) {
     error.value = `Error al eliminar proyecto: ${err.message || 'Inténtalo de nuevo'}`;
@@ -487,20 +289,11 @@ const openViewModal = (project: any) => {
 const closeViewModal = () => {
   projectToView.value = null;
 };
+
+// Formatear fechas para vista móvil
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return 'N/A';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString();
+};
 </script>
-  
-<style scoped>
-table {
-  border-collapse: separate;
-  border-spacing: 0 0.5rem;
-}
-thead tr th {
-  border: none;
-}
-tbody tr {
-  border-radius: 0.5rem;
-}
-tbody tr td {
-  border: none;
-}
-</style>
