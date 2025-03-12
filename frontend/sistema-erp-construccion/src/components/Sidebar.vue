@@ -50,28 +50,37 @@
                 <li>
                   <router-link 
                     to="/dashboard" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    📊 <span class="dark:text-gray-300">Dashboard Personal</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">📊</span>
+                      <span class="text-gray-800 dark:text-gray-200">Dashboard Personal</span>
+                    </span>
                   </router-link>
                 </li>
                 <li>
                   <router-link 
                     :to="{ path: `/tasks/${employeeId}`, query: { status: 'pendiente' } }" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    📝 <span class="dark:text-gray-300">Tareas Pendientes</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">📝</span>
+                      <span class="text-gray-800 dark:text-gray-200">Tareas Pendientes</span>
+                    </span>
                   </router-link>
                 </li>
                 <li>
                   <router-link 
                     :to="{ path: `/tasks/${employeeId}` }" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    📋 <span class="dark:text-gray-300">Tareas Generales</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">📋</span>
+                      <span class="text-gray-800 dark:text-gray-200">Tareas Generales</span>
+                    </span>
                   </router-link>
                 </li>
               </ul>
@@ -88,46 +97,61 @@
                 <li>
                   <router-link 
                     to="/dashboard-admin" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    🖥 <span class="dark:text-gray-300">Dashboard Admin</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">🖥</span>
+                      <span class="text-gray-800 dark:text-gray-200">Dashboard Admin</span>
+                    </span>
                   </router-link>
                 </li>
                 <li>
                   <router-link 
                     to="/employees-admin" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    👥 <span class="dark:text-gray-300">Empleados</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">👥</span>
+                      <span class="text-gray-800 dark:text-gray-200">Empleados</span>
+                    </span>
                   </router-link>
                 </li>
                 <li>
                   <router-link 
                     to="/projects" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    📁 <span class="dark:text-gray-300">Proyectos</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">📁</span>
+                      <span class="text-gray-800 dark:text-gray-200">Proyectos</span>
+                    </span>
                   </router-link>
                 </li>
                 <li>
                   <router-link 
                     to="/tasks-admin" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    📝 <span class="dark:text-gray-300">Tareas Generales</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">📝</span>
+                      <span class="text-gray-800 dark:text-gray-200">Tareas Generales</span>
+                    </span>
                   </router-link>
                 </li>
                 <li>
                   <router-link 
                     to="/budgets" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    💰 <span class="dark:text-gray-300">Presupuestos</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">💰</span>
+                      <span class="text-gray-800 dark:text-gray-200">Presupuestos</span>
+                    </span>
                   </router-link>
                 </li>
               </ul>
@@ -146,28 +170,37 @@
                 <li>
                   <router-link 
                     to="/dashboard" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    📊 <span class="dark:text-gray-300">Dashboard</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">📊</span>
+                      <span class="text-gray-800 dark:text-gray-200">Dashboard</span>
+                    </span>
                   </router-link>
                 </li>
                 <li>
                   <router-link 
                     :to="{ path: `/tasks/${employeeId}`, query: { status: 'pendiente' } }" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    📝 <span class="dark:text-gray-300">Tareas Pendientes</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">📝</span>
+                      <span class="text-gray-800 dark:text-gray-200">Tareas Pendientes</span>
+                    </span>
                   </router-link>
                 </li>
                 <li>
                   <router-link 
                     :to="{ path: `/tasks/${employeeId}` }" 
-                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition"
+                    class="block py-3 px-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition text-base"
                     @click="closeSidebar"
                   >
-                    📋 <span class="dark:text-gray-300">Tareas Generales</span>
+                    <span class="flex items-center">
+                      <span class="text-xl mr-2">📋</span>
+                      <span class="text-gray-800 dark:text-gray-200">Tareas Generales</span>
+                    </span>
                   </router-link>
                 </li>
               </ul>
