@@ -12,11 +12,11 @@
         <button 
           v-if="isAuthenticated" 
           @click="toggleSidebar" 
-          class="lg:hidden fixed top-4 right-4 z-50 flex items-center justify-center w-12 h-12 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-full shadow-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
+          class="lg:hidden fixed top-4 right-4 z-50 flex items-center justify-center w-10 h-10 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-full shadow-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
         >
           <svg 
             :class="{ 'rotate-90': sidebarOpen }"
-            class="w-7 h-7 transition-transform duration-300 ease-in-out"
+            class="w-6 h-6 transition-transform duration-300 ease-in-out"
             fill="none" 
             stroke="currentColor" 
             stroke-width="2" 
@@ -27,9 +27,11 @@
           </svg>
         </button>
 
-        <!-- Contenido principal -->
-        <div class="flex-1 p-6 pb-mobile-safe transition-colors duration-300 bg-gray-100 dark:bg-gray-900">
-          <router-view />
+        <!-- Contenido principal con ajustes de escala y viewportdisable -->
+        <div class="flex-1 p-4 md:p-6 transition-colors duration-300 bg-gray-100 dark:bg-gray-900">
+          <div class="responsive-container">
+            <router-view />
+          </div>
         </div>
       </div>
     </div>
@@ -66,7 +68,25 @@ onMounted(() => {
   } else {
     isDark.value = false;
   }
+
+  // Ajustar viewport para dispositivos móviles
+  updateViewportMeta();
+  window.addEventListener('resize', updateViewportMeta);
 });
+
+// Función para ajustar el meta viewport en dispositivos móviles
+const updateViewportMeta = () => {
+  const viewportMeta = document.querySelector('meta[name="viewport"]');
+  if (viewportMeta) {
+    if (window.innerWidth < 640) {
+      // Para dispositivos móviles, ajustar el viewport para mejor legibilidad
+      viewportMeta.setAttribute('content', 'width=device-width, initial-scale=0.85, maximum-scale=1.0, user-scalable=no');
+    } else {
+      // Para dispositivos más grandes, usar configuración estándar
+      viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
+    }
+  }
+};
 
 // Observar cambios en el modo oscuro
 watch(isDark, (newValue) => {
@@ -76,6 +96,11 @@ watch(isDark, (newValue) => {
     document.documentElement.classList.remove('dark');
   }
 });
+
+// Limpiar event listener al desmontar
+onUnmounted(() => {
+  window.removeEventListener('resize', updateViewportMeta);
+});
 </script>
 
 <style>
@@ -83,24 +108,43 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  -webkit-text-size-adjust: 100%;
 }
 
 #app {
   height: 100%;
 }
 
-/* Añadir padding para dispositivos móviles */
-@media screen and (max-width: 768px) {
-  .pb-mobile-safe {
-    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 60px));
+/* Contenedor responsive que se adapta a diferentes pantallas */
+.responsive-container {
+  width: 100%;
+  margin: 0 auto;
+  height: 100%;
+}
+
+/* Ajustes específicos para dispositivos móviles */
+@media screen and (max-width: 640px) {
+  .responsive-container {
+    overflow-x: hidden;
   }
   
-  /* Ajustes para iOS Safari */
-  @supports (-webkit-touch-callout: none) {
-    .min-h-screen {
-      /* Usar altura de la ventana gráfica móvil */
-      min-height: -webkit-fill-available;
-    }
+  /* Reducción de tamaño de fuentes para móviles */
+  h1 {
+    font-size: 95%;
+  }
+  h2 {
+    font-size: 95%;
+  }
+  p, div, span, button, a, input, select, textarea {
+    font-size: 92%;
+  }
+}
+
+/* Ajustes para iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    /* Usar altura de la ventana gráfica móvil */
+    min-height: -webkit-fill-available;
   }
 }
 </style>
