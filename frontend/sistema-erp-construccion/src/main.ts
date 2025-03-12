@@ -11,18 +11,18 @@ app.mount('#app');
 
 // Agregar meta viewport ajustado para mejor experiencia móvil
 const updateViewport = () => {
-  let viewportMeta = document.querySelector('meta[name="viewport"]');
+  let viewportMeta = document.querySelector('meta[name="viewport"]') as HTMLMetaElement;
   if (!viewportMeta) {
-    viewportMeta = document.createElement('meta');
-    viewportMeta.name = 'viewport';
+    viewportMeta = document.createElement('meta') as HTMLMetaElement;
+    viewportMeta.setAttribute('name', 'viewport');
     document.head.appendChild(viewportMeta);
   }
   
   // En dispositivos móviles, ajustar la escala inicial para mejorar la legibilidad
   if (window.innerWidth < 640) {
-    viewportMeta.content = 'width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=no';
+    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=0.9, maximum-scale=1.0, user-scalable=no');
   } else {
-    viewportMeta.content = 'width=device-width, initial-scale=1.0';
+    viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0');
   }
 };
 

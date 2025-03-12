@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, onUnmounted } from 'vue';
 import Sidebar from './components/Sidebar.vue';
 import { isAuthenticated } from '@/service/authStore';
 
