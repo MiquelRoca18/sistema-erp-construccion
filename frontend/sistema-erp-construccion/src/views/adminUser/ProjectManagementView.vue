@@ -74,23 +74,23 @@
           <!-- Personalización de elementos para móvil -->
           <template #mobile-item="{ item }">
             <div class="flex flex-col">
-              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ item.nombre_proyecto }}</h3>
+              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ (item as ProjectType).nombre_proyecto }}</h3>
               <div class="flex items-center mt-1">
                 <span class="text-xs mr-1">Estado:</span>
                 <span 
                   class="px-2 py-0.5 rounded-full text-xs" 
                   :class="{
-                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200': item.estado === 'pendiente',
-                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200': item.estado === 'en progreso',
-                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200': item.estado === 'finalizado'
+                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200': (item as ProjectType).estado === 'pendiente',
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200': (item as ProjectType).estado === 'en progreso',
+                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200': (item as ProjectType).estado === 'finalizado'
                   }"
                 >
-                  {{ item.estado }}
+                  {{ (item as ProjectType).estado }}
                 </span>
               </div>
               <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
-                <p>Inicio: {{ formatDate(item.fecha_inicio) }}</p>
-                <p v-if="item.fecha_fin">Fin: {{ formatDate(item.fecha_fin) }}</p>
+                <p>Inicio: {{ formatDate((item as ProjectType).fecha_inicio) }}</p>
+                <p v-if="(item as ProjectType).fecha_fin">Fin: {{ formatDate((item as ProjectType).fecha_fin) }}</p>
               </div>
             </div>
           </template>
@@ -155,7 +155,19 @@ import DeleteProjectModal from '@/components/adminUser/project/DeleteProjectModa
 import ProjectDetailsModal from '@/components/adminUser/project/ProjectDetailsModal.vue';
 import ResponsiveTable from '@/components/ResponsiveTable.vue';
 
-const projects = ref<any[]>([]);
+// Define the Project type interface
+interface ProjectType {
+  proyectos_id: number;
+  nombre_proyecto: string;
+  estado: string;
+  fecha_inicio: string;
+  fecha_fin: string | null;
+  descripcion?: string;
+  responsable_id?: number;
+  responsable_nombre?: string;
+}
+
+const projects = ref<ProjectType[]>([]);
 const loading = ref(true);
 const operationLoading = ref(false);
 const operationMessage = ref('Procesando...');
@@ -164,9 +176,9 @@ const searchTerm = ref('');
 const currentPage = ref(1);
 const pageSize = 5;
 const showCreateModal = ref(false);
-const projectToEdit = ref(null);
-const projectToDelete = ref(null);
-const projectToView = ref(null);
+const projectToEdit = ref<ProjectType | null>(null);
+const projectToDelete = ref<ProjectType | null>(null);
+const projectToView = ref<ProjectType | null>(null);
 
 // Definición de cabeceras para la tabla
 const tableHeaders = [
@@ -192,7 +204,7 @@ const fetchProjects = async () => {
       await new Promise(resolve => setTimeout(resolve, 500 - elapsedTime));
     }
     
-    projects.value = data;
+    projects.value = data as ProjectType[];
   } catch (err: any) {
     error.value = err.message || 'Error al obtener proyectos. Por favor, inténtalo de nuevo.';
     console.error('Error fetching projects:', err);
@@ -244,7 +256,7 @@ const closeCreateModal = () => {
   showCreateModal.value = false;
 };
 
-const openEditModal = (project: any) => {
+const openEditModal = (project: ProjectType) => {
   projectToEdit.value = project;
 };
 
@@ -252,7 +264,7 @@ const closeEditModal = () => {
   projectToEdit.value = null;
 };
 
-const openDeleteModal = (project: any) => {
+const openDeleteModal = (project: ProjectType) => {
   projectToDelete.value = project;
 };
 
@@ -282,7 +294,7 @@ const deleteProjectConfirmed = async () => {
   }
 };
 
-const openViewModal = (project: any) => {
+const openViewModal = (project: ProjectType) => {
   projectToView.value = project;
 };
 
