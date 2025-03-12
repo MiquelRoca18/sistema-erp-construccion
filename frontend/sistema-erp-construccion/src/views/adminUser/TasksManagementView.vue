@@ -160,25 +160,25 @@
           <!-- Personalización de elementos para móvil -->
           <template #mobile-item="{ item }">
             <div class="flex flex-col">
-              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ item.nombre_tarea }}</h3>
+              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ (item as Task).nombre_tarea }}</h3>
               <p class="text-sm text-gray-600 dark:text-gray-300">
-                Proyecto: {{ item.nombre_proyecto }}
+                Proyecto: {{ (item as Task).nombre_proyecto }}
               </p>
               <div class="flex items-center mt-1">
                 <span class="text-xs mr-1">Estado:</span>
                 <span 
                   class="px-2 py-0.5 rounded-full text-xs" 
                   :class="{
-                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200': item.estado === 'pendiente',
-                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200': item.estado === 'en progreso',
-                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200': item.estado === 'finalizado'
+                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200': (item as Task).estado === 'pendiente',
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200': (item as Task).estado === 'en progreso',
+                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200': (item as Task).estado === 'finalizado'
                   }"
                 >
-                  {{ item.estado }}
+                  {{ (item as Task).estado }}
                 </span>
               </div>
-              <p v-if="item.empleado_nombre" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Asignado a: {{ item.empleado_nombre }}
+              <p v-if="(item as Task).empleado_nombre" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Asignado a: {{ (item as Task).empleado_nombre }}
               </p>
             </div>
           </template>
@@ -240,17 +240,18 @@ import DeleteTaskModal from '@/components/adminUser/task/DeleteTaskModal.vue';
 import TaskViewModal from '@/components/adminUser/task/TaskViewModal.vue';
 import AssignEmployeesModal from '@/components/adminUser/employee/AssignEmployeesModal.vue';
 import ResponsiveTable from '@/components/ResponsiveTable.vue';
+import { Task } from '@/types/task';
 
-const tasks = ref<any[]>([]);
+const tasks = ref<Task[]>([]);
 const loading = ref(true);
 const error = ref('');
 const currentPage = ref(1);
 const pageSize = 5;
 const showModal = ref(false);
-const taskToEdit = ref(null);
-const taskToDelete = ref(null);
-const taskToView = ref(null);
-const taskToAssign = ref(null);
+const taskToEdit = ref<Task | null>(null);
+const taskToDelete = ref<Task | null>(null);
+const taskToView = ref<Task | null>(null);
+const taskToAssign = ref<Task | null>(null);
 
 const showFilter = ref(false);
 const filter = ref({
@@ -379,7 +380,7 @@ const closeModal = () => {
   showModal.value = false;
 };
 
-const openEditModal = (task: any) => {
+const openEditModal = (task: Task) => {
   taskToEdit.value = task;
 };
 
@@ -387,7 +388,7 @@ const closeEditModal = () => {
   taskToEdit.value = null;
 };
 
-const openDeleteModal = (task: any) => {
+const openDeleteModal = (task: Task) => {
   taskToDelete.value = task;
 };
 
@@ -410,7 +411,7 @@ const deleteTaskConfirmed = async () => {
   }
 };
 
-const openViewModal = (task: any) => {
+const openViewModal = (task: Task) => {
   taskToView.value = task;
 };
 
@@ -418,7 +419,7 @@ const closeViewModal = () => {
   taskToView.value = null;
 };
 
-const openAssignModal = (task: any) => {
+const openAssignModal = (task: Task) => {
   taskToAssign.value = task;
 };
 
