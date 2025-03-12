@@ -138,19 +138,19 @@
           <!-- Personalización de acciones -->
           <template #actions="{ item }">
             <button
-              @click="openEditModal(item)"
+              @click="openEditModal(item as Task)"
               class="px-2 py-1 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs"
             >
               Editar
             </button>
             <button
-              @click="openDeleteModal(item)"
+              @click="openDeleteModal(item as Task)"
               class="px-2 py-1 bg-red-500 dark:bg-red-600 text-white rounded-lg hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-xs"
             >
               Eliminar
             </button>
             <button
-              @click="openAssignModal(item)"
+              @click="openAssignModal(item as Task)"
               class="px-2 py-1 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300 text-xs"
             >
               Asignar
@@ -237,10 +237,10 @@ import { getAllCompanyTasks, deleteTask } from '@/service/taskService';
 import CreateTaskModal from '@/components/adminUser/task/CreateTaskModal.vue';
 import EditTaskModal from '@/components/adminUser/task/EditTaskModal.vue';
 import DeleteTaskModal from '@/components/adminUser/task/DeleteTaskModal.vue';
-import TaskViewModal from '@/components/adminUser/task/TaskViewModal.vue';
+import TaskViewModal from '@/components/adminUser/task/TaskViewModal.vue
 import AssignEmployeesModal from '@/components/adminUser/employee/AssignEmployeesModal.vue';
 import ResponsiveTable from '@/components/ResponsiveTable.vue';
-import { Task } from '@/types/task';
+import type { Task } from '@/types/task';
 
 const tasks = ref<Task[]>([]);
 const loading = ref(true);
