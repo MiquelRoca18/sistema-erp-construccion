@@ -237,7 +237,7 @@ import { getAllCompanyTasks, deleteTask } from '@/service/taskService';
 import CreateTaskModal from '@/components/adminUser/task/CreateTaskModal.vue';
 import EditTaskModal from '@/components/adminUser/task/EditTaskModal.vue';
 import DeleteTaskModal from '@/components/adminUser/task/DeleteTaskModal.vue';
-import TaskViewModal from '@/components/adminUser/task/TaskViewModal.vue
+import TaskViewModal from '@/components/adminUser/task/TaskViewModal.vue';
 import AssignEmployeesModal from '@/components/adminUser/employee/AssignEmployeesModal.vue';
 import ResponsiveTable from '@/components/ResponsiveTable.vue';
 import type { Task } from '@/types/task';
