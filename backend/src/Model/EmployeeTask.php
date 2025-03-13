@@ -137,15 +137,29 @@ class EmployeeTask {
 
     // Actualizar asignación de tarea a empleado
     public function updateAssignment($taskId, $oldEmployeeId, $newEmployeeId) {
-        $query = "UPDATE " . $this->table . " 
-                  SET empleados_id = :newEmployeeId 
-                  WHERE tareas_id = :taskId 
-                    AND empleados_id = :oldEmployeeId";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':newEmployeeId', $newEmployeeId, \PDO::PARAM_INT);
-        $stmt->bindParam(':taskId', $taskId, \PDO::PARAM_INT);
-        $stmt->bindParam(':oldEmployeeId', $oldEmployeeId, \PDO::PARAM_INT);
-        return $stmt->execute();
+        // Convertir explícitamente los IDs a enteros por seguridad
+        $taskId = (int)$taskId;
+        $oldEmployeeId = (int)$oldEmployeeId;
+        $newEmployeeId = (int)$newEmployeeId;
+        
+        try {
+            $query = "UPDATE " . $this->table . " 
+                      SET empleados_id = :newEmployeeId 
+                      WHERE tareas_id = :taskId 
+                        AND empleados_id = :oldEmployeeId";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':newEmployeeId', $newEmployeeId, \PDO::PARAM_INT);
+            $stmt->bindParam(':taskId', $taskId, \PDO::PARAM_INT);
+            $stmt->bindParam(':oldEmployeeId', $oldEmployeeId, \PDO::PARAM_INT);
+            $stmt->execute();
+            
+            // Verificar si realmente se actualizó alguna fila
+            $rowCount = $stmt->rowCount();
+            return $rowCount > 0;
+        } catch (\PDOException $e) {
+            error_log("Error en actualización de asignación: " . $e->getMessage());
+            return false;
+        }
     }
 }
 ?>

@@ -306,18 +306,14 @@ const fetchTasks = async (forceRefresh = false) => {
   try {
     loading.value = true;
     error.value = '';
-    
-    // Si forzamos el refresco, limpiamos todas las cachés primero
+    // Si forzamos el refresco, limpiamos la caché primero
     if (forceRefresh) {
       clearAllCaches();
     }
 
     // Simulamos un retardo mínimo para evitar parpadeos en cargas muy rápidas
     const startTime = Date.now();
-    
-    // Incluimos un timestamp para evitar cachés del navegador
-    const timestamp = new Date().getTime();
-    const data = await getAllCompanyTasks(`?t=${timestamp}`);
+    const data = await getAllCompanyTasks();
     
     // Aseguramos que el loader se muestre al menos por 500ms para evitar parpadeos
     const elapsedTime = Date.now() - startTime;
@@ -326,8 +322,6 @@ const fetchTasks = async (forceRefresh = false) => {
     }
     
     tasks.value = data;
-    
-    console.log("Tareas actualizadas:", data);
   } catch (err: any) {
     error.value = err.message || 'Error al obtener tareas';
     console.error('Error al cargar tareas:', err);

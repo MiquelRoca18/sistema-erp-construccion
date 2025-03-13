@@ -251,71 +251,64 @@ const handleSubmit = async () => {
   
   try {
     loading.value = true;
-    const finalAssignments = assignments.value;
+    const finalAssignments = assignments.value.map(id => Number(id)); // Convertir a números
+    const initialAssignmentNumbers = initialAssignments.value.map(id => Number(id)); // Convertir a números
     
-    // Si no hubo cambios, simplemente cerrar el modal
-    if (JSON.stringify(finalAssignments.slice().sort()) === JSON.stringify(initialAssignments.value.slice().sort())) {
-      emit('updated', true); // Forzar refresco incluso sin cambios
+    // Comparar después de convertir a números y ordenar
+    if (JSON.stringify(finalAssignments.slice().sort()) === JSON.stringify(initialAssignmentNumbers.slice().sort())) {
+      emit('updated');
       closeModal();
       return;
     }
     
+    // Simulamos un tiempo mínimo de carga para mejorar UX
     const startTime = Date.now();
     
-    // Enfoque más directo: eliminar todas las asignaciones y volver a crear
-    try {
-      console.log("Eliminando asignaciones existentes...");
-      // Eliminar todas las asignaciones actuales
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/employee-tasks/task/${props.task.tareas_id}/reset`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ nuevas_asignaciones: finalAssignments })
-      });
-      
-      if (!response.ok) {
-        throw new Error('Error al actualizar las asignaciones');
+    // Si el número de asignaciones es el mismo, y solo hay un cambio, se utiliza updateTaskAssignment
+    if (initialAssignments.value.length === finalAssignments.length) {
+      const differences = initialAssignmentNumbers.filter((id, i) => id !== finalAssignments[i]);
+      if(differences.length === 1) {
+        const indexChanged = initialAssignmentNumbers.findIndex((id, i) => id !== finalAssignments[i]);
+        const oldEmployeeId = initialAssignmentNumbers[indexChanged];
+        const newEmployeeId = finalAssignments[indexChanged];
+        await updateTaskAssignment(props.task.tareas_id, oldEmployeeId, newEmployeeId);
+      } else {
+        // En caso de múltiples diferencias, se procesa removiendo y agregando
+        const removals = initialAssignmentNumbers.filter(id => !finalAssignments.includes(id));
+        for (const id of removals) {
+          await removeEmployeeFromTask(id, props.task.tareas_id);
+        }
+        const additions = finalAssignments.filter(id => !initialAssignmentNumbers.includes(id));
+        for (const id of additions) {
+          await addEmployeeToTask(id, props.task.tareas_id);
+        }
       }
-    } catch (resetError) {
-      console.error("Error en reset, usando enfoque alternativo:", resetError);
-      
-      // Plan B: método manual
-      // Eliminar asignaciones existentes
-      for (const id of initialAssignments.value) {
+    } else {
+      // Si la cantidad cambió, se identifican las asignaciones a remover y las a agregar
+      const removals = initialAssignmentNumbers.filter(id => !finalAssignments.includes(id));
+      for (const id of removals) {
         await removeEmployeeFromTask(id, props.task.tareas_id);
       }
-      
-      // Agregar nuevas asignaciones
-      for (const id of finalAssignments) {
+      const additions = finalAssignments.filter(id => !initialAssignmentNumbers.includes(id));
+      for (const id of additions) {
         await addEmployeeToTask(id, props.task.tareas_id);
       }
     }
     
-    // UX mínima...
+    // Aseguramos que el loader se muestre al menos por 800ms para operaciones complejas
     const elapsedTime = Date.now() - startTime;
     if (elapsedTime < 800) {
       await new Promise(resolve => setTimeout(resolve, 800 - elapsedTime));
     }
     
-    // Limpiar TODAS las cachés relacionadas
-    clearTaskRelatedCaches();
-    
-    // Notificar al componente padre para forzar actualización
-    emit('updated', true);
-    
-    // Cerrar modal manualmente
+    emit('updated');
     closeModal();
-  } catch (error: any) {
-    console.error('Error al asignar empleados:', error);
+  } catch (error) {
+    console.error('Error al asignar empleados:', error.message);
     errorMessage.value = error.message || 'Error al asignar empleados';
-  } finally {
     loading.value = false;
   }
 };
-
-
 
 // También nos aseguramos de que closeModal funcione correctamente
 const closeModal = () => {

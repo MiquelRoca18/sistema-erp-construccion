@@ -115,10 +115,12 @@ class EmployeeTaskService extends BaseService {
         if (!$this->employeeModel->exists($newEmployeeId)) {
             return $this->responseError("El empleado con ID {$newEmployeeId} no existe.");
         }
+        
         // Verificar que la relación con el empleado a cambiar exista
         if (!$this->model->relationExists($oldEmployeeId, $taskId)) {
             return $this->responseError("La asignación para el empleado con ID {$oldEmployeeId} no existe para esta tarea.");
         }
+        
         // Verificar si la nueva asignación ya existe para esa tarea
         if ($this->model->relationExists($newEmployeeId, $taskId)) {
             $empData = $this->employeeModel->getById($newEmployeeId);
@@ -126,7 +128,15 @@ class EmployeeTaskService extends BaseService {
             return $this->responseError("El empleado '{$empName}' ya está asignado a esta tarea.");
         }
         
+        // Registrar información para depuración
+        error_log("Actualizando asignación: Tarea $taskId de empleado $oldEmployeeId a $newEmployeeId");
+        
         $result = $this->model->updateAssignment($taskId, $oldEmployeeId, $newEmployeeId);
+        
+        if (!$result) {
+            error_log("Error al actualizar asignación: Tarea $taskId de empleado $oldEmployeeId a $newEmployeeId");
+        }
+        
         return $result 
             ? $this->responseUpdated("Asignación actualizada exitosamente.") 
             : $this->responseError("No se pudo actualizar la asignación.");

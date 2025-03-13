@@ -144,18 +144,25 @@ class EmployeeTaskController extends BaseController {
             return;
         }
         
-        $response = $this->service->updateAssignment($taskId, $data->old_empleados_id, $data->new_empleados_id);
+        // Convertir explícitamente los IDs a enteros
+        $oldEmployeeId = intval($data->old_empleados_id);
+        $newEmployeeId = intval($data->new_empleados_id);
         
-        // Limpiar caché relacionada
+        $response = $this->service->updateAssignment($taskId, $oldEmployeeId, $newEmployeeId);
+        
+        // Limpiar caché relacionada de manera más exhaustiva
         if (function_exists('apcu_delete')) {
-            apcu_delete("employee_tasks_" . $data->old_empleados_id);
-            apcu_delete("employee_tasks_" . $data->new_empleados_id);
-            apcu_delete("employee_pending_tasks_" . $data->old_empleados_id . "_pendiente");
-            apcu_delete("employee_pending_tasks_" . $data->new_empleados_id . "_pendiente");
+            apcu_delete("employee_tasks_" . $oldEmployeeId);
+            apcu_delete("employee_tasks_" . $newEmployeeId);
+            apcu_delete("employee_pending_tasks_" . $oldEmployeeId . "_pendiente");
+            apcu_delete("employee_pending_tasks_" . $newEmployeeId . "_pendiente");
+            apcu_delete("employee_responsible_tasks_" . $oldEmployeeId);
+            apcu_delete("employee_responsible_tasks_" . $newEmployeeId);
             apcu_delete("task_employees_" . $taskId);
+            apcu_delete("tasks_all");
         }
         
         $this->sendResponse($response['status'], $response['message'], $response['data'] ?? null);
-    }    
+    }   
 }
 ?>
