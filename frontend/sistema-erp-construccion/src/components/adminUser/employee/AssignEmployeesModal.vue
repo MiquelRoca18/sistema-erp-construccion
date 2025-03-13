@@ -289,7 +289,8 @@ const handleSubmit = async () => {
   } catch (error: any) {
     console.error('Error al asignar empleados:', error.message);
     errorMessage.value = error.message || 'Error al asignar empleados';
-    loading.value = false;
+  } finally {
+    loading.value = false; 
   }
 };
 

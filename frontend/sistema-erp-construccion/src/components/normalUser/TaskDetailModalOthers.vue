@@ -104,7 +104,7 @@
             </div>
           </div>
     
-          <!-- Empleado asignado -->
+          <!-- Empleado asignado (Modificado para que se vea como Responsables) -->
           <div>
             <label class="block text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">Asignado a</label>
             
@@ -117,23 +117,33 @@
               <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Cargando empleados...</span>
             </div>
             
-            <select
-              v-else
-              v-model="selectedEmployeeId"
-              class="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500
-                    bg-white dark:bg-gray-700 text-xs sm:text-base text-gray-900 dark:text-gray-100"
-              :disabled="isSaving"
-            >
-              <option disabled value="" class="bg-white dark:bg-gray-700">Seleccione un empleado</option>
-              <option 
-                v-for="emp in employees" 
-                :key="emp.empleados_id" 
-                :value="emp.empleados_id"
-                class="bg-white dark:bg-gray-700"
-              >
-                {{ emp.nombre }}
-              </option>
-            </select>
+            <!-- Vista modificada para mostrar los empleados como chips -->
+            <div v-else>
+              <div class="mt-1 flex flex-wrap gap-1">
+                <span 
+                  v-for="emp in employees" 
+                  :key="emp.empleados_id"
+                  :class="[
+                    'inline-flex items-center px-2 py-0.5 rounded-full text-xs cursor-pointer',
+                    selectedEmployeeId === emp.empleados_id ? 
+                      'bg-orange-300 text-orange-800 dark:bg-orange-500 dark:text-orange-100 font-medium' : 
+                      'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-200'
+                  ]"
+                  @click="selectEmployee(emp.empleados_id)"
+                >
+                  {{ emp.nombre }}
+                  <svg v-if="selectedEmployeeId === emp.empleados_id" class="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </span>
+                <span v-if="employees.length === 0" class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm italic">
+                  No hay empleados disponibles
+                </span>
+              </div>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Seleccione un empleado haciendo clic en su nombre
+              </p>
+            </div>
           </div>
         </div>
     
@@ -245,6 +255,10 @@ watch(() => props.task, (newTask) => {
 const close = () => {
   if (isSaving.value) return;
   emit('close');
+};
+
+const selectEmployee = (employeeId) => {
+  selectedEmployeeId.value = employeeId;
 };
 
 const updateTask = async () => {
