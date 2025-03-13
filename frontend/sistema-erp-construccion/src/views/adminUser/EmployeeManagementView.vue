@@ -1,283 +1,360 @@
 <template>
-  <div class="flex flex-col justify-center items-center min-h-screen p-4 md:p-8 transition-colors duration-300">
-    <div class="w-full max-w-5xl mx-auto bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
-      <!-- Encabezado -->
-      <div class="flex flex-col sm:flex-row items-center justify-between mb-4 md:mb-6">
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white text-center sm:text-left mb-3 sm:mb-0 transition-colors duration-300">
-          Gestión de Empleados
-        </h1>
-        <button
-          @click="openModal"
-          :disabled="loading || loadingButton"
-          class="px-3 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center text-sm"
+  <div class="responsive-table-wrapper">
+    <!-- Vista para móviles: tarjetas -->
+    <div class="sm:hidden w-full space-y-3">
+      <slot name="mobile-content">
+        <!-- Contenido por defecto para móviles si no se proporciona slot -->
+        <div
+          v-for="(item, index) in items"
+          :key="index"
+          class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-3 cursor-pointer transition-colors duration-300"
+          @click="$emit('item-click', item)"
         >
-          <svg v-if="loadingButton" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Nuevo Empleado
-        </button>
-      </div>
-
-      <!-- Filtro -->
-      <div class="mb-4 md:mb-6">
-        <input
-          type="text"
-          v-model="searchTerm"
-          placeholder="Buscar por nombre..."
-          :disabled="loading"
-          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 transition-colors duration-300 disabled:opacity-70 disabled:cursor-not-allowed text-sm"
-        />
-      </div>
-
-      <!-- Estado de carga: Skeleton loader integrado -->
-      <div v-if="loading" class="animate-pulse">
-        <div class="space-y-3">
-          <!-- Skeleton para encabezado -->
-          <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-          
-          <!-- Skeleton para filas -->
-          <div v-for="i in 5" :key="`skeleton-row-${i}`" class="mt-2">
-            <div class="h-14 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-          </div>
-        </div>
-        <div class="text-center mt-4 text-sm text-gray-500 dark:text-gray-400">
-          Cargando empleados...
-        </div>
-      </div>
-
-      <!-- Tabla responsiva -->
-      <div v-else>
-        <ResponsiveTable
-          :items="paginatedEmployees"
-          :headers="tableHeaders"
-          headerClass="bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-800 dark:text-blue-200"
-          :has-pagination="true"
-          :current-page="currentPage"
-          :total-pages="totalPages"
-          :mobile-properties="['nombre', 'rol', 'telefono', 'correo']"
-          empty-message="No se encontraron empleados."
-          @edit="openEditModal"
-          @delete="openDeleteModal"
-          @prev-page="prevPage"
-          @next-page="nextPage"
-          @go-to-page="goToPage"
-        >
-          <!-- Personalización de elementos para móvil -->
-          <template #mobile-item="{ item }">
+          <slot name="mobile-item" :item="item">
             <div class="flex flex-col">
-              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ (item as EmployeeType).nombre }}</h3>
-              <p class="text-sm text-blue-600 dark:text-blue-400">{{ (item as EmployeeType).rol }}</p>
-              <div class="flex flex-col mt-1 text-xs text-gray-600 dark:text-gray-300">
-                <p>
-                  <span class="font-medium">Tel:</span> {{ (item as EmployeeType).telefono }}
-                </p>
-                <p>
-                  <span class="font-medium">Email:</span> {{ (item as EmployeeType).correo }}
-                </p>
+              <div v-for="(value, key) in getVisibleProperties(item)" :key="key" class="mb-1">
+                <span class="font-semibold text-gray-600 dark:text-gray-300">{{ formatHeader(key) }}: </span>
+                <span class="text-gray-800 dark:text-white">{{ value }}</span>
               </div>
             </div>
-          </template>
-        </ResponsiveTable>
-      </div>
+          </slot>
+          
+          <!-- Botones de acción -->
+          <div v-if="showActions" class="mt-3 flex justify-end space-x-2" @click.stop>
+            <slot name="actions" :item="item">
+              <button 
+                v-if="editAction"
+                @click="$emit('edit', item)" 
+                class="px-3 py-1 bg-blue-500 dark:bg-blue-600 text-white rounded hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-300 text-sm"
+              >
+                Editar
+              </button>
+              <button 
+                v-if="deleteAction"
+                @click="$emit('delete', item)" 
+                class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-sm"
+              >
+                Eliminar
+              </button>
+            </slot>
+          </div>
+        </div>
+      </slot>
+    </div>
 
-      <!-- Mensaje de error -->
-      <div v-if="error" class="mt-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg text-red-700 dark:text-red-300 flex items-center">
-        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+    <!-- Vista para escritorio: tabla -->
+    <div class="hidden sm:block overflow-x-auto">
+      <table class="min-w-full">
+        <thead>
+          <tr :class="headerClass || 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200'">
+            <th 
+              v-for="(header, index) in headers" 
+              :key="index" 
+              class="px-6 py-3 text-left font-semibold"
+              :class="getHeaderClass(header)"
+            >
+              {{ getHeaderTitle(header) }}
+            </th>
+            <th v-if="showActions" class="px-6 py-3 text-left font-semibold">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(item, index) in items"
+            :key="index"
+            class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 hover:bg-gray-50 dark:hover:bg-gray-600/30 transition-colors duration-300 cursor-pointer"
+            @click="$emit('item-click', item)"
+          >
+            <td 
+              v-for="(header, headerIndex) in headers" 
+              :key="headerIndex" 
+              class="px-6 py-4 text-gray-800 dark:text-gray-200"
+            >
+              <slot :name="`cell-${getHeaderKey(header)}`" :item="item" :header="header" :value="getItemValue(item, header)">
+                {{ getItemValue(item, header) }}
+              </slot>
+            </td>
+            <td v-if="showActions" class="px-6 py-4" @click.stop>
+              <div class="flex flex-wrap gap-2">
+                <slot name="actions" :item="item">
+                  <button 
+                    v-if="editAction"
+                    @click="$emit('edit', item)" 
+                    class="px-3 py-1 bg-blue-500 dark:bg-blue-600 text-white rounded hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-300 text-xs sm:text-sm"
+                  >
+                    Editar
+                  </button>
+                  <button 
+                    v-if="deleteAction"
+                    @click="$emit('delete', item)" 
+                    class="px-3 py-1 bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-300 text-xs sm:text-sm"
+                  >
+                    Eliminar
+                  </button>
+                </slot>
+              </div>
+            </td>
+          </tr>
+          <tr v-if="items.length === 0">
+            <td :colspan="showActions ? headers.length + 1 : headers.length" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+              {{ emptyMessage || 'No hay datos disponibles.' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Paginación -->
+    <div v-if="hasPagination && totalPages > 1" class="mt-6 flex items-center justify-center space-x-2">
+      <button 
+        @click="$emit('prev-page')" 
+        :disabled="currentPage === 1"
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50 transition-colors duration-300"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
-        {{ error }}
+      </button>
+
+      <div class="flex space-x-2 overflow-x-auto py-1 px-1">
         <button 
-          @click="fetchEmployees" 
-          class="ml-auto px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs flex items-center"
+          v-for="page in visiblePages" 
+          :key="page" 
+          @click="$emit('go-to-page', page)" 
+          class="w-10 h-10 rounded-full border border-blue-600 dark:border-blue-500 flex items-center justify-center transition-colors duration-300 font-medium"
+          :class="page === currentPage 
+            ? 'bg-blue-600 dark:bg-blue-500 text-white' 
+            : 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white'"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Reintentar
+          <span>{{ page }}</span>
         </button>
       </div>
 
-      <!-- Modales -->
-      <CreateEmployeeModal v-if="showModal" @close="closeModal" @created="fetchEmployees" />
-
-      <EditEmployeeModal
-        v-if="employeeToEdit"
-        :employee="employeeToEdit"
-        @close="closeEditModal"
-        @updated="fetchEmployees"
-      />
-
-      <DeleteEmployeeModal
-        v-if="employeeToDelete"
-        :employee="employeeToDelete"
-        @close="closeDeleteModal"
-        @deleted="deleteEmployeeConfirmed"
-      />
+      <button 
+        @click="$emit('next-page')" 
+        :disabled="currentPage === totalPages"
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50 transition-colors duration-300"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
-import { getEmployees, deleteEmployee } from '@/service/employeeService';
-import { debounce } from '@/utils/index'; 
-import CreateEmployeeModal from '@/components/adminUser/employee/CreateEmployeeModal.vue';
-import EditEmployeeModal from '@/components/adminUser/employee/EditEmployeeModal.vue';
-import DeleteEmployeeModal from '@/components/adminUser/employee/DeleteEmployeeModal.vue';
-import ResponsiveTable from '@/components/ResponsiveTable.vue';
+import { computed } from 'vue';
 
-// Definición de tipo para el empleado
-interface EmployeeType {
-  empleados_id: number;
-  nombre: string;
-  rol: string;
-  telefono: string;
-  correo: string;
-  fecha_contratacion?: string;
-  [key: string]: any;
+// Definir tipos para los encabezados
+interface HeaderObject {
+  key: string;
+  title: string;
+  class?: string;
+  formatter?: (item: any) => string;
 }
 
-const employees = ref<EmployeeType[]>([]);
-const loading = ref(true);
-const error = ref('');
-const searchTerm = ref('');
-const currentPage = ref(1);
-const pageSize = 5;
-const showModal = ref(false);
-const employeeToEdit = ref<EmployeeType | null>(null);
-const employeeToDelete = ref<EmployeeType | null>(null);
-const loadingButton = ref(false);
+type HeaderType = string | HeaderObject;
 
-// Definición de cabeceras para la tabla
-const tableHeaders = [
-  { key: 'empleados_id', title: 'ID' },
-  { key: 'nombre', title: 'Nombre' },
-  { key: 'rol', title: 'Rol' },
-  { key: 'telefono', title: 'Teléfono', class: 'hidden xl:table-cell' },
-  { key: 'correo', title: 'Correo', class: 'hidden xl:table-cell' }
-];
+const props = defineProps({
+  // Datos de la tabla
+  items: {
+    type: Array as () => any[],
+    required: true
+  },
+  // Configuración de columnas
+  headers: {
+    type: Array as () => HeaderType[],
+    required: true
+  },
+  // Clases personalizadas para el encabezado
+  headerClass: {
+    type: String,
+    default: null
+  },
+  // Mostrar botones de acción
+  showActions: {
+    type: Boolean,
+    default: true
+  },
+  // Habilitar acción de editar
+  editAction: {
+    type: Boolean,
+    default: true
+  },
+  // Habilitar acción de eliminar
+  deleteAction: {
+    type: Boolean,
+    default: true
+  },
+  // Mensaje cuando no hay datos
+  emptyMessage: {
+    type: String,
+    default: 'No hay datos disponibles.'
+  },
+  // Paginación
+  hasPagination: {
+    type: Boolean,
+    default: false
+  },
+  currentPage: {
+    type: Number,
+    default: 1
+  },
+  totalPages: {
+    type: Number,
+    default: 1
+  },
+  // Propiedades a mostrar en la vista móvil (por defecto muestra todas)
+  mobileProperties: {
+    type: Array as () => string[],
+    default: () => []
+  }
+});
 
-const fetchEmployees = async () => {
-  error.value = '';
-  loading.value = true;
+// Emits para eventos
+const emit = defineEmits<{
+  (e: 'edit', item: any): void;
+  (e: 'delete', item: any): void;
+  (e: 'item-click', item: any): void;
+  (e: 'prev-page'): void;
+  (e: 'next-page'): void;
+  (e: 'go-to-page', page: number): void;
+}>();
+
+// Helper para obtener clase del encabezado
+const getHeaderClass = (header: HeaderType): string => {
+  if (typeof header === 'string') return '';
+  return header.class || '';
+};
+
+// Helper para obtener título del encabezado
+const getHeaderTitle = (header: HeaderType): string => {
+  if (typeof header === 'string') return header;
+  return header.title || '';
+};
+
+// Obtener la clave del encabezado (para usar en slots)
+const getHeaderKey = (header: HeaderType): string => {
+  if (typeof header === 'string') return header;
+  return header.key || header.title || '';
+};
+
+// Obtener el valor del item según el encabezado
+const getItemValue = (item: any, header: HeaderType): any => {
+  if (typeof header === 'string') return item[header];
+  if (header.key) return item[header.key];
+  if (header.formatter) return header.formatter(item);
+  return '';
+};
+
+// Para la vista móvil, obtener solo las propiedades visibles
+const getVisibleProperties = (item: any): Record<string, any> => {
+  // Si hay propiedades específicas definidas para móvil, usar esas
+  if (props.mobileProperties.length > 0) {
+    const mobileObj: Record<string, any> = {};
+    props.mobileProperties.forEach(key => {
+      if (item[key] !== undefined) {
+        mobileObj[key] = item[key];
+      }
+    });
+    return mobileObj;
+  }
   
-  try {
-    // Implementamos un timeout mínimo para evitar parpadeos en conexiones rápidas
-    const startTime = Date.now();
-    
-    const data = await getEmployees();
-    
-    // Aseguramos que el loader se muestre por al menos 500ms para mejor UX
-    const elapsedTime = Date.now() - startTime;
-    if (elapsedTime < 500) {
-      await new Promise(resolve => setTimeout(resolve, 500 - elapsedTime));
+  // Si no, usar las primeras 4 propiedades o headers definidos
+  const result: Record<string, any> = {};
+  const keys = Object.keys(item);
+  const headerKeys = props.headers.map((h: HeaderType) => 
+    typeof h === 'string' ? h : h.key
+  ).filter(Boolean);
+  
+  // Priorizar las claves definidas en headers si existen
+  const propertiesToShow = headerKeys.length > 0 ? headerKeys.slice(0, 4) : keys.slice(0, 4);
+  
+  propertiesToShow.forEach(key => {
+    if (item[key] !== undefined) {
+      result[key] = item[key];
     }
-    
-    employees.value = data as EmployeeType[];
-  } catch (err: any) {
-    console.error('Error fetching employees:', err);
-    error.value = err.message || 'Error al obtener empleados. Por favor, inténtelo de nuevo.';
-  } finally {
-    loading.value = false;
-  }
+  });
+  
+  return result;
 };
 
-const debouncedSearch = debounce(() => {
-  currentPage.value = 1;
-}, 300);
-
-// Observar cambios en searchTerm con debounce
-watch(searchTerm, () => {
-  debouncedSearch();
-});
-
-onMounted(() => {
-  fetchEmployees();
-});
-
-const filteredEmployees = computed(() => {
-  if (!searchTerm.value) return employees.value;
-  const searchValue = searchTerm.value.toLowerCase().trim();
-  return employees.value.filter((emp) =>
-    emp.nombre.toLowerCase().includes(searchValue)
+// Formatea el nombre del encabezado para la vista móvil
+const formatHeader = (key: string): string => {
+  // Buscar si existe un título personalizado en los headers
+  const customHeader = props.headers.find((h: HeaderType) => 
+    (typeof h === 'object' && h.key === key) || (typeof h === 'string' && h === key)
   );
-});
-
-const totalPages = computed(() => Math.ceil(filteredEmployees.value.length / pageSize));
-
-const paginatedEmployees = computed(() => {
-  const start = (currentPage.value - 1) * pageSize;
-  return filteredEmployees.value.slice(start, start + pageSize);
-});
-
-const prevPage = () => {
-  if (currentPage.value > 1) currentPage.value--;
-};
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) currentPage.value++;
-};
-
-const goToPage = (page: number) => {
-  currentPage.value = page;
-};
-
-const openModal = () => {
-  loadingButton.value = true;
-  setTimeout(() => {
-    showModal.value = true;
-    loadingButton.value = false;
-  }, 200);
-};
-
-const closeModal = () => {
-  showModal.value = false;
-};
-
-const openEditModal = (employee: EmployeeType) => {
-  employeeToEdit.value = employee;
-};
-
-const closeEditModal = () => {
-  employeeToEdit.value = null;
-};
-
-const openDeleteModal = (employee: EmployeeType) => {
-  employeeToDelete.value = employee;
-};
-
-const closeDeleteModal = () => {
-  employeeToDelete.value = null;
-};
-
-const deleteEmployeeConfirmed = async () => {
-  if (!employeeToDelete.value) return;
-  try {
-    loading.value = true;
-    await deleteEmployee(employeeToDelete.value.empleados_id);
-    await fetchEmployees();
-  } catch (err: any) {
-    console.error(err.message);
-    error.value = err.message || 'Error al eliminar el empleado.';
-    loading.value = false;
-  } finally {
-    employeeToDelete.value = null;
+  
+  if (customHeader && typeof customHeader === 'object' && customHeader.title) {
+    return customHeader.title;
   }
+  
+  // Si no hay título personalizado, formatear la clave
+  return key
+    .replace(/_/g, ' ')
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, str => str.toUpperCase());
 };
+
+// Para paginación, determinar qué páginas mostrar
+const visiblePages = computed(() => {
+  const total = props.totalPages;
+  const current = props.currentPage;
+  
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  } else if (current <= 3) {
+    return [1, 2, 3, 4, 5];
+  } else if (current >= total - 2) {
+    return [total - 4, total - 3, total - 2, total - 1, total];
+  } else {
+    return [current - 2, current - 1, current, current + 1, current + 2];
+  }
+});
 </script>
 
 <style scoped>
-/* Animaciones para los loaders */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
+/* Estilos para la tabla y las cards en móvil */
+.responsive-table-wrapper {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .responsive-table-wrapper {
+    font-size: 0.9rem;
   }
 }
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+/* Estilos para optimizar espacio en vista tablet */
+@media (min-width: 641px) and (max-width: 768px) {
+  .responsive-table-wrapper td, .responsive-table-wrapper th {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+}
+
+/* Estilos para tabla desktop */
+table {
+  border-collapse: separate;
+  border-spacing: 0 0.3rem;
+}
+
+thead tr th {
+  border: none;
+}
+
+tbody tr {
+  border-radius: 0.5rem;
+}
+
+tbody tr td {
+  border: none;
+}
+
+/* Mejora para desplazamiento horizontal en tabla */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
 }
 </style>
