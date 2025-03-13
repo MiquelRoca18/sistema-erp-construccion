@@ -247,35 +247,15 @@ const handleSubmit = async () => {
     // Simulamos un tiempo mínimo de carga para mejorar UX
     const startTime = Date.now();
     
-    // Si el número de asignaciones es el mismo, y solo hay un cambio, se utiliza updateTaskAssignment
-    if (initialAssignments.value.length === finalAssignments.length) {
-      const differences = initialAssignments.value.filter((id, i) => id !== finalAssignments[i]);
-      if(differences.length === 1) {
-        const indexChanged = initialAssignments.value.findIndex((id, i) => id !== finalAssignments[i]);
-        const oldEmployeeId = initialAssignments.value[indexChanged];
-        const newEmployeeId = finalAssignments[indexChanged];
-        await updateTaskAssignment(props.task.tareas_id, oldEmployeeId, newEmployeeId);
-      } else {
-        // En caso de múltiples diferencias, se procesa removiendo y agregando
-        const removals = initialAssignments.value.filter(id => !finalAssignments.includes(id));
-        for (const id of removals) {
-          await removeEmployeeFromTask(id, props.task.tareas_id);
-        }
-        const additions = finalAssignments.filter(id => !initialAssignments.value.includes(id));
-        for (const id of additions) {
-          await addEmployeeToTask(id, props.task.tareas_id);
-        }
-      }
-    } else {
-      // Si la cantidad cambió, se identifican las asignaciones a remover y las a agregar
-      const removals = initialAssignments.value.filter(id => !finalAssignments.includes(id));
-      for (const id of removals) {
-        await removeEmployeeFromTask(id, props.task.tareas_id);
-      }
-      const additions = finalAssignments.filter(id => !initialAssignments.value.includes(id));
-      for (const id of additions) {
-        await addEmployeeToTask(id, props.task.tareas_id);
-      }
+    // SOLUCIÓN: Simplificamos la lógica para evitar problemas con las asignaciones
+    // Primero eliminamos todas las asignaciones anteriores
+    for (const id of initialAssignments.value) {
+      await removeEmployeeFromTask(id, props.task.tareas_id);
+    }
+    
+    // Luego añadimos todas las nuevas asignaciones
+    for (const id of finalAssignments) {
+      await addEmployeeToTask(id, props.task.tareas_id);
     }
     
     // Aseguramos que el loader se muestre al menos por 800ms para operaciones complejas
@@ -284,16 +264,21 @@ const handleSubmit = async () => {
       await new Promise(resolve => setTimeout(resolve, 800 - elapsedTime));
     }
     
+    // Notificamos que se actualizó la tarea
     emit('updated');
+    
+    // Aseguramos que siempre se cierre el modal tras una operación exitosa
     closeModal();
   } catch (error: any) {
     console.error('Error al asignar empleados:', error.message);
     errorMessage.value = error.message || 'Error al asignar empleados';
   } finally {
-    loading.value = false; 
+    // Aseguramos que loading siempre se desactive
+    loading.value = false;
   }
 };
 
+// También nos aseguramos de que closeModal funcione correctamente
 const closeModal = () => {
   if (loading.value) return;
   emit('close');
