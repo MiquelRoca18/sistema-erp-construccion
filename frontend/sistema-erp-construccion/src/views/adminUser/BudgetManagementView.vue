@@ -71,19 +71,19 @@
           <!-- Personalización de vista móvil -->
           <template #mobile-item="{ item }">
             <div class="flex flex-col">
-              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ item.nombre_proyecto }}</h3>
+              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ (item as Budget).nombre_proyecto }}</h3>
               <p class="text-base font-semibold text-yellow-700 dark:text-yellow-300 mt-1">
-                Total: {{ formatCurrency(item.total) }}
+                Total: {{ formatCurrency((item as Budget).total) }}
               </p>
               <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-300">
                 <p>
-                  <span class="font-medium">Equipos:</span> {{ formatCurrency(item.equipos) }}
+                  <span class="font-medium">Equipos:</span> {{ formatCurrency((item as Budget).equipos) }}
                 </p>
                 <p>
-                  <span class="font-medium">Mano de obra:</span> {{ formatCurrency(item.mano_obra) }}
+                  <span class="font-medium">Mano de obra:</span> {{ formatCurrency((item as Budget).mano_obra) }}
                 </p>
                 <p class="col-span-2">
-                  <span class="font-medium">Materiales:</span> {{ formatCurrency(item.materiales) }}
+                  <span class="font-medium">Materiales:</span> {{ formatCurrency((item as Budget).materiales) }}
                 </p>
               </div>
             </div>
@@ -110,22 +110,40 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { getBudgets } from '@/service/budgetService';
 import EditBudgetModal from '@/components/adminUser/budget/EditBudgetModal.vue';
 import ResponsiveTable from '@/components/ResponsiveTable.vue';
+
+// Definir la interfaz para Budget
+interface Budget {
+  presupuestos_id: number;
+  proyectos_id: number;
+  nombre_proyecto: string;
+  equipos: number;
+  mano_obra: number;
+  materiales: number;
+  total?: number;
+}
+
+// Definir la interfaz para las cabeceras de la tabla
+interface TableHeader {
+  key: string;
+  title: string;
+  class?: string;
+}
   
-const budgets = ref<any[]>([]);
+const budgets = ref<Budget[]>([]);
 const loading = ref(true);
 const error = ref('');
 const searchProject = ref('');
-const searchTotal = ref(''); 
+const searchTotal = ref<number | string>(''); 
 const currentPage = ref(1);
 const pageSize = 5;
   
 const showEditModal = ref(false);
-const budgetToEdit = ref(null);
+const budgetToEdit = ref<Budget | null>(null);
 const showViewModal = ref(false);
-const selectedBudget = ref(null);
+const selectedBudget = ref<Budget | null>(null);
 
 // Definición de cabeceras para la tabla
-const tableHeaders = [
+const tableHeaders: TableHeader[] = [
   { key: 'presupuestos_id', title: 'ID' },
   { key: 'nombre_proyecto', title: 'Proyecto' },
   { key: 'equipos', title: 'Equipos', class: 'hidden [@media(min-width:1200px)]:table-cell text-right' },
@@ -146,14 +164,14 @@ const fetchBudgets = async () => {
     const data = await getBudgets();
     
     // Añadir campo total calculado a cada presupuesto
-    budgets.value = data.map(budget => {
+    budgets.value = data.map((budget: any) => {
       const equipos = Number(budget.equipos) || 0;
       const manoObra = Number(budget.mano_obra) || 0;
       const materiales = Number(budget.materiales) || 0;
       return {
         ...budget,
         total: equipos + manoObra + materiales
-      };
+      } as Budget;
     });
     
     // Asegurar que el loader se muestre por al menos minLoadingTime ms
@@ -185,7 +203,7 @@ const filteredBudgets = computed(() => {
     const projectMatch = budget.nombre_proyecto.toLowerCase().includes(projectTerm);
     let totalMatch = true;
     if (maxTotal !== null && maxTotal !== undefined && maxTotal !== "") {
-      const totalVal = parseFloat(budget.total);
+      const totalVal = budget.total !== undefined ? budget.total : 0;
       totalMatch = !isNaN(totalVal) && totalVal <= parseFloat(maxTotal.toString());
     }
     return projectMatch && totalMatch;
@@ -211,7 +229,7 @@ const goToPage = (page: number) => {
   currentPage.value = page;
 };
   
-const openEditModal = (budget: any) => {
+const openEditModal = (budget: Budget) => {
   budgetToEdit.value = budget;
   showEditModal.value = true;
 };
@@ -221,13 +239,13 @@ const closeEditModal = () => {
   budgetToEdit.value = null;
 };
 
-const openViewModal = (budget: any) => {
+const openViewModal = (budget: Budget) => {
   selectedBudget.value = budget;
   showViewModal.value = true;
 };
 
 // Función para formatear valores monetarios
-const formatCurrency = (value: number | string) => {
+const formatCurrency = (value: number | string | undefined): string => {
   if (value === null || value === undefined) return '€0,00';
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
   return new Intl.NumberFormat('es-ES', { 
