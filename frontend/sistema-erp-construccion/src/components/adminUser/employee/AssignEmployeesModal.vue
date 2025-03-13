@@ -301,10 +301,9 @@ const handleSubmit = async () => {
       await new Promise(resolve => setTimeout(resolve, 800 - elapsedTime));
     }
     
-    emit('updated');
+    emit('updated', true);
     closeModal();
 
-    window.sessionStorage.setItem('forceTasksReload', 'true');
   } catch (error) {
     console.error('Error al asignar empleados:', error.message);
     errorMessage.value = error.message || 'Error al asignar empleados';

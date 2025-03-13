@@ -177,21 +177,15 @@ export const updateTaskAssignment = async (taskId: number, oldEmployeeId: number
 };
 
 // Obtener todas las tareas de la empresa
-export const getAllCompanyTasks = async (cacheBuster = '') => {
+export const getAllCompanyTasks = async () => {
   try {
     const token = localStorage.getItem('token');
-    if (!token) throw new Error('No se encontró el token.');
-    
-    // Añadir parámetro para evitar caché
-    const url = `${API_URL}/tasks${cacheBuster}`;
-    
-    const response = await axios.get(url, {
+    if (!token) {
+      throw new Error('No se encontró el token.');
+    }
+    const response = await axios.get(`${API_URL}/tasks`, {
       headers: {
         'Authorization': `Bearer ${token}`,
-        // Agregar encabezados para evitar caché
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0'
       },
     });
     return Array.isArray(response.data.data) ? response.data.data : [];
@@ -199,6 +193,7 @@ export const getAllCompanyTasks = async (cacheBuster = '') => {
     throw new Error(error.response?.data?.message || 'Error al obtener tareas');
   }
 };
+
 // Crear una tarea
 export const createTask = async (data: any) => {
   try {

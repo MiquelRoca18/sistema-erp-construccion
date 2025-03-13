@@ -225,7 +225,7 @@
         v-if="taskToAssign"
         :task="taskToAssign"
         @close="closeAssignModal"
-        @updated="fetchTasks"
+        @updated="taskUpdated"
       />
     </div>
   </div>
@@ -307,12 +307,20 @@ const fetchTasks = async () => {
     loading.value = true;
     error.value = '';
     
-    // Añadir un timestamp para evitar caché
-    const cacheBuster = `?_=${Date.now()}`;
-    
     // Simulamos un retardo mínimo para evitar parpadeos en cargas muy rápidas
     const startTime = Date.now();
-    const data = await getAllCompanyTasks(cacheBuster);
+    
+    // Limpiar cualquier caché de localStorage relacionada con tareas
+    Object.keys(localStorage)
+      .filter(key => key.includes('task') || key.includes('employee'))
+      .forEach(key => localStorage.removeItem(key));
+    
+    // También podemos intentar limpiar cualquier caché de sessionStorage
+    Object.keys(sessionStorage)
+      .filter(key => key.includes('task') || key.includes('employee'))
+      .forEach(key => sessionStorage.removeItem(key));
+    
+    const data = await getAllCompanyTasks();
     
     // Aseguramos que el loader se muestre al menos por 500ms para evitar parpadeos
     const elapsedTime = Date.now() - startTime;
@@ -453,27 +461,21 @@ const openAssignModal = (task: Task) => {
   taskToAssign.value = task;
 };
 
-const closeAssignModal = async () => {
-  // Importante: forzar una recarga completa de las tareas después de cerrar el modal
-  if (taskToAssign.value) {
-    // Primero cerramos el modal
-    taskToAssign.value = null;
-    
-    // Luego hacemos una pausa breve y recargamos los datos
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    // Aquí forzamos una recarga completa
+// Modificar el evento 'updated' para aceptar el flag
+const closeAssignModal = () => {
+  taskToAssign.value = null;
+};
+
+// Separar la función de actualización
+const taskUpdated = async (forceReload = false) => {
+  if (forceReload) {
+    console.log("Forzando recarga de tareas después de actualización");
+    // Pequeña pausa para asegurar que cualquier operación de backend se complete
+    await new Promise(resolve => setTimeout(resolve, 500));
     await fetchTasks();
-    
-    // También limpiamos manualmente cualquier posible caché del navegador
-    if (window.localStorage) {
-      // Buscar y eliminar cualquier ítem de caché relacionado con tareas
-      Object.keys(window.localStorage)
-        .filter(key => key.includes('task') || key.includes('employee'))
-        .forEach(key => window.localStorage.removeItem(key));
-    }
   }
 };
+
 </script>
 
 <style scoped>
