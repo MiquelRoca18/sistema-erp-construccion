@@ -301,9 +301,13 @@ const handleSubmit = async () => {
       await new Promise(resolve => setTimeout(resolve, 800 - elapsedTime));
     }
     
-    emit('updated', true);
+    emit('updated');
     closeModal();
 
+    // Recargar la página completa después de un breve retraso
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   } catch (error) {
     console.error('Error al asignar empleados:', error.message);
     errorMessage.value = error.message || 'Error al asignar empleados';
