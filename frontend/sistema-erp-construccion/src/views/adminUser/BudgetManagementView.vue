@@ -1,94 +1,153 @@
 <template>
-  <div class="flex flex-col justify-center items-center min-h-screen p-4 md:p-8">
-    <div class="w-full max-w-5xl mx-auto bg-white dark:bg-gray-800 p-4 md:p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
+  <div class="flex flex-col justify-center items-center min-h-screen p-8">
+    <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg dark:shadow-gray-900/30 transition-colors duration-300">
       <!-- Encabezado -->
-      <div class="flex flex-col sm:flex-row items-center justify-between mb-4 md:mb-6">
-        <h1 class="text-2xl sm:text-3xl font-bold text-yellow-800 dark:text-yellow-200 text-center sm:text-left mb-3 sm:mb-0">
+      <div class="flex flex-col sm:flex-row items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold text-yellow-800 dark:text-yellow-200 text-center sm:text-left">
           Gestión de Presupuestos
         </h1>
       </div>
 
       <!-- Filtros -->
-      <div class="mb-4 md:mb-6 w-full grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+      <div class="mb-6 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
           type="text"
           v-model="searchProject"
           placeholder="Buscar por proyecto..."
-          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-400 transition-colors duration-300 text-sm"
+          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-400 transition-colors duration-300"
         />
         <input
           type="number"
           v-model.number="searchTotal"
           placeholder="Filtrar por total (máximo)..."
-          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-400 transition-colors duration-300 text-sm"
+          class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:focus:ring-yellow-400 transition-colors duration-300"
         />
       </div>
 
       <!-- Loader principal mientras se cargan los presupuestos -->
-      <div v-if="loading" class="flex flex-col items-center justify-center py-8">
+      <div v-if="loading" class="flex flex-col items-center justify-center py-10">
         <div class="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-4"></div>
         <p class="text-gray-600 dark:text-gray-300">Cargando presupuestos...</p>
       </div>
 
-      <!-- Tabla Responsiva -->
       <div v-else>
-        <ResponsiveTable
-          :items="paginatedBudgets"
-          :headers="tableHeaders"
-          headerClass="bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 text-yellow-800 dark:text-yellow-200"
-          :has-pagination="true"
-          :current-page="currentPage"
-          :total-pages="totalPages"
-          :mobile-properties="['nombre_proyecto', 'total', 'equipos', 'mano_obra', 'materiales']"
-          empty-message="No se encontraron presupuestos."
-          :edit-action="true"
-          :delete-action="false"
-          @edit="openEditModal"
-          @item-click="openViewModal"
-          @prev-page="prevPage"
-          @next-page="nextPage"
-          @go-to-page="goToPage"
-        >
-          <!-- Personalización de celdas para la tabla desktop -->
-          <template #cell-total="{ value }">
-            <span class="font-bold text-gray-800 dark:text-yellow-200">
-              {{ formatCurrency(value) }}
-            </span>
-          </template>
-
-          <template #cell-equipos="{ value }">
-            {{ formatCurrency(value) }}
-          </template>
-
-          <template #cell-mano_obra="{ value }">
-            {{ formatCurrency(value) }}
-          </template>
-
-          <template #cell-materiales="{ value }">
-            {{ formatCurrency(value) }}
-          </template>
-          
-          <!-- Personalización de vista móvil -->
-          <template #mobile-item="{ item }">
-            <div class="flex flex-col">
-              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ item.nombre_proyecto }}</h3>
-              <p class="text-base font-semibold text-yellow-700 dark:text-yellow-300 mt-1">
-                Total: {{ formatCurrency(item.total) }}
-              </p>
-              <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-600 dark:text-gray-300">
-                <p>
-                  <span class="font-medium">Equipos:</span> {{ formatCurrency(item.equipos) }}
+        <!-- Vista Mobile: Tarjetas -->
+        <div class="sm:hidden w-full">
+          <div
+            v-for="budget in paginatedBudgets"
+            :key="budget.presupuestos_id"
+            class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow dark:shadow-gray-900/20 mb-4 cursor-pointer transition-colors duration-300 hover:bg-yellow-100 dark:hover:bg-yellow-800/40"
+            @click="openViewModal(budget)"
+          >
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="text-base font-bold text-yellow-800 dark:text-yellow-200">
+                  {{ budget.nombre_proyecto }}
                 </p>
-                <p>
-                  <span class="font-medium">Mano de obra:</span> {{ formatCurrency(item.mano_obra) }}
-                </p>
-                <p class="col-span-2">
-                  <span class="font-medium">Materiales:</span> {{ formatCurrency(item.materiales) }}
-                </p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">Total: {{ formatCurrency(budget.total) }}</p>
+              </div>
+              <div>
+                <button
+                  @click.stop="openEditModal(budget)"
+                  class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-sm"
+                >
+                  Editar
+                </button>
               </div>
             </div>
-          </template>
-        </ResponsiveTable>
+          </div>
+          <div v-if="paginatedBudgets.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-6">
+            No se encontraron presupuestos.
+          </div>
+          <!-- Divs vacíos para mantener el espacio de 5 elementos -->
+          <div v-for="n in missingRows" :key="'empty-' + n" class="h-20"></div>
+        </div>
+
+        <!-- Vista Desktop: Tabla -->
+        <div class="hidden sm:block w-full overflow-x-auto">
+          <table class="min-w-full">
+            <thead>
+              <tr class="bg-gradient-to-r from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 text-yellow-800 dark:text-yellow-200">
+                <th class="px-6 py-3 text-left font-semibold">ID</th>
+                <th class="px-6 py-3 text-left font-semibold">Proyecto</th>
+                <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Equipos</th>
+                <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Mano de obra</th>
+                <th class="px-6 py-3 text-left font-semibold hidden [@media(min-width:1200px)]:table-cell">Materiales</th>
+                <th class="px-6 py-3 text-left font-semibold">Total</th>
+                <th class="px-6 py-3 text-left font-semibold">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="budget in paginatedBudgets"
+                :key="budget.presupuestos_id"
+                class="bg-white dark:bg-gray-700 shadow dark:shadow-gray-900/10 rounded-lg transition-colors duration-300 cursor-pointer hover:bg-yellow-100 dark:hover:bg-yellow-800/40"
+                @click="openViewModal(budget)"
+              >
+                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ budget.presupuestos_id }}</td>
+                <td class="px-6 py-4 text-gray-800 dark:text-gray-200">{{ budget.nombre_proyecto }}</td>
+                <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ formatCurrency(budget.equipos) }}</td>
+                <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ formatCurrency(budget.mano_obra) }}</td>
+                <td class="px-6 py-4 hidden [@media(min-width:1200px)]:table-cell text-gray-800 dark:text-gray-200">{{ formatCurrency(budget.materiales) }}</td>
+                <td class="px-6 py-4 font-bold text-gray-800 dark:text-yellow-200">{{ formatCurrency(budget.total) }}</td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-col sm:flex-row gap-1 sm:gap-2" @click.stop>
+                    <button
+                      @click="openEditModal(budget)"
+                      class="px-3 py-1 bg-green-500 dark:bg-green-600 text-white rounded-lg hover:bg-green-600 dark:hover:bg-green-700 transition-colors duration-300 text-xs sm:text-sm"
+                    >
+                      Editar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr v-if="paginatedBudgets.length === 0">
+                <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                  No se encontraron presupuestos.
+                </td>
+              </tr>
+              <!-- Filas vacías para mantener el espacio -->
+              <tr v-for="n in missingRows" :key="'empty-' + n" class="h-20 bg-transparent">
+                <td colspan="7" class="px-6 py-4"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+  
+      <!-- Paginación -->
+      <div v-if="totalPages > 1 && !loading" class="mt-6 flex items-center justify-center space-x-2">
+        <button 
+          @click="prevPage" 
+          :disabled="currentPage === 1"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-600 dark:bg-yellow-500 text-white hover:bg-yellow-700 dark:hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-300"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div class="flex space-x-2">
+          <button 
+            v-for="page in pages" 
+            :key="page" 
+            @click="goToPage(page)" 
+            class="w-10 h-10 rounded-full border border-yellow-600 dark:border-yellow-500 flex items-center justify-center transition-colors duration-300 font-medium"
+            :class="page === currentPage 
+              ? 'bg-yellow-600 dark:bg-yellow-500 text-white' 
+              : 'bg-white dark:bg-gray-800 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-600 dark:hover:bg-yellow-500 hover:text-white'"
+          >
+            <span>{{ page }}</span>
+          </button>
+        </div>
+        <button 
+          @click="nextPage" 
+          :disabled="currentPage === totalPages"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-600 dark:bg-yellow-500 text-white hover:bg-yellow-700 dark:hover:bg-yellow-600 disabled:opacity-50 transition-colors duration-300"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
   
       <!-- Mensaje de error -->
@@ -109,30 +168,30 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { getBudgets } from '@/service/budgetService';
 import EditBudgetModal from '@/components/adminUser/budget/EditBudgetModal.vue';
-import ResponsiveTable from '@/components/ResponsiveTable.vue';
   
-const budgets = ref<any[]>([]);
+// Definir la interfaz para el tipo Budget
+interface Budget {
+  presupuestos_id: number;
+  proyectos_id: number;
+  nombre_proyecto: string;
+  equipos: number;
+  mano_obra: number;
+  materiales: number;
+  total?: number;
+}
+
+const budgets = ref<Budget[]>([]);
 const loading = ref(true);
 const error = ref('');
 const searchProject = ref('');
-const searchTotal = ref(''); 
+const searchTotal = ref<string | number>(''); 
 const currentPage = ref(1);
 const pageSize = 5;
   
 const showEditModal = ref(false);
-const budgetToEdit = ref(null);
+const budgetToEdit = ref<Budget | null>(null);
 const showViewModal = ref(false);
-const selectedBudget = ref(null);
-
-// Definición de cabeceras para la tabla
-const tableHeaders = [
-  { key: 'presupuestos_id', title: 'ID' },
-  { key: 'nombre_proyecto', title: 'Proyecto' },
-  { key: 'equipos', title: 'Equipos', class: 'hidden [@media(min-width:1200px)]:table-cell text-right' },
-  { key: 'mano_obra', title: 'Mano de obra', class: 'hidden [@media(min-width:1200px)]:table-cell text-right' },
-  { key: 'materiales', title: 'Materiales', class: 'hidden [@media(min-width:1200px)]:table-cell text-right' },
-  { key: 'total', title: 'Total', class: 'text-right' }
-];
+const selectedBudget = ref<Budget | null>(null);
   
 // Tiempo de espera mínimo para mostrar el loader
 const minLoadingTime = 500; 
@@ -146,14 +205,14 @@ const fetchBudgets = async () => {
     const data = await getBudgets();
     
     // Añadir campo total calculado a cada presupuesto
-    budgets.value = data.map(budget => {
+    budgets.value = data.map((budget: any) => {
       const equipos = Number(budget.equipos) || 0;
       const manoObra = Number(budget.mano_obra) || 0;
       const materiales = Number(budget.materiales) || 0;
       return {
         ...budget,
         total: equipos + manoObra + materiales
-      };
+      } as Budget;
     });
     
     // Asegurar que el loader se muestre por al menos minLoadingTime ms
@@ -185,7 +244,7 @@ const filteredBudgets = computed(() => {
     const projectMatch = budget.nombre_proyecto.toLowerCase().includes(projectTerm);
     let totalMatch = true;
     if (maxTotal !== null && maxTotal !== undefined && maxTotal !== "") {
-      const totalVal = parseFloat(budget.total);
+      const totalVal = budget.total !== undefined ? budget.total : 0;
       totalMatch = !isNaN(totalVal) && totalVal <= parseFloat(maxTotal.toString());
     }
     return projectMatch && totalMatch;
@@ -197,6 +256,25 @@ const totalPages = computed(() => Math.ceil(filteredBudgets.value.length / pageS
 const paginatedBudgets = computed(() => {
   const start = (currentPage.value - 1) * pageSize;
   return filteredBudgets.value.slice(start, start + pageSize);
+});
+  
+const missingRows = computed(() => {
+  const missing = pageSize - paginatedBudgets.value.length;
+  return missing > 0 ? missing : 0;
+});
+  
+const pages = computed(() => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+  if (total <= 5) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  } else if (current <= 3) {
+    return [1,2,3,4,5];
+  } else if (current >= total - 2) {
+    return [total - 4, total - 3, total - 2, total - 1, total];
+  } else {
+    return [current - 2, current - 1, current, current + 1, current + 2];
+  }
 });
   
 const prevPage = () => {
@@ -211,7 +289,7 @@ const goToPage = (page: number) => {
   currentPage.value = page;
 };
   
-const openEditModal = (budget: any) => {
+const openEditModal = (budget: Budget) => {
   budgetToEdit.value = budget;
   showEditModal.value = true;
 };
@@ -221,13 +299,13 @@ const closeEditModal = () => {
   budgetToEdit.value = null;
 };
 
-const openViewModal = (budget: any) => {
+const openViewModal = (budget: Budget) => {
   selectedBudget.value = budget;
   showViewModal.value = true;
 };
 
 // Función para formatear valores monetarios
-const formatCurrency = (value: number | string) => {
+const formatCurrency = (value: number | string | undefined): string => {
   if (value === null || value === undefined) return '€0,00';
   const numValue = typeof value === 'string' ? parseFloat(value) : value;
   return new Intl.NumberFormat('es-ES', { 
@@ -237,3 +315,19 @@ const formatCurrency = (value: number | string) => {
   }).format(numValue);
 };
 </script>
+  
+<style scoped>
+table {
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+thead tr th {
+  border: none;
+}
+tbody tr {
+  border-radius: 0.5rem;
+}
+tbody tr td {
+  border: none;
+}
+</style>
