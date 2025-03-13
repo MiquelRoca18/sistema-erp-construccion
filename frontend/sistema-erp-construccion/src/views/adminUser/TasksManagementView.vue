@@ -286,11 +286,25 @@ watch(filter, () => {
   currentPage.value = 1;
 }, { deep: true });
 
-const fetchTasks = async () => {
+const fetchTasks = async (forceRefresh = false) => {
   try {
     loading.value = true;
     error.value = '';
-    
+    // Si forzamos el refresco, limpiamos la caché primero
+    if (forceRefresh) {
+      // Limpiar todas las cachés relacionadas con tareas
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (
+          key.includes('tasks') || 
+          key.includes('task_') ||
+          key.includes('employee_tasks')
+        )) {
+          localStorage.removeItem(key);
+        }
+      }
+    }
+
     // Simulamos un retardo mínimo para evitar parpadeos en cargas muy rápidas
     const startTime = Date.now();
     const data = await getAllCompanyTasks();
@@ -423,8 +437,11 @@ const openAssignModal = (task: Task) => {
   taskToAssign.value = task;
 };
 
-const closeAssignModal = () => {
+const closeAssignModal = (forceRefresh = false) => {
   taskToAssign.value = null;
+  if (forceRefresh) {
+    fetchTasks(true); 
+  }
 };
 </script>
 

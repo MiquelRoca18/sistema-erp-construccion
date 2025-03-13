@@ -247,7 +247,6 @@ const handleSubmit = async () => {
     // Simulamos un tiempo mínimo de carga para mejorar UX
     const startTime = Date.now();
     
-    // SOLUCIÓN: Simplificamos la lógica para evitar problemas con las asignaciones
     // Primero eliminamos todas las asignaciones anteriores
     for (const id of initialAssignments.value) {
       await removeEmployeeFromTask(id, props.task.tareas_id);
@@ -264,10 +263,10 @@ const handleSubmit = async () => {
       await new Promise(resolve => setTimeout(resolve, 800 - elapsedTime));
     }
     
-    // Notificamos que se actualizó la tarea
+    clearTaskRelatedCaches();
+
     emit('updated');
     
-    // Aseguramos que siempre se cierre el modal tras una operación exitosa
     closeModal();
   } catch (error: any) {
     console.error('Error al asignar empleados:', error.message);
@@ -275,6 +274,25 @@ const handleSubmit = async () => {
   } finally {
     // Aseguramos que loading siempre se desactive
     loading.value = false;
+  }
+};
+
+// Función para limpiar cachés relacionadas con tareas
+const clearTaskRelatedCaches = () => {
+  // Buscamos y limpiamos todas las entradas de caché relacionadas con tareas
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && (
+      key.startsWith('all-tasks-') || 
+      key.startsWith('pending-tasks-') || 
+      key.startsWith('company-tasks') || 
+      key.startsWith('responsible-tasks-') ||
+      key.startsWith('task_') ||
+      key.startsWith('employee_tasks_') ||
+      key.startsWith('employee_pending_tasks_')
+    )) {
+      localStorage.removeItem(key);
+    }
   }
 };
 
