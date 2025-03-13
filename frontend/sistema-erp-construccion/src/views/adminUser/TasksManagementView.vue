@@ -302,18 +302,17 @@ const clearAllCaches = () => {
 };
 
 
-const fetchTasks = async (forceRefresh = false) => {
+const fetchTasks = async () => {
   try {
     loading.value = true;
     error.value = '';
-    // Si forzamos el refresco, limpiamos la caché primero
-    if (forceRefresh) {
-      clearAllCaches();
-    }
-
+    
+    // Añadir un timestamp para evitar caché
+    const cacheBuster = `?_=${Date.now()}`;
+    
     // Simulamos un retardo mínimo para evitar parpadeos en cargas muy rápidas
     const startTime = Date.now();
-    const data = await getAllCompanyTasks();
+    const data = await getAllCompanyTasks(cacheBuster);
     
     // Aseguramos que el loader se muestre al menos por 500ms para evitar parpadeos
     const elapsedTime = Date.now() - startTime;
@@ -322,7 +321,7 @@ const fetchTasks = async (forceRefresh = false) => {
     }
     
     tasks.value = data;
-  } catch (err: any) {
+  } catch (err) {
     error.value = err.message || 'Error al obtener tareas';
     console.error('Error al cargar tareas:', err);
   } finally {
@@ -330,8 +329,19 @@ const fetchTasks = async (forceRefresh = false) => {
   }
 };
 
+
 onMounted(() => {
   fetchTasks();
+  
+  // Verificar si hay una señal para forzar recarga
+  const forceReload = window.sessionStorage.getItem('forceTasksReload');
+  if (forceReload === 'true') {
+    window.sessionStorage.removeItem('forceTasksReload');
+    // Recargar después de un breve retraso para asegurar que el componente está montado
+    setTimeout(() => {
+      fetchTasks();
+    }, 200);
+  }
 });
 
 // Opciones de filtro
@@ -443,12 +453,25 @@ const openAssignModal = (task: Task) => {
   taskToAssign.value = task;
 };
 
-const closeAssignModal = (forceRefresh = false) => {
-  taskToAssign.value = null;
-  if (forceRefresh) {
-    setTimeout(() => {
-      fetchTasks(true); 
-    }, 300); 
+const closeAssignModal = async () => {
+  // Importante: forzar una recarga completa de las tareas después de cerrar el modal
+  if (taskToAssign.value) {
+    // Primero cerramos el modal
+    taskToAssign.value = null;
+    
+    // Luego hacemos una pausa breve y recargamos los datos
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Aquí forzamos una recarga completa
+    await fetchTasks();
+    
+    // También limpiamos manualmente cualquier posible caché del navegador
+    if (window.localStorage) {
+      // Buscar y eliminar cualquier ítem de caché relacionado con tareas
+      Object.keys(window.localStorage)
+        .filter(key => key.includes('task') || key.includes('employee'))
+        .forEach(key => window.localStorage.removeItem(key));
+    }
   }
 };
 </script>

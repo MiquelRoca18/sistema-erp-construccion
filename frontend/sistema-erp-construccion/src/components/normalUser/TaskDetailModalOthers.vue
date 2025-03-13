@@ -123,7 +123,7 @@
                 <span 
                   v-for="employeeName in assignedEmployees" 
                   :key="employeeName"
-                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-orange-300 text-orange-800 dark:bg-orange-500 dark:text-orange-100 font-medium"
+                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-100 font-medium"
                 >
                   {{ employeeName }}
                 </span>
@@ -255,7 +255,6 @@ const updateTask = async () => {
     const updatedTask = { 
       ...props.task, 
       ...taskData, 
-      // Mantener el nombre_empleado original ya que no estamos modificando las asignaciones
       nombre_empleado: props.task.nombre_empleado 
     };
     

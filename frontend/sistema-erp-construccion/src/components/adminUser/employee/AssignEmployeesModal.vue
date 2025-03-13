@@ -303,6 +303,8 @@ const handleSubmit = async () => {
     
     emit('updated');
     closeModal();
+
+    window.sessionStorage.setItem('forceTasksReload', 'true');
   } catch (error) {
     console.error('Error al asignar empleados:', error.message);
     errorMessage.value = error.message || 'Error al asignar empleados';
