@@ -51,9 +51,9 @@
               v-for="(header, index) in headers" 
               :key="index" 
               class="px-6 py-3 text-left font-semibold"
-              :class="header.class || ''"
+              :class="typeof header === 'object' && header.class ? header.class : ''"
             >
-              {{ header.title || header }}
+              {{ typeof header === 'object' && header.title ? header.title : header }}
             </th>
             <th v-if="showActions" class="px-6 py-3 text-left font-semibold">Acciones</th>
           </tr>
@@ -143,7 +143,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -213,13 +213,13 @@ const emit = defineEmits([
 ]);
 
 // Obtener la clave del encabezado (para usar en slots)
-const getHeaderKey = (header: any): string => {
+const getHeaderKey = (header) => {
   if (typeof header === 'string') return header;
   return header.key || header.title || '';
 };
 
 // Obtener el valor del item según el encabezado
-const getItemValue = (item: any, header: any): any => {
+const getItemValue = (item, header) => {
   if (typeof header === 'string') return item[header];
   if (header.key) return item[header.key];
   if (header.formatter) return header.formatter(item);
@@ -227,10 +227,10 @@ const getItemValue = (item: any, header: any): any => {
 };
 
 // Para la vista móvil, obtener solo las propiedades visibles
-const getVisibleProperties = (item: any): Record<string, any> => {
+const getVisibleProperties = (item) => {
   // Si hay propiedades específicas definidas para móvil, usar esas
   if (props.mobileProperties.length > 0) {
-    const mobileObj: Record<string, any> = {};
+    const mobileObj = {};
     props.mobileProperties.forEach(key => {
       if (item[key] !== undefined) {
         mobileObj[key] = item[key];
@@ -240,9 +240,9 @@ const getVisibleProperties = (item: any): Record<string, any> => {
   }
   
   // Si no, usar las primeras 4 propiedades o headers definidos
-  const result: Record<string, any> = {};
+  const result = {};
   const keys = Object.keys(item);
-  const headerKeys = props.headers.map((h: any) => typeof h === 'string' ? h : h.key).filter(Boolean);
+  const headerKeys = props.headers.map(h => typeof h === 'string' ? h : h.key).filter(Boolean);
   
   // Priorizar las claves definidas en headers si existen
   const propertiesToShow = headerKeys.length > 0 ? headerKeys.slice(0, 4) : keys.slice(0, 4);
@@ -257,9 +257,9 @@ const getVisibleProperties = (item: any): Record<string, any> => {
 };
 
 // Formatea el nombre del encabezado para la vista móvil
-const formatHeader = (key: string): string => {
+const formatHeader = (key) => {
   // Buscar si existe un título personalizado en los headers
-  const customHeader = props.headers.find((h: any) => 
+  const customHeader = props.headers.find(h => 
     (typeof h === 'object' && h.key === key) || (typeof h === 'string' && h === key)
   );
   
