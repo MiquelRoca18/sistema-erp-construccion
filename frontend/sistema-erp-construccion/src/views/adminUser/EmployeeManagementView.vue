@@ -66,14 +66,14 @@
           <!-- Personalización de elementos para móvil -->
           <template #mobile-item="{ item }">
             <div class="flex flex-col">
-              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ item.nombre }}</h3>
-              <p class="text-sm text-blue-600 dark:text-blue-400">{{ item.rol }}</p>
+              <h3 class="font-bold text-gray-800 dark:text-gray-100">{{ (item as EmployeeType).nombre }}</h3>
+              <p class="text-sm text-blue-600 dark:text-blue-400">{{ (item as EmployeeType).rol }}</p>
               <div class="flex flex-col mt-1 text-xs text-gray-600 dark:text-gray-300">
                 <p>
-                  <span class="font-medium">Tel:</span> {{ item.telefono }}
+                  <span class="font-medium">Tel:</span> {{ (item as EmployeeType).telefono }}
                 </p>
                 <p>
-                  <span class="font-medium">Email:</span> {{ item.correo }}
+                  <span class="font-medium">Email:</span> {{ (item as EmployeeType).correo }}
                 </p>
               </div>
             </div>
@@ -127,15 +127,26 @@ import EditEmployeeModal from '@/components/adminUser/employee/EditEmployeeModal
 import DeleteEmployeeModal from '@/components/adminUser/employee/DeleteEmployeeModal.vue';
 import ResponsiveTable from '@/components/ResponsiveTable.vue';
 
-const employees = ref<any[]>([]);
+// Definición de tipo para el empleado
+interface EmployeeType {
+  empleados_id: number;
+  nombre: string;
+  rol: string;
+  telefono: string;
+  correo: string;
+  fecha_contratacion?: string;
+  [key: string]: any;
+}
+
+const employees = ref<EmployeeType[]>([]);
 const loading = ref(true);
 const error = ref('');
 const searchTerm = ref('');
 const currentPage = ref(1);
 const pageSize = 5;
 const showModal = ref(false);
-const employeeToEdit = ref(null);
-const employeeToDelete = ref(null);
+const employeeToEdit = ref<EmployeeType | null>(null);
+const employeeToDelete = ref<EmployeeType | null>(null);
 const loadingButton = ref(false);
 
 // Definición de cabeceras para la tabla
@@ -163,7 +174,7 @@ const fetchEmployees = async () => {
       await new Promise(resolve => setTimeout(resolve, 500 - elapsedTime));
     }
     
-    employees.value = data;
+    employees.value = data as EmployeeType[];
   } catch (err: any) {
     console.error('Error fetching employees:', err);
     error.value = err.message || 'Error al obtener empleados. Por favor, inténtelo de nuevo.';
@@ -224,7 +235,7 @@ const closeModal = () => {
   showModal.value = false;
 };
 
-const openEditModal = (employee: any) => {
+const openEditModal = (employee: EmployeeType) => {
   employeeToEdit.value = employee;
 };
 
@@ -232,7 +243,7 @@ const closeEditModal = () => {
   employeeToEdit.value = null;
 };
 
-const openDeleteModal = (employee: any) => {
+const openDeleteModal = (employee: EmployeeType) => {
   employeeToDelete.value = employee;
 };
 
