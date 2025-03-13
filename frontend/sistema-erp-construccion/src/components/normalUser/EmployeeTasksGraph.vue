@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 sm:p-4 bg-white dark:bg-gray-800" style="height: 250px; min-height: 250px; max-height: 300px;">
+  <div class="p-2 sm:p-4 bg-white dark:bg-gray-800" style="height: 250px; sm:height: 300px;">
     <canvas ref="chartCanvas" style="width: 100%; height: 100%;"></canvas>
   </div>
 </template>
@@ -34,11 +34,6 @@ const getChartColors = () => {
   };
 };
 
-// Función para determinar si es móvil
-const isMobileView = () => {
-  return window.innerWidth < 640;
-};
-
 const fetchTasksAndRenderChart = async () => {
   if (!props.employeeId) return; // No hacer nada si employeeId es null
   try {
@@ -63,9 +58,9 @@ const fetchTasksAndRenderChart = async () => {
     
     const ctx = chartCanvas.value.getContext('2d');
     const colors = getChartColors();
-    
-    // Detector de dispositivo móvil para ajustar la configuración
-    const isMobile = isMobileView();
+
+    // Determinar si estamos en móvil
+    const isMobile = window.innerWidth < 640;
 
     chartInstance = new Chart(ctx, {
       type: 'pie',
@@ -82,12 +77,11 @@ const fetchTasksAndRenderChart = async () => {
         plugins: {
           legend: {
             position: 'bottom',
-            align: isMobile ? 'start' : 'center',
             labels: {
               color: colors.legend,
               font: { size: isMobile ? 10 : 13 },
-              boxWidth: isMobile ? 12 : 15,
-              padding: isMobile ? 8 : 10
+              boxWidth: isMobile ? 10 : 15,
+              padding: isMobile ? 8 : 15
             },
             backgroundColor: colors.background,
           },
@@ -96,8 +90,16 @@ const fetchTasksAndRenderChart = async () => {
             text: 'Distribución de Tareas',
             font: { size: isMobile ? 16 : 24 },
             color: colors.title,
-            padding: { top: 0, bottom: isMobile ? 5 : 10 }
+            padding: { top: isMobile ? 8 : 10, bottom: isMobile ? 4 : 10 }
           },
+          tooltip: {
+            bodyFont: {
+              size: isMobile ? 11 : 14
+            },
+            titleFont: {
+              size: isMobile ? 12 : 16
+            }
+          }
         },
         color: colors.title,
       },
@@ -127,34 +129,36 @@ const handleModeChange = () => {
   }
 };
 
-// Función debounce para optimizar eventos frecuentes
-function debounce(func, wait) {
-  let timeout;
-  return function() {
-    const context = this;
-    const args = arguments;
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(context, args), wait);
-  };
-}
-
-// Manejador de cambio de tamaño de ventana
-const handleResize = debounce(() => {
-  if (chartInstance) {
-    const isMobile = isMobileView();
+// Función para manejar el cambio de tamaño de pantalla
+const handleResize = () => {
+  const isMobile = window.innerWidth < 640;
+  
+  if (chartInstance && chartInstance.options && chartInstance.options.plugins) {
+    // Actualizar tamaños de fuente
+    if (chartInstance.options.plugins.title) {
+      chartInstance.options.plugins.title.font.size = isMobile ? 16 : 24;
+      chartInstance.options.plugins.title.padding = { top: isMobile ? 8 : 10, bottom: isMobile ? 4 : 10 };
+    }
     
-    // Actualizar la configuración basada en el tamaño de la pantalla
-    chartInstance.options.plugins.legend.labels.font.size = isMobile ? 10 : 13;
-    chartInstance.options.plugins.legend.labels.boxWidth = isMobile ? 12 : 15;
-    chartInstance.options.plugins.legend.labels.padding = isMobile ? 8 : 10;
-    chartInstance.options.plugins.legend.align = isMobile ? 'start' : 'center';
-    chartInstance.options.plugins.title.font.size = isMobile ? 16 : 24;
-    chartInstance.options.plugins.title.padding.bottom = isMobile ? 5 : 10;
+    if (chartInstance.options.plugins.legend && chartInstance.options.plugins.legend.labels) {
+      chartInstance.options.plugins.legend.labels.font.size = isMobile ? 10 : 13;
+      chartInstance.options.plugins.legend.labels.boxWidth = isMobile ? 10 : 15;
+      chartInstance.options.plugins.legend.labels.padding = isMobile ? 8 : 15;
+    }
+    
+    if (chartInstance.options.plugins.tooltip) {
+      chartInstance.options.plugins.tooltip.bodyFont = {
+        size: isMobile ? 11 : 14
+      };
+      chartInstance.options.plugins.tooltip.titleFont = {
+        size: isMobile ? 12 : 16
+      };
+    }
     
     // Actualizar el gráfico
     chartInstance.update();
   }
-}, 250);
+};
 
 // Añadir event listener para cambios de modo
 const modeObserver = new MutationObserver((mutations) => {
@@ -165,23 +169,34 @@ const modeObserver = new MutationObserver((mutations) => {
   });
 });
 
+// Event listener para cambio de tamaño
+const debouncedResize = () => {
+  let timeout;
+  return () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(handleResize, 250);
+  };
+};
+
+const handleResizeDebounced = debouncedResize();
+
 onMounted(() => {
   fetchTasksAndRenderChart();
   
-  // Observar cambios en la clase del elemento raíz
+  // Observar cambios en la clase del elemento raíz para cambios de tema
   modeObserver.observe(document.documentElement, { 
     attributes: true, 
     attributeFilter: ['class'] 
   });
   
-  // Añadir event listener para el resize
-  window.addEventListener('resize', handleResize);
+  // Observar cambios de tamaño de ventana
+  window.addEventListener('resize', handleResizeDebounced);
 });
 
 // Limpiar el observer cuando el componente se desmonte
 onUnmounted(() => {
   modeObserver.disconnect();
-  window.removeEventListener('resize', handleResize);
+  window.removeEventListener('resize', handleResizeDebounced);
   if (chartInstance) {
     chartInstance.destroy();
   }
@@ -200,5 +215,12 @@ canvas {
   display: block;
   width: 100% !important;
   height: 100% !important;
+}
+
+@media (max-width: 640px) {
+  /* Ajustes adicionales para móviles si son necesarios */
+  div {
+    padding: 0.5rem;
+  }
 }
 </style>

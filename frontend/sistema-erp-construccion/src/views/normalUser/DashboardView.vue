@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen flex flex-col justify-center items-center p-6 gap-6 w-full transition-colors duration-300">
+  <div class="min-h-screen flex flex-col justify-center items-center p-3 sm:p-6 gap-4 sm:gap-6 w-full transition-colors duration-300">
     <!-- Fila superior: Perfil + Gráfica -->
-    <div class="flex flex-col md:flex-row w-full max-w-3xl gap-6">
+    <div class="flex flex-col md:flex-row w-full max-w-3xl gap-4 sm:gap-6">
       <!-- Columna Perfil - Oculta en dispositivos pequeños -->
       <div class="hidden md:flex md:flex-col bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full md:w-2/5 p-4 transition-colors duration-300">
         <div v-if="isLoading" class="flex-grow flex flex-col items-center justify-center">
@@ -29,10 +29,10 @@
       </div>
       <!-- Columna Gráfica (solo se renderiza si employeeId existe) -->
       <div 
-        class="flex flex-col bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full md:w-3/5 p-4 transition-colors duration-300"
+        class="flex flex-col bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full md:w-3/5 p-3 sm:p-4 transition-colors duration-300"
       >
         <div v-if="isLoading" class="h-48 w-full flex items-center justify-center">
-          <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div class="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
         <router-link v-else-if="employeeId" :to="{ path: `/tasks/${employeeId}` }" class="block">
           <EmployeeTasksGraph :employeeId="employeeId" />
@@ -43,7 +43,7 @@
       </div>
     </div>
     <!-- Fila inferior: Tareas Pendientes -->
-    <div class="bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full max-w-3xl p-4 transition-colors duration-300">
+    <div class="bg-white/90 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg dark:shadow-gray-900/30 w-full max-w-3xl p-3 sm:p-4 transition-colors duration-300">
       <div v-if="isLoading" class="h-48 w-full">
         <div class="animate-pulse space-y-4">
           <div class="h-6 bg-gray-300 dark:bg-gray-600 rounded w-1/4 mb-4"></div>
@@ -62,7 +62,7 @@
     <div class="md:hidden w-full max-w-3xl">
       <button
         @click="logout"
-        class="w-full px-5 py-3 bg-red-500 dark:bg-red-600 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-200"
+        class="w-full px-4 py-2 sm:px-5 sm:py-3 bg-red-500 dark:bg-red-600 text-white rounded-md hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-200 text-sm sm:text-base"
         :disabled="isLoading"
       >
         Cerrar Sesión
@@ -94,7 +94,6 @@ onMounted(async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     
     if (user) {
-      
       // Obtener los datos del empleado (ahora con caché)
       const employeeData = await getEmployeeData(user.empleados_id, localStorage.getItem('token'));
       
