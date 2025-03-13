@@ -125,7 +125,7 @@ import { debounce } from '@/utils/index';
 import CreateEmployeeModal from '@/components/adminUser/employee/CreateEmployeeModal.vue';
 import EditEmployeeModal from '@/components/adminUser/employee/EditEmployeeModal.vue';
 import DeleteEmployeeModal from '@/components/adminUser/employee/DeleteEmployeeModal.vue';
-import ResponsiveTable from '@/components/shared/ResponsiveTable.vue';
+import ResponsiveTable from '@/components/ResponsiveTable.vue';
 
 const employees = ref<any[]>([]);
 const loading = ref(true);
