@@ -109,7 +109,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { getBudgets } from '@/service/budgetService';
 import EditBudgetModal from '@/components/adminUser/budget/EditBudgetModal.vue';
-import ResponsiveTable from '@/components/shared/ResponsiveTable.vue';
+import ResponsiveTable from '@/components/ResponsiveTable.vue';
   
 const budgets = ref<any[]>([]);
 const loading = ref(true);
