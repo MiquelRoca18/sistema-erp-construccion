@@ -286,28 +286,38 @@ watch(filter, () => {
   currentPage.value = 1;
 }, { deep: true });
 
+const clearAllCaches = () => {
+  console.log("Limpiando todas las cachés...");
+  for (let key in localStorage) {
+    if (
+      key.includes('task') || 
+      key.includes('employee') || 
+      key.includes('project') || 
+      key.includes('company')
+    ) {
+      console.log("Eliminando caché:", key);
+      localStorage.removeItem(key);
+    }
+  }
+};
+
+
 const fetchTasks = async (forceRefresh = false) => {
   try {
     loading.value = true;
     error.value = '';
-    // Si forzamos el refresco, limpiamos la caché primero
+    
+    // Si forzamos el refresco, limpiamos todas las cachés primero
     if (forceRefresh) {
-      // Limpiar todas las cachés relacionadas con tareas
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && (
-          key.includes('tasks') || 
-          key.includes('task_') ||
-          key.includes('employee_tasks')
-        )) {
-          localStorage.removeItem(key);
-        }
-      }
+      clearAllCaches();
     }
 
     // Simulamos un retardo mínimo para evitar parpadeos en cargas muy rápidas
     const startTime = Date.now();
-    const data = await getAllCompanyTasks();
+    
+    // Incluimos un timestamp para evitar cachés del navegador
+    const timestamp = new Date().getTime();
+    const data = await getAllCompanyTasks(`?t=${timestamp}`);
     
     // Aseguramos que el loader se muestre al menos por 500ms para evitar parpadeos
     const elapsedTime = Date.now() - startTime;
@@ -316,6 +326,8 @@ const fetchTasks = async (forceRefresh = false) => {
     }
     
     tasks.value = data;
+    
+    console.log("Tareas actualizadas:", data);
   } catch (err: any) {
     error.value = err.message || 'Error al obtener tareas';
     console.error('Error al cargar tareas:', err);
@@ -440,7 +452,9 @@ const openAssignModal = (task: Task) => {
 const closeAssignModal = (forceRefresh = false) => {
   taskToAssign.value = null;
   if (forceRefresh) {
-    fetchTasks(true); 
+    setTimeout(() => {
+      fetchTasks(true); 
+    }, 300); 
   }
 };
 </script>

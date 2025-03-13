@@ -216,6 +216,22 @@ const removeAssignment = (index: number) => {
   assignments.value.splice(index, 1);
 };
 
+// Función para limpiar cachés relacionadas con tareas
+const clearTaskRelatedCaches = () => {
+  console.log("Limpiando cachés relacionadas con tareas...");
+  // Enfoque más agresivo: eliminar todas las cachés que puedan estar relacionadas
+  for (let key in localStorage) {
+    if (
+      key.includes('task') || 
+      key.includes('employee') || 
+      key.includes('company')
+    ) {
+      console.log("Eliminando caché:", key);
+      localStorage.removeItem(key);
+    }
+  }
+};
+
 const handleSubmit = async () => {
   if (loading.value) return;
   
@@ -237,64 +253,69 @@ const handleSubmit = async () => {
     loading.value = true;
     const finalAssignments = assignments.value;
     
-    // Si no hubo cambios, se cierra el modal
+    // Si no hubo cambios, simplemente cerrar el modal
     if (JSON.stringify(finalAssignments.slice().sort()) === JSON.stringify(initialAssignments.value.slice().sort())) {
-      emit('updated');
+      emit('updated', true); // Forzar refresco incluso sin cambios
       closeModal();
       return;
     }
     
-    // Simulamos un tiempo mínimo de carga para mejorar UX
     const startTime = Date.now();
     
-    // Primero eliminamos todas las asignaciones anteriores
-    for (const id of initialAssignments.value) {
-      await removeEmployeeFromTask(id, props.task.tareas_id);
+    // Enfoque más directo: eliminar todas las asignaciones y volver a crear
+    try {
+      console.log("Eliminando asignaciones existentes...");
+      // Eliminar todas las asignaciones actuales
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/employee-tasks/task/${props.task.tareas_id}/reset`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nuevas_asignaciones: finalAssignments })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al actualizar las asignaciones');
+      }
+    } catch (resetError) {
+      console.error("Error en reset, usando enfoque alternativo:", resetError);
+      
+      // Plan B: método manual
+      // Eliminar asignaciones existentes
+      for (const id of initialAssignments.value) {
+        await removeEmployeeFromTask(id, props.task.tareas_id);
+      }
+      
+      // Agregar nuevas asignaciones
+      for (const id of finalAssignments) {
+        await addEmployeeToTask(id, props.task.tareas_id);
+      }
     }
     
-    // Luego añadimos todas las nuevas asignaciones
-    for (const id of finalAssignments) {
-      await addEmployeeToTask(id, props.task.tareas_id);
-    }
-    
-    // Aseguramos que el loader se muestre al menos por 800ms para operaciones complejas
+    // UX mínima...
     const elapsedTime = Date.now() - startTime;
     if (elapsedTime < 800) {
       await new Promise(resolve => setTimeout(resolve, 800 - elapsedTime));
     }
     
+    // Limpiar TODAS las cachés relacionadas
     clearTaskRelatedCaches();
-
-    emit('updated');
     
+    // Notificar al componente padre para forzar actualización
+    emit('updated', true);
+    
+    // Cerrar modal manualmente
     closeModal();
   } catch (error: any) {
-    console.error('Error al asignar empleados:', error.message);
+    console.error('Error al asignar empleados:', error);
     errorMessage.value = error.message || 'Error al asignar empleados';
   } finally {
-    // Aseguramos que loading siempre se desactive
     loading.value = false;
   }
 };
 
-// Función para limpiar cachés relacionadas con tareas
-const clearTaskRelatedCaches = () => {
-  // Buscamos y limpiamos todas las entradas de caché relacionadas con tareas
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key && (
-      key.startsWith('all-tasks-') || 
-      key.startsWith('pending-tasks-') || 
-      key.startsWith('company-tasks') || 
-      key.startsWith('responsible-tasks-') ||
-      key.startsWith('task_') ||
-      key.startsWith('employee_tasks_') ||
-      key.startsWith('employee_pending_tasks_')
-    )) {
-      localStorage.removeItem(key);
-    }
-  }
-};
+
 
 // También nos aseguramos de que closeModal funcione correctamente
 const closeModal = () => {

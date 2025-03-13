@@ -177,17 +177,28 @@ export const updateTaskAssignment = async (taskId: number, oldEmployeeId: number
 };
 
 // Obtener todas las tareas de la empresa
-export const getAllCompanyTasks = async () => {
+export const getAllCompanyTasks = async (queryParams = '') => {
   try {
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('No se encontró el token.');
     }
-    const response = await axios.get(`${API_URL}/tasks`, {
+    
+    // Añadimos un timestamp para evitar caché
+    const cacheParam = queryParams || `?t=${new Date().getTime()}`;
+    const url = `${API_URL}/tasks${cacheParam}`;
+    
+    console.log("Obteniendo tareas desde:", url);
+    
+    const response = await axios.get(url, {
       headers: {
         'Authorization': `Bearer ${token}`,
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
       },
     });
+    
     return Array.isArray(response.data.data) ? response.data.data : [];
   } catch (error: any) {
     throw new Error(error.response?.data?.message || 'Error al obtener tareas');
