@@ -132,7 +132,7 @@ class EmployeeTaskService extends BaseService {
         
         try {
             // Iniciar transacción para garantizar que todas las operaciones se completen o se revierta todo
-            $db = $this->model->getDb();
+            $db = $this->model->db;
             $db->beginTransaction();
             
             foreach ($operations as $index => $operation) {
@@ -242,25 +242,19 @@ class EmployeeTaskService extends BaseService {
                             $results['failed']++;
                         }
                         break;
-                        
-                    default:
-                        $operationResult['message'] = "Tipo de operación '{$operation->type}' no reconocido. Use 'add', 'remove' o 'update'.";
-                        $results['failed']++;
                 }
                 
                 $results['operations'][] = $operationResult;
             }
             
-            // Si hubo algún fallo, revertir todo
-            if ($results['failed'] > 0) {
-                $db->rollBack();
-                error_log("Revirtiendo todas las operaciones debido a fallos: " . json_encode($results));
-                return $this->responseError("Algunas operaciones fallaron. No se realizaron cambios.", $results);
-            } else {
-                // Si todo fue exitoso, confirmar los cambios
+            // Si todas las operaciones fueron exitosas, confirmar la transacción
+            if ($results['failed'] === 0) {
                 $db->commit();
-                error_log("Todas las operaciones de asignación completadas con éxito: " . json_encode($results));
-                return $this->responseUpdated($results, "Asignaciones gestionadas con éxito.");
+                return $this->responseUpdated($results, 'Operaciones completadas exitosamente.');
+            } else {
+                // Si hubo fallos, revertir la transacción
+                $db->rollBack();
+                return $this->responseError('Algunas operaciones fallaron.', $results);
             }
             
         } catch (\Exception $e) {
