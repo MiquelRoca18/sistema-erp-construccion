@@ -268,18 +268,13 @@ const fetchTasks = async () => {
 
   try {
     let response;
-    console.log('Selected Task Type:', selectedTaskType.value);
-    console.log('Employee ID:', employeeId.value);
 
     if (selectedTaskType.value === 'otros') {
-      console.log('Fetching tasks by responsible');
       response = await getTasksByResponsible(employeeId.value);
     } else {
-      console.log('Fetching all tasks');
       response = await getAllTasks(employeeId.value);
     }
     
-    console.log('Fetched Tasks:', response);
     tasks.value = response;
   } catch (err) {
     // Error handling
@@ -428,8 +423,6 @@ onUnmounted(() => {
 
 // Filtro local optimizado
 const filteredTasks = computed(() => {
-  console.log('Recalculando filteredTasks con tipo:', selectedTaskType.value);
-  console.log('Tareas actuales:', tasks.value);
   
   // Creamos un criterio de filtrado como string para comparación
   const currentCriteria = `${selectedProject.value}|${selectedStatus.value}|${startDate.value}|${endDate.value}`;
