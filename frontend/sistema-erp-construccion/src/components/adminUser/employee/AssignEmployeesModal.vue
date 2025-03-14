@@ -259,9 +259,15 @@ const handleSubmit = async () => {
     // Preparar operaciones
     const operations = [];
     
-    // Primero, identificar actualizaciones (cambios de empleado en la misma posición)
+    // Solo manejar actualizaciones (cambios de empleado en la misma posición)
     for (let i = 0; i < Math.min(initialAssignmentNumbers.length, finalAssignments.length); i++) {
       if (initialAssignmentNumbers[i] !== finalAssignments[i]) {
+        console.log('Detectada actualización:', {
+          old: initialAssignmentNumbers[i],
+          new: finalAssignments[i],
+          position: i
+        });
+        
         operations.push({
           type: 'update',
           old_empleados_id: initialAssignmentNumbers[i],
@@ -270,34 +276,11 @@ const handleSubmit = async () => {
       }
     }
     
-    // Luego, identificar empleados a remover (los que están en initial pero no en final)
-    const removals = initialAssignmentNumbers.filter(id => !finalAssignments.includes(id));
-    for (const id of removals) {
-      // Solo agregar operación de remove si no hay una operación de update que ya lo maneje
-      if (!operations.some(op => op.type === 'update' && op.old_empleados_id === id)) {
-        operations.push({
-          type: 'remove',
-          empleados_id: id
-        });
-      }
-    }
-    
-    // Finalmente, identificar empleados a agregar (los que están en final pero no en initial)
-    const additions = finalAssignments.filter(id => !initialAssignmentNumbers.includes(id));
-    for (const id of additions) {
-      // Solo agregar operación de add si no hay una operación de update que ya lo maneje
-      if (!operations.some(op => op.type === 'update' && op.new_empleados_id === id)) {
-        operations.push({
-          type: 'add',
-          empleados_id: id
-        });
-      }
-    }
-    
     // Si hay operaciones, ejecutarlas
     if (operations.length > 0) {
       console.log('Operaciones a ejecutar:', operations); // Para depuración
-      await manageTaskAssignments(props.task.tareas_id, operations);
+      const response = await manageTaskAssignments(props.task.tareas_id, operations);
+      console.log('Respuesta del servidor:', response); // Para depuración
     }
     
     // Asegurar tiempo mínimo de carga
