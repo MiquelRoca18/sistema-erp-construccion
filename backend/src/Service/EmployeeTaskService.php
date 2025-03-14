@@ -132,7 +132,7 @@ class EmployeeTaskService extends BaseService {
         
         try {
             // Iniciar transacción para garantizar que todas las operaciones se completen o se revierta todo
-            $db = $this->model->db;
+            $db = $this->model->getConnection();
             $db->beginTransaction();
             
             foreach ($operations as $index => $operation) {

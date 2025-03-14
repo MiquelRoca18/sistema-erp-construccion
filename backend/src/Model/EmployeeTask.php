@@ -10,6 +10,11 @@ class EmployeeTask {
         $this->db = (new Database())->getConnection();
     }
 
+    // Método público para obtener la conexión a la base de datos
+    public function getConnection() {
+        return $this->db;
+    }
+
     public function exists($id, $column) {
         $query = 'SELECT COUNT(*) FROM ' . $this->table . ' WHERE ' . $column . '_id = :id';
         $stmt = $this->db->prepare($query);
