@@ -297,6 +297,23 @@ const handleSubmit = async () => {
       }
     }
     
+    // 3. Manejar eliminaciones (empleados que ya no están asignados)
+    if (initialAssignmentNumbers.length > finalAssignments.length) {
+      // Obtener los empleados eliminados (los que están en initialAssignmentNumbers pero no en finalAssignments)
+      const removedEmployees = initialAssignmentNumbers.filter(id => !finalAssignments.includes(id));
+      
+      for (const removedEmployeeId of removedEmployees) {
+        console.log('Detectada eliminación:', {
+          removed: removedEmployeeId
+        });
+        
+        operations.push({
+          type: 'remove',
+          empleados_id: removedEmployeeId
+        });
+      }
+    }
+    
     // Si hay operaciones, ejecutarlas
     if (operations.length > 0) {
       console.log('Operaciones a ejecutar:', operations);
