@@ -264,6 +264,13 @@ const handleSubmit = async () => {
     // Simulamos un tiempo mínimo de carga para mejorar UX
     const startTime = Date.now();
     
+    // Limpiar todos los cachés relacionados
+    for (let key in localStorage) {
+      if (key.includes('task') || key.includes('employee') || key.includes('company')) {
+        localStorage.removeItem(key);
+      }
+    }
+    
     // Si el número de asignaciones es el mismo, y solo hay un cambio, se utiliza updateTaskAssignment
     if (initialAssignments.value.length === finalAssignments.length) {
       const differences = initialAssignmentNumbers.filter((id, i) => id !== finalAssignments[i]);
@@ -304,7 +311,7 @@ const handleSubmit = async () => {
     emit('updated');
     closeModal();
 
-    // Recargar la página completa después de un breve retraso
+    // Forzar recarga de la página después de un breve retraso
     setTimeout(() => {
       window.location.reload();
     }, 500);

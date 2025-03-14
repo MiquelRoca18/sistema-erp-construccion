@@ -131,9 +131,6 @@
                   No hay empleados asignados a esta tarea
                 </span>
               </div>
-              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Esta tarea está asignada a los empleados mostrados arriba
-              </p>
             </div>
           </div>
         </div>
