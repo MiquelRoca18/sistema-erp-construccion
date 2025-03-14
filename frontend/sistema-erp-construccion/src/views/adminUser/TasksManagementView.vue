@@ -470,8 +470,10 @@ const closeAssignModal = () => {
 const taskUpdated = async (forceReload = false) => {
   if (forceReload) {
     console.log("Forzando recarga de tareas después de actualización");
+    // Limpiar todas las cachés relacionadas
+    clearAllCaches();
     // Pequeña pausa para asegurar que cualquier operación de backend se complete
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 300));
     await fetchTasks();
   }
 };

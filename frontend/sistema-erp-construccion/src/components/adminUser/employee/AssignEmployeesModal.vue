@@ -323,12 +323,18 @@ const handleSubmit = async () => {
         const response = await manageTaskAssignments(props.task.tareas_id, operations);
         console.log('Respuesta del servidor:', response);
         
-        // Cerramos el modal y recargamos la página
-        emit('updated');
+        // Primero desactivamos el estado de carga
+        loading.value = false;
+        
+        // Emitimos el evento updated con true para indicar que se debe recargar
+        emit('updated', true);
+        
+        // Cerramos el modal
         closeModal();
         
-        // Recargar la página después de un breve retraso
+        // Forzamos la recarga de la página después de un breve retraso
         setTimeout(() => {
+          console.log('Recargando página...');
           window.location.reload();
         }, 300);
       } catch (apiError) {
@@ -349,7 +355,7 @@ const handleSubmit = async () => {
 };
 
 const closeModal = () => {
-  if (loading.value) return;
+  // Permitimos cerrar el modal incluso si está cargando
   emit('close');
 };
 </script>
