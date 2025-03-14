@@ -257,15 +257,13 @@ const handleSubmit = async () => {
       return;
     }
     
-    const startTime = Date.now();
-    
     // Limpiar cachés
     clearTaskRelatedCaches();
     
     // Preparar operaciones
     const operations = [];
     
-    // Solo manejar actualizaciones (cambios de empleado en la misma posición)
+    // 1. Manejar actualizaciones (cambios de empleado en la misma posición)
     for (let i = 0; i < Math.min(initialAssignmentNumbers.length, finalAssignments.length); i++) {
       if (initialAssignmentNumbers[i] !== finalAssignments[i]) {
         console.log('Detectada actualización:', {
@@ -282,6 +280,23 @@ const handleSubmit = async () => {
       }
     }
     
+    // 2. Manejar adiciones (nuevos empleados)
+    if (finalAssignments.length > initialAssignmentNumbers.length) {
+      // Obtener los nuevos empleados (los que están en finalAssignments pero no en initialAssignmentNumbers)
+      const newEmployees = finalAssignments.filter(id => !initialAssignmentNumbers.includes(id));
+      
+      for (const newEmployeeId of newEmployees) {
+        console.log('Detectada adición:', {
+          new: newEmployeeId
+        });
+        
+        operations.push({
+          type: 'add',
+          empleados_id: newEmployeeId
+        });
+      }
+    }
+    
     // Si hay operaciones, ejecutarlas
     if (operations.length > 0) {
       console.log('Operaciones a ejecutar:', operations);
@@ -291,30 +306,27 @@ const handleSubmit = async () => {
         const response = await manageTaskAssignments(props.task.tareas_id, operations);
         console.log('Respuesta del servidor:', response);
         
-        if (response.status === 200) {
-          emit('updated');
-          closeModal();
-        } else {
-          errorMessage.value = response.message || 'Error al actualizar las asignaciones';
-        }
+        // No cerramos el modal automáticamente para poder ver los errores en la consola
+        // Solo actualizamos el estado de carga
+        loading.value = false;
+        
+        // Actualizamos las asignaciones iniciales para reflejar el nuevo estado
+        initialAssignments.value = [...finalAssignments];
+        
+        // No mostramos mensaje de éxito
       } catch (apiError) {
         console.error('Error en la llamada a la API:', apiError);
         errorMessage.value = apiError.message || 'Error al comunicarse con el servidor';
+        loading.value = false;
       }
     } else {
       console.log('No se detectaron operaciones para ejecutar');
-    }
-    
-    // Asegurar tiempo mínimo de carga
-    const elapsedTime = Date.now() - startTime;
-    if (elapsedTime < 800) {
-      await new Promise(resolve => setTimeout(resolve, 800 - elapsedTime));
+      loading.value = false;
     }
     
   } catch (error) {
     console.error('Error al asignar empleados:', error);
     errorMessage.value = error.message || 'Error al asignar empleados';
-  } finally {
     loading.value = false;
   }
 };
