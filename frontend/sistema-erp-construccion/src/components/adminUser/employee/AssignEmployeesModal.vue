@@ -244,8 +244,14 @@ const handleSubmit = async () => {
     const finalAssignments = assignments.value.map(id => Number(id));
     const initialAssignmentNumbers = initialAssignments.value.map(id => Number(id));
     
+    console.log('Estado inicial:', {
+      initialAssignments: initialAssignmentNumbers,
+      finalAssignments: finalAssignments
+    });
+    
     // Si no hay cambios, cerrar el modal
     if (JSON.stringify(finalAssignments.slice().sort()) === JSON.stringify(initialAssignmentNumbers.slice().sort())) {
+      console.log('No hay cambios detectados');
       emit('updated');
       closeModal();
       return;
@@ -278,9 +284,25 @@ const handleSubmit = async () => {
     
     // Si hay operaciones, ejecutarlas
     if (operations.length > 0) {
-      console.log('Operaciones a ejecutar:', operations); // Para depuración
-      const response = await manageTaskAssignments(props.task.tareas_id, operations);
-      console.log('Respuesta del servidor:', response); // Para depuración
+      console.log('Operaciones a ejecutar:', operations);
+      console.log('ID de la tarea:', props.task.tareas_id);
+      
+      try {
+        const response = await manageTaskAssignments(props.task.tareas_id, operations);
+        console.log('Respuesta del servidor:', response);
+        
+        if (response.status === 200) {
+          emit('updated');
+          closeModal();
+        } else {
+          errorMessage.value = response.message || 'Error al actualizar las asignaciones';
+        }
+      } catch (apiError) {
+        console.error('Error en la llamada a la API:', apiError);
+        errorMessage.value = apiError.message || 'Error al comunicarse con el servidor';
+      }
+    } else {
+      console.log('No se detectaron operaciones para ejecutar');
     }
     
     // Asegurar tiempo mínimo de carga
@@ -289,16 +311,10 @@ const handleSubmit = async () => {
       await new Promise(resolve => setTimeout(resolve, 800 - elapsedTime));
     }
     
-    emit('updated');
-    closeModal();
-
-    // Forzar recarga después de un breve retraso
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
   } catch (error) {
-    console.error('Error al asignar empleados:', error.message);
+    console.error('Error al asignar empleados:', error);
     errorMessage.value = error.message || 'Error al asignar empleados';
+  } finally {
     loading.value = false;
   }
 };
