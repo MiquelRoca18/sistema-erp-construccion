@@ -272,3 +272,24 @@ export const removeEmployeeFromTask = async (employeeId: number, taskId: number)
     throw new Error(error.response?.data?.message || 'Error al eliminar empleado de la tarea');
   }
 };
+
+// Manejar múltiples operaciones de asignación para una tarea
+export const manageTaskAssignments = async (taskId: number, operations: any[]) => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No se encontró el token.');
+    }
+    const response = await axios.post(`${API_URL}/employee-tasks/manage/${taskId}`, 
+      { operations },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || 'Error al gestionar asignaciones de la tarea');
+  }
+};

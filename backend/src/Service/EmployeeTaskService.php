@@ -110,6 +110,170 @@ class EmployeeTaskService extends BaseService {
             : $this->responseNotFound();
     }
 
+    // Nuevo método para manejar múltiples operaciones de asignación
+    public function manageTaskAssignments($taskId, $operations) {
+        // Verificar si la tarea existe
+        if (!$this->taskModel->exists($taskId)) {
+            return $this->responseError("La tarea con ID {$taskId} no existe.");
+        }
+        
+        // Convertir explícitamente el ID de tarea a entero
+        $taskId = (int)$taskId;
+        
+        // Array para registrar resultados
+        $results = [
+            'success' => 0,
+            'failed' => 0,
+            'operations' => []
+        ];
+        
+        // Registrar para depuración
+        error_log("Iniciando manejo de múltiples asignaciones para tarea $taskId");
+        
+        try {
+            // Iniciar transacción para garantizar que todas las operaciones se completen o se revierta todo
+            $db = $this->model->getDb();
+            $db->beginTransaction();
+            
+            foreach ($operations as $index => $operation) {
+                $operationResult = [
+                    'index' => $index,
+                    'type' => isset($operation->type) ? $operation->type : 'unknown',
+                    'success' => false,
+                    'message' => ''
+                ];
+                
+                switch ($operation->type) {
+                    case 'add':
+                        // Agregar un empleado a la tarea
+                        if (empty($operation->empleados_id)) {
+                            $operationResult['message'] = "El campo empleados_id es obligatorio para operaciones 'add'.";
+                            break;
+                        }
+                        
+                        $empleadosId = (int)$operation->empleados_id;
+                        
+                        // Verificar si el empleado existe
+                        if (!$this->employeeModel->exists($empleadosId)) {
+                            $operationResult['message'] = "El empleado con ID {$empleadosId} no existe.";
+                            break;
+                        }
+                        
+                        // Verificar si la relación ya existe
+                        if ($this->model->relationExists($empleadosId, $taskId)) {
+                            $operationResult['message'] = "El empleado con ID {$empleadosId} ya está asignado a esta tarea.";
+                            break;
+                        }
+                        
+                        if ($this->model->addTaskToEmployee($empleadosId, $taskId)) {
+                            $operationResult['success'] = true;
+                            $operationResult['message'] = "Empleado con ID {$empleadosId} asignado correctamente.";
+                            $results['success']++;
+                        } else {
+                            $operationResult['message'] = "No se pudo asignar el empleado con ID {$empleadosId}.";
+                            $results['failed']++;
+                        }
+                        break;
+                        
+                    case 'remove':
+                        // Eliminar un empleado de la tarea
+                        if (empty($operation->empleados_id)) {
+                            $operationResult['message'] = "El campo empleados_id es obligatorio para operaciones 'remove'.";
+                            break;
+                        }
+                        
+                        $empleadosId = (int)$operation->empleados_id;
+                        
+                        // Verificar si la relación existe
+                        if (!$this->model->relationExists($empleadosId, $taskId)) {
+                            $operationResult['message'] = "El empleado con ID {$empleadosId} no está asignado a esta tarea.";
+                            break;
+                        }
+                        
+                        if ($this->model->removeTaskFromEmployee($empleadosId, $taskId)) {
+                            $operationResult['success'] = true;
+                            $operationResult['message'] = "Empleado con ID {$empleadosId} removido correctamente.";
+                            $results['success']++;
+                        } else {
+                            $operationResult['message'] = "No se pudo remover el empleado con ID {$empleadosId}.";
+                            $results['failed']++;
+                        }
+                        break;
+                        
+                    case 'update':
+                        // Cambiar asignación de un empleado a otro
+                        if (empty($operation->old_empleados_id) || empty($operation->new_empleados_id)) {
+                            $operationResult['message'] = "Los campos old_empleados_id y new_empleados_id son obligatorios para operaciones 'update'.";
+                            break;
+                        }
+                        
+                        $oldEmpleadosId = (int)$operation->old_empleados_id;
+                        $newEmpleadosId = (int)$operation->new_empleados_id;
+                        
+                        // Verificar si los empleados existen
+                        if (!$this->employeeModel->exists($oldEmpleadosId)) {
+                            $operationResult['message'] = "El empleado original con ID {$oldEmpleadosId} no existe.";
+                            break;
+                        }
+                        
+                        if (!$this->employeeModel->exists($newEmpleadosId)) {
+                            $operationResult['message'] = "El nuevo empleado con ID {$newEmpleadosId} no existe.";
+                            break;
+                        }
+                        
+                        // Verificar si la relación original existe
+                        if (!$this->model->relationExists($oldEmpleadosId, $taskId)) {
+                            $operationResult['message'] = "El empleado con ID {$oldEmpleadosId} no está asignado a esta tarea.";
+                            break;
+                        }
+                        
+                        // Verificar si la nueva relación ya existe
+                        if ($this->model->relationExists($newEmpleadosId, $taskId)) {
+                            $operationResult['message'] = "El empleado con ID {$newEmpleadosId} ya está asignado a esta tarea.";
+                            break;
+                        }
+                        
+                        if ($this->model->updateAssignment($taskId, $oldEmpleadosId, $newEmpleadosId)) {
+                            $operationResult['success'] = true;
+                            $operationResult['message'] = "Asignación actualizada correctamente de empleado {$oldEmpleadosId} a {$newEmpleadosId}.";
+                            $results['success']++;
+                        } else {
+                            $operationResult['message'] = "No se pudo actualizar la asignación.";
+                            $results['failed']++;
+                        }
+                        break;
+                        
+                    default:
+                        $operationResult['message'] = "Tipo de operación '{$operation->type}' no reconocido. Use 'add', 'remove' o 'update'.";
+                        $results['failed']++;
+                }
+                
+                $results['operations'][] = $operationResult;
+            }
+            
+            // Si hubo algún fallo, revertir todo
+            if ($results['failed'] > 0) {
+                $db->rollBack();
+                error_log("Revirtiendo todas las operaciones debido a fallos: " . json_encode($results));
+                return $this->responseError("Algunas operaciones fallaron. No se realizaron cambios.", $results);
+            } else {
+                // Si todo fue exitoso, confirmar los cambios
+                $db->commit();
+                error_log("Todas las operaciones de asignación completadas con éxito: " . json_encode($results));
+                return $this->responseUpdated($results, "Asignaciones gestionadas con éxito.");
+            }
+            
+        } catch (\Exception $e) {
+            // En caso de excepción, revertir cambios
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            error_log("Error en manejo de asignaciones: " . $e->getMessage());
+            return $this->responseError("Error al gestionar asignaciones: " . $e->getMessage());
+        }
+    }
+
+    // Mantener updateAssignment para compatibilidad
     public function updateAssignment($taskId, $oldEmployeeId, $newEmployeeId) {
         // Verificar que el nuevo empleado existe
         if (!$this->employeeModel->exists($newEmployeeId)) {
@@ -141,6 +305,5 @@ class EmployeeTaskService extends BaseService {
             ? $this->responseUpdated("Asignación actualizada exitosamente.") 
             : $this->responseError("No se pudo actualizar la asignación.");
     }
-      
 }
 ?>

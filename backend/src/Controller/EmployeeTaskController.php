@@ -136,7 +136,46 @@ class EmployeeTaskController extends BaseController {
         }
     }
 
-    // Actualizar asignación de tarea
+    // Nuevo método: Manejar múltiples asignaciones para una tarea
+    public function manageTaskAssignments($taskId) {
+        $data = $this->getRequestData();
+        
+        if (!isset($data->operations) || !is_array($data->operations)) {
+            $this->sendResponse(400, "El campo 'operations' es obligatorio y debe ser un array.");
+            return;
+        }
+        
+        $response = $this->service->manageTaskAssignments($taskId, $data->operations);
+        
+        // Limpiar caché relacionada de manera exhaustiva
+        if (function_exists('apcu_delete')) {
+            apcu_delete("task_employees_" . $taskId);
+            apcu_delete("tasks_all");
+            
+            // Intentar limpiar cachés de empleados involucrados
+            foreach ($data->operations as $operation) {
+                if (isset($operation->empleados_id)) {
+                    apcu_delete("employee_tasks_" . $operation->empleados_id);
+                    apcu_delete("employee_pending_tasks_" . $operation->empleados_id . "_pendiente");
+                    apcu_delete("employee_responsible_tasks_" . $operation->empleados_id);
+                }
+                if (isset($operation->old_empleados_id)) {
+                    apcu_delete("employee_tasks_" . $operation->old_empleados_id);
+                    apcu_delete("employee_pending_tasks_" . $operation->old_empleados_id . "_pendiente");
+                    apcu_delete("employee_responsible_tasks_" . $operation->old_empleados_id);
+                }
+                if (isset($operation->new_empleados_id)) {
+                    apcu_delete("employee_tasks_" . $operation->new_empleados_id);
+                    apcu_delete("employee_pending_tasks_" . $operation->new_empleados_id . "_pendiente");
+                    apcu_delete("employee_responsible_tasks_" . $operation->new_empleados_id);
+                }
+            }
+        }
+        
+        $this->sendResponse($response['status'], $response['message'], $response['data'] ?? null);
+    }
+
+    // El método updateAssignment se mantiene para compatibilidad
     public function updateAssignment($taskId) {
         $data = $this->getRequestData();
         if (empty($data->old_empleados_id) || empty($data->new_empleados_id)) {

@@ -116,11 +116,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { getEmployees } from '@/service/employeeService';
-import { 
-  addEmployeeToTask, 
-  removeEmployeeFromTask, 
-  updateTaskAssignment 
-} from '@/service/taskService';
+import { manageTaskAssignments } from '@/service/taskService';
 
 const props = defineProps({
   task: {
@@ -138,7 +134,7 @@ const initialAssignments = ref<number[]>([]);
 const loading = ref(false);
 const initialLoading = ref(true);
 
-// Observa cambios en la tarea para derivar las asignaciones a partir de "empleado_nombre"
+// Observa cambios en la tarea para derivar las asignaciones
 watch(
   () => props.task,
   (newTask) => {
@@ -152,7 +148,6 @@ watch(
             return emp ? emp.empleados_id : 0;
           }).filter(id => id !== 0);
           assignments.value = derived;
-          // Guardar las asignaciones originales solo una vez
           if(initialAssignments.value.length === 0) {
             initialAssignments.value = [...derived];
           }
@@ -167,17 +162,15 @@ watch(
   { immediate: true }
 );
 
-// Cargar empleados y derivar asignaciones si aún no se han establecido
+// Cargar empleados y derivar asignaciones
 const fetchEmployees = async () => {
   try {
     initialLoading.value = true;
     errorMessage.value = '';
     
-    // Simulamos un tiempo mínimo de carga para mejorar UX
     const startTime = Date.now();
     const data = await getEmployees();
     
-    // Aseguramos que el loader se muestre al menos por 500ms
     const elapsedTime = Date.now() - startTime;
     if (elapsedTime < 500) {
       await new Promise(resolve => setTimeout(resolve, 500 - elapsedTime));
@@ -218,15 +211,12 @@ const removeAssignment = (index: number) => {
 
 // Función para limpiar cachés relacionadas con tareas
 const clearTaskRelatedCaches = () => {
-  console.log("Limpiando cachés relacionadas con tareas...");
-  // Enfoque más agresivo: eliminar todas las cachés que puedan estar relacionadas
   for (let key in localStorage) {
     if (
       key.includes('task') || 
       key.includes('employee') || 
       key.includes('company')
     ) {
-      console.log("Eliminando caché:", key);
       localStorage.removeItem(key);
     }
   }
@@ -243,7 +233,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  // Verificación de duplicados: no se puede asignar el mismo empleado más de una vez
+  // Verificación de duplicados
   if (new Set(assignments.value).size !== assignments.value.length) {
     errorMessage.value = 'No se puede asignar el mismo empleado más de una vez.';
     return;
@@ -251,58 +241,48 @@ const handleSubmit = async () => {
   
   try {
     loading.value = true;
-    const finalAssignments = assignments.value.map(id => Number(id)); // Convertir a números
-    const initialAssignmentNumbers = initialAssignments.value.map(id => Number(id)); // Convertir a números
+    const finalAssignments = assignments.value.map(id => Number(id));
+    const initialAssignmentNumbers = initialAssignments.value.map(id => Number(id));
     
-    // Comparar después de convertir a números y ordenar
+    // Si no hay cambios, cerrar el modal
     if (JSON.stringify(finalAssignments.slice().sort()) === JSON.stringify(initialAssignmentNumbers.slice().sort())) {
       emit('updated');
       closeModal();
       return;
     }
     
-    // Simulamos un tiempo mínimo de carga para mejorar UX
     const startTime = Date.now();
     
-    // Limpiar todos los cachés relacionados
-    for (let key in localStorage) {
-      if (key.includes('task') || key.includes('employee') || key.includes('company')) {
-        localStorage.removeItem(key);
-      }
+    // Limpiar cachés
+    clearTaskRelatedCaches();
+    
+    // Preparar operaciones
+    const operations = [];
+    
+    // Identificar empleados a remover
+    const removals = initialAssignmentNumbers.filter(id => !finalAssignments.includes(id));
+    for (const id of removals) {
+      operations.push({
+        type: 'remove',
+        empleados_id: id
+      });
     }
     
-    // Si el número de asignaciones es el mismo, y solo hay un cambio, se utiliza updateTaskAssignment
-    if (initialAssignments.value.length === finalAssignments.length) {
-      const differences = initialAssignmentNumbers.filter((id, i) => id !== finalAssignments[i]);
-      if(differences.length === 1) {
-        const indexChanged = initialAssignmentNumbers.findIndex((id, i) => id !== finalAssignments[i]);
-        const oldEmployeeId = initialAssignmentNumbers[indexChanged];
-        const newEmployeeId = finalAssignments[indexChanged];
-        await updateTaskAssignment(props.task.tareas_id, oldEmployeeId, newEmployeeId);
-      } else {
-        // En caso de múltiples diferencias, se procesa removiendo y agregando
-        const removals = initialAssignmentNumbers.filter(id => !finalAssignments.includes(id));
-        for (const id of removals) {
-          await removeEmployeeFromTask(id, props.task.tareas_id);
-        }
-        const additions = finalAssignments.filter(id => !initialAssignmentNumbers.includes(id));
-        for (const id of additions) {
-          await addEmployeeToTask(id, props.task.tareas_id);
-        }
-      }
-    } else {
-      // Si la cantidad cambió, se identifican las asignaciones a remover y las a agregar
-      const removals = initialAssignmentNumbers.filter(id => !finalAssignments.includes(id));
-      for (const id of removals) {
-        await removeEmployeeFromTask(id, props.task.tareas_id);
-      }
-      const additions = finalAssignments.filter(id => !initialAssignmentNumbers.includes(id));
-      for (const id of additions) {
-        await addEmployeeToTask(id, props.task.tareas_id);
-      }
+    // Identificar empleados a agregar
+    const additions = finalAssignments.filter(id => !initialAssignmentNumbers.includes(id));
+    for (const id of additions) {
+      operations.push({
+        type: 'add',
+        empleados_id: id
+      });
     }
     
-    // Aseguramos que el loader se muestre al menos por 800ms para operaciones complejas
+    // Si hay operaciones, ejecutarlas
+    if (operations.length > 0) {
+      await manageTaskAssignments(props.task.tareas_id, operations);
+    }
+    
+    // Asegurar tiempo mínimo de carga
     const elapsedTime = Date.now() - startTime;
     if (elapsedTime < 800) {
       await new Promise(resolve => setTimeout(resolve, 800 - elapsedTime));
@@ -311,7 +291,7 @@ const handleSubmit = async () => {
     emit('updated');
     closeModal();
 
-    // Forzar recarga de la página después de un breve retraso
+    // Forzar recarga después de un breve retraso
     setTimeout(() => {
       window.location.reload();
     }, 500);
@@ -322,7 +302,6 @@ const handleSubmit = async () => {
   }
 };
 
-// También nos aseguramos de que closeModal funcione correctamente
 const closeModal = () => {
   if (loading.value) return;
   emit('close');

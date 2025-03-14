@@ -161,5 +161,45 @@ class EmployeeTask {
             return false;
         }
     }
+
+    // Nuevo método para manejar múltiples operaciones de asignación
+    public function manageTaskAssignments($taskId, $operations) {
+        try {
+            $db = $this->db;
+            $db->beginTransaction();
+            
+            foreach ($operations as $operation) {
+                switch ($operation->type) {
+                    case 'add':
+                        if (!$this->relationExists($operation->empleados_id, $taskId)) {
+                            $this->addTaskToEmployee($operation->empleados_id, $taskId);
+                        }
+                        break;
+                        
+                    case 'remove':
+                        if ($this->relationExists($operation->empleados_id, $taskId)) {
+                            $this->removeTaskFromEmployee($operation->empleados_id, $taskId);
+                        }
+                        break;
+                        
+                    case 'update':
+                        if ($this->relationExists($operation->old_empleados_id, $taskId)) {
+                            $this->removeTaskFromEmployee($operation->old_empleados_id, $taskId);
+                            if (!$this->relationExists($operation->new_empleados_id, $taskId)) {
+                                $this->addTaskToEmployee($operation->new_empleados_id, $taskId);
+                            }
+                        }
+                        break;
+                }
+            }
+            
+            $db->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            error_log("Error en manageTaskAssignments: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 ?>
