@@ -105,7 +105,7 @@ const fetchTasksAndRenderChart = async () => {
       },
     });
   } catch (error) {
-    console.error('Error al obtener tareas para gráfico:', error);
+    // Error handling
   }
 };
 

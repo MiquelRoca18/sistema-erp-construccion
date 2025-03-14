@@ -116,7 +116,7 @@ const confirmDeletion = async () => {
     emit('showSuccess', `La tarea ${props.task.nombre_tarea} ha sido eliminada exitosamente`);
     emit('close'); 
   } catch (error: any) {
-    console.error('Error al eliminar la tarea:', error.message);
+    // Error handling
     errorMessage.value = error.message || 'Error al eliminar la tarea';
     loading.value = false;
   }

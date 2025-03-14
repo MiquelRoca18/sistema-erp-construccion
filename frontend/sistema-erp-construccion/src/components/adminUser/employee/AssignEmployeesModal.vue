@@ -190,7 +190,6 @@ const fetchEmployees = async () => {
       }
     }
   } catch (error: any) {
-    console.error('Error al cargar empleados:', error.message);
     errorMessage.value = error.message || 'Error al cargar empleados';
   } finally {
     initialLoading.value = false;
@@ -244,14 +243,8 @@ const handleSubmit = async () => {
     const finalAssignments = assignments.value.map(id => Number(id));
     const initialAssignmentNumbers = initialAssignments.value.map(id => Number(id));
     
-    console.log('Estado inicial:', {
-      initialAssignments: initialAssignmentNumbers,
-      finalAssignments: finalAssignments
-    });
-    
     // Si no hay cambios, cerrar el modal
     if (JSON.stringify(finalAssignments.slice().sort()) === JSON.stringify(initialAssignmentNumbers.slice().sort())) {
-      console.log('No hay cambios detectados');
       emit('updated');
       closeModal();
       return;
@@ -266,12 +259,6 @@ const handleSubmit = async () => {
     // 1. Manejar actualizaciones (cambios de empleado en la misma posición)
     for (let i = 0; i < Math.min(initialAssignmentNumbers.length, finalAssignments.length); i++) {
       if (initialAssignmentNumbers[i] !== finalAssignments[i]) {
-        console.log('Detectada actualización:', {
-          old: initialAssignmentNumbers[i],
-          new: finalAssignments[i],
-          position: i
-        });
-        
         operations.push({
           type: 'update',
           old_empleados_id: initialAssignmentNumbers[i],
@@ -286,10 +273,6 @@ const handleSubmit = async () => {
       const newEmployees = finalAssignments.filter(id => !initialAssignmentNumbers.includes(id));
       
       for (const newEmployeeId of newEmployees) {
-        console.log('Detectada adición:', {
-          new: newEmployeeId
-        });
-        
         operations.push({
           type: 'add',
           empleados_id: newEmployeeId
@@ -303,10 +286,6 @@ const handleSubmit = async () => {
       const removedEmployees = initialAssignmentNumbers.filter(id => !finalAssignments.includes(id));
       
       for (const removedEmployeeId of removedEmployees) {
-        console.log('Detectada eliminación:', {
-          removed: removedEmployeeId
-        });
-        
         operations.push({
           type: 'remove',
           empleados_id: removedEmployeeId
@@ -316,12 +295,8 @@ const handleSubmit = async () => {
     
     // Si hay operaciones, ejecutarlas
     if (operations.length > 0) {
-      console.log('Operaciones a ejecutar:', operations);
-      console.log('ID de la tarea:', props.task.tareas_id);
-      
       try {
         const response = await manageTaskAssignments(props.task.tareas_id, operations);
-        console.log('Respuesta del servidor:', response);
         
         // Primero desactivamos el estado de carga
         loading.value = false;
@@ -334,21 +309,17 @@ const handleSubmit = async () => {
         
         // Forzamos la recarga de la página después de un breve retraso
         setTimeout(() => {
-          console.log('Recargando página...');
           window.location.reload();
         }, 300);
       } catch (apiError) {
-        console.error('Error en la llamada a la API:', apiError);
         errorMessage.value = apiError.message || 'Error al comunicarse con el servidor';
         loading.value = false;
       }
     } else {
-      console.log('No se detectaron operaciones para ejecutar');
       loading.value = false;
     }
     
   } catch (error) {
-    console.error('Error al asignar empleados:', error);
     errorMessage.value = error.message || 'Error al asignar empleados';
     loading.value = false;
   }

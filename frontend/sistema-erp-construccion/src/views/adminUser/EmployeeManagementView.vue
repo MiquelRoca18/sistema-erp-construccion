@@ -181,7 +181,7 @@ const fetchEmployees = async () => {
     
     employees.value = data as EmployeeType[];
   } catch (err: any) {
-    console.error('Error fetching employees:', err);
+    // Error handling
     error.value = err.message || 'Error al obtener empleados. Por favor, inténtelo de nuevo.';
     employees.value = []; // Asegurar que employees sea un array vacío en caso de error
   } finally {
@@ -271,7 +271,7 @@ const deleteEmployeeConfirmed = async () => {
     await deleteEmployee(employeeToDelete.value.empleados_id);
     await fetchEmployees();
   } catch (err: any) {
-    console.error(err.message);
+    // Error handling
     error.value = err.message || 'Error al eliminar el empleado.';
     loading.value = false;
   } finally {

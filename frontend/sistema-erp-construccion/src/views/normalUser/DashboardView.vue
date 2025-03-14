@@ -103,14 +103,14 @@ onMounted(async () => {
         employeeName.value = employeeData.nombre || "Empleado Desconocido";
         employeePhoto.value = employeeData.photo || defaultEmployeePhoto;
       } else {
-        console.error("Datos de empleado inválidos");
+        // Error handling
         router.push('/');
       }
     } else {
       router.push('/');
     }
   } catch (error) {
-    console.error("Error al obtener datos del empleado:", error);
+    // Error handling
     router.push('/');
   } finally {
     // Independientemente del resultado, desactivar el loader después de un pequeño retraso para evitar parpadeos

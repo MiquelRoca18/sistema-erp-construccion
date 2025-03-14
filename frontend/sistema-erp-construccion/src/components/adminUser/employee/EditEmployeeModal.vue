@@ -177,7 +177,7 @@ const handleSubmit = async () => {
     emit('showSuccess', `Empleado ${form.value.nombre} actualizado exitosamente`);
     emit('close'); 
   } catch (error: any) {
-    console.error(error.message);
+    // Error handling
     emit('showError', error.message || 'Error al actualizar empleado');
   } finally {
     loading.value = false;

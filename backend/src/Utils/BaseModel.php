@@ -131,7 +131,6 @@ class BaseModel {
             return true;
         } catch (\PDOException $e) {
             // Log del error si es necesario
-            error_log('Error al eliminar registro: ' . $e->getMessage());
             return false;
         }
     }

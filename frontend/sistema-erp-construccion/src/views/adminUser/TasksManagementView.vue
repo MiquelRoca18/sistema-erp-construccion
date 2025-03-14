@@ -287,7 +287,6 @@ watch(filter, () => {
 }, { deep: true });
 
 const clearAllCaches = () => {
-  console.log("Limpiando todas las cachés...");
   for (let key in localStorage) {
     if (
       key.includes('task') || 
@@ -295,12 +294,10 @@ const clearAllCaches = () => {
       key.includes('project') || 
       key.includes('company')
     ) {
-      console.log("Eliminando caché:", key);
       localStorage.removeItem(key);
     }
   }
 };
-
 
 const fetchTasks = async () => {
   try {
@@ -331,12 +328,10 @@ const fetchTasks = async () => {
     tasks.value = data;
   } catch (err) {
     error.value = err.message || 'Error al obtener tareas';
-    console.error('Error al cargar tareas:', err);
   } finally {
     loading.value = false;
   }
 };
-
 
 onMounted(() => {
   fetchTasks();
@@ -442,7 +437,6 @@ const deleteTaskConfirmed = async () => {
     await fetchTasks(); // Recargamos las tareas después de eliminar
   } catch (err: any) {
     error.value = `Error al eliminar tarea: ${err.message || 'Error desconocido'}`;
-    console.error('Error al eliminar tarea:', err);
   } finally {
     loading.value = false;
     taskToDelete.value = null;
@@ -469,7 +463,6 @@ const closeAssignModal = () => {
 // Separar la función de actualización
 const taskUpdated = async (forceReload = false) => {
   if (forceReload) {
-    console.log("Forzando recarga de tareas después de actualización");
     // Limpiar todas las cachés relacionadas
     clearAllCaches();
     // Pequeña pausa para asegurar que cualquier operación de backend se complete

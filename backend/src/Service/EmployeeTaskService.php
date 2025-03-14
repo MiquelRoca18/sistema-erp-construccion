@@ -127,9 +127,6 @@ class EmployeeTaskService extends BaseService {
             'operations' => []
         ];
         
-        // Registrar para depuración
-        error_log("Iniciando manejo de múltiples asignaciones para tarea $taskId");
-        
         try {
             // Iniciar transacción para garantizar que todas las operaciones se completen o se revierta todo
             $db = $this->model->getConnection();
@@ -262,7 +259,6 @@ class EmployeeTaskService extends BaseService {
             if ($db->inTransaction()) {
                 $db->rollBack();
             }
-            error_log("Error en manejo de asignaciones: " . $e->getMessage());
             return $this->responseError("Error al gestionar asignaciones: " . $e->getMessage());
         }
     }
@@ -286,14 +282,7 @@ class EmployeeTaskService extends BaseService {
             return $this->responseError("El empleado '{$empName}' ya está asignado a esta tarea.");
         }
         
-        // Registrar información para depuración
-        error_log("Actualizando asignación: Tarea $taskId de empleado $oldEmployeeId a $newEmployeeId");
-        
         $result = $this->model->updateAssignment($taskId, $oldEmployeeId, $newEmployeeId);
-        
-        if (!$result) {
-            error_log("Error al actualizar asignación: Tarea $taskId de empleado $oldEmployeeId a $newEmployeeId");
-        }
         
         return $result 
             ? $this->responseUpdated("Asignación actualizada exitosamente.") 

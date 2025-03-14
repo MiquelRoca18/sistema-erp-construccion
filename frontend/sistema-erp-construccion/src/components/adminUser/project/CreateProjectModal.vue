@@ -176,7 +176,7 @@ const handleSubmit = async () => {
       closeModal();
     } catch (error: any) {
       errorMessage.value = error.message || 'Error al crear el proyecto. Inténtalo de nuevo.';
-      console.error('Error creating project:', error);
+    // Error handling
     } finally {
       loading.value = false;
     }
@@ -200,7 +200,7 @@ const fetchEmployees = async () => {
     employees.value = data;
   } catch (error: any) {
     errorMessage.value = error.message || 'Error al cargar empleados. Inténtalo de nuevo.';
-    console.error('Error fetching employees:', error);
+    // Error handling
   } finally {
     employeesLoading.value = false;
   }

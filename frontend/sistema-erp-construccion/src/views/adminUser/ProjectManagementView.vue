@@ -207,7 +207,7 @@ const fetchProjects = async () => {
     projects.value = data as ProjectType[];
   } catch (err: any) {
     error.value = err.message || 'Error al obtener proyectos. Por favor, inténtalo de nuevo.';
-    console.error('Error fetching projects:', err);
+    // Error handling
   } finally {
     loading.value = false;
   }
@@ -287,7 +287,7 @@ const deleteProjectConfirmed = async () => {
     await fetchProjects();
   } catch (err: any) {
     error.value = `Error al eliminar proyecto: ${err.message || 'Inténtalo de nuevo'}`;
-    console.error('Error deleting project:', err);
+    // Error handling
   } finally {
     operationLoading.value = false;
     projectToDelete.value = null;

@@ -295,7 +295,7 @@ const loadEmployeeData = async () => {
       throw new Error("No se pudo obtener la información del empleado");
     }
   } catch (error) {
-    console.error("Error al cargar los datos del empleado:", error);
+    // Error handling
     dataLoadError.value = true;
     // Si ocurre un error, intentamos otra vez después de un tiempo
     setTimeout(loadEmployeeData, 3000);

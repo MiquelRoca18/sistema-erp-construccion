@@ -152,7 +152,7 @@ const handleSubmit = async () => {
     emit('showSuccess', `Empleado ${form.value.nombre} creado exitosamente`);
     emit('close'); // Aseguramos que el modal se cierre después de la operación
   } catch (error: any) {
-    console.error(error.message);
+    // Error handling
     emit('showError', error.message || 'Error al crear empleado');
   } finally {
     loading.value = false;

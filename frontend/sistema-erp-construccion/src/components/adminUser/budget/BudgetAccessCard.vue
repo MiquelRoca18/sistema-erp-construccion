@@ -38,7 +38,7 @@ const fetchTotalBudgets = async () => {
     const budgets = await getBudgets();
     totalBudgets.value = budgets.length;
   } catch (err: any) {
-    console.error("Error al obtener presupuestos:", err);
+    // Error handling
   } finally {
     isLoading.value = false;
   }

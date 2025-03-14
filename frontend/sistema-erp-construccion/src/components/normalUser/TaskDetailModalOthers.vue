@@ -211,7 +211,7 @@ onMounted(async () => {
     loadingEmployees.value = true;
     await getEmployees();
   } catch (error) {
-    console.error("Error al obtener empleados:", error);
+    // Error handling
     errorMessage.value = "Error al cargar la lista de empleados.";
   } finally {
     loadingEmployees.value = false;
@@ -258,7 +258,7 @@ const updateTask = async () => {
     emit('update', updatedTask);
     close();
   } catch (error) {
-    console.error('Error al actualizar la tarea:', error);
+    // Error handling
     errorMessage.value = error.message || 'Error al actualizar la tarea';
   } finally {
     isSaving.value = false;

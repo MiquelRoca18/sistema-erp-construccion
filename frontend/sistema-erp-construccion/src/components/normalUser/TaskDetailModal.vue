@@ -160,7 +160,7 @@ const updateTask = async () => {
     emit('update', { ...props.task, estado: updatedStatus.value });
     close();
   } catch (error) {
-    console.error('Error al actualizar la tarea:', error);
+    // Error handling
     errorMessage.value = error.message || 'Error al actualizar la tarea. Intente nuevamente.';
   } finally {
     isSaving.value = false;

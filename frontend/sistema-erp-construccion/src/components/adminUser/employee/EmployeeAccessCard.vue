@@ -35,7 +35,7 @@ const fetchTotalEmployees = async () => {
     const employees = await getEmployees();
     totalEmployees.value = employees.length;
   } catch (err: any) {
-    console.error("Error al obtener empleados:", err);
+    // Error handling
   } finally {
     isLoading.value = false;
   }

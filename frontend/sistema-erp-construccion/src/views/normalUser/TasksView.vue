@@ -282,7 +282,7 @@ const fetchTasks = async () => {
     console.log('Fetched Tasks:', response);
     tasks.value = response;
   } catch (err) {
-    console.error('Error al cargar las tareas:', err);
+    // Error handling
     error.value = err.message || 'Error al obtener las tareas. Por favor, intente nuevamente.';
   } finally {
     loading.value = false;
@@ -315,7 +315,7 @@ const debouncedFetchTasks = debounce(() => {
 
 // Observar cambios específicamente en selectedTaskType
 watch(selectedTaskType, () => {
-  console.log('Cambiando tipo de tarea a:', selectedTaskType.value);
+  // Task type changed
   resetAndFetchTasks();
 });
 

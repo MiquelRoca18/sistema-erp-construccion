@@ -229,7 +229,7 @@ const handleSubmit = async () => {
     emit('showSuccess', `Tarea ${form.value.nombre_tarea} actualizada exitosamente`);
     close();
   } catch (error: any) {
-    console.error('Error al actualizar la tarea:', error.message);
+    // Error handling
     errorMessage.value = error.message || 'Error al actualizar la tarea';
   } finally {
     loading.value = false;
@@ -256,7 +256,7 @@ onMounted(async () => {
     
     projects.value = data;
   } catch (error: any) {
-    console.error('Error al cargar proyectos:', error.message);
+    // Error handling
     errorMessage.value = `Error al cargar proyectos: ${error.message || 'Error desconocido'}`;
   } finally {
     projectsLoading.value = false;

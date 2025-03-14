@@ -81,7 +81,7 @@ const confirmDelete = async () => {
     emit('showSuccess', `El empleado ${props.employee.nombre} ha sido eliminado exitosamente`);
     emit('close'); 
   } catch (error: any) {
-    console.error(error.message);
+    // Error handling
     emit('showError', error.message || 'Error al eliminar empleado');
   } finally {
     loading.value = false;

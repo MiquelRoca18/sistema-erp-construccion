@@ -233,7 +233,7 @@ const fetchEmployees = async () => {
     employees.value = data;
   } catch (error: any) {
     errorMessage.value = error.message || 'Error al cargar empleados. Inténtalo de nuevo.';
-    console.error('Error fetching employees:', error);
+    // Error handling
   } finally {
     employeesLoading.value = false;
   }
@@ -264,7 +264,7 @@ const handleSubmit = async () => {
     emit('showSuccess', `Proyecto ${form.value.nombre_proyecto} actualizado exitosamente`);
     closeModal();
   } catch (error: any) {
-    console.error('Error updating project:', error);
+    // Error handling
     errorMessage.value = error.message || 'Error al actualizar proyecto. Inténtalo de nuevo.';
   } finally {
     loading.value = false;

@@ -162,7 +162,6 @@ class EmployeeTask {
             $rowCount = $stmt->rowCount();
             return $rowCount > 0;
         } catch (\PDOException $e) {
-            error_log("Error en actualización de asignación: " . $e->getMessage());
             return false;
         }
     }
@@ -202,7 +201,6 @@ class EmployeeTask {
             return true;
         } catch (\Exception $e) {
             $this->db->rollBack();
-            error_log("Error en manageTaskAssignments: " . $e->getMessage());
             return false;
         }
     }
