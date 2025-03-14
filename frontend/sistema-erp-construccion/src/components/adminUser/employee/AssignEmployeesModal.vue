@@ -323,14 +323,14 @@ const handleSubmit = async () => {
         const response = await manageTaskAssignments(props.task.tareas_id, operations);
         console.log('Respuesta del servidor:', response);
         
-        // No cerramos el modal automáticamente para poder ver los errores en la consola
-        // Solo actualizamos el estado de carga
-        loading.value = false;
+        // Cerramos el modal y recargamos la página
+        emit('updated');
+        closeModal();
         
-        // Actualizamos las asignaciones iniciales para reflejar el nuevo estado
-        initialAssignments.value = [...finalAssignments];
-        
-        // No mostramos mensaje de éxito
+        // Recargar la página después de un breve retraso
+        setTimeout(() => {
+          window.location.reload();
+        }, 300);
       } catch (apiError) {
         console.error('Error en la llamada a la API:', apiError);
         errorMessage.value = apiError.message || 'Error al comunicarse con el servidor';
