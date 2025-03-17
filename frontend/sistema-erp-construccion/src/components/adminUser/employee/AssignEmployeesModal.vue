@@ -256,7 +256,7 @@ const handleSubmit = async () => {
     // Preparar operaciones
     const operations = [];
     
-    // 1. Manejar actualizaciones (cambios de empleado en la misma posición)
+    // Manejar actualizaciones (cambios de empleado en la misma posición)
     for (let i = 0; i < Math.min(initialAssignmentNumbers.length, finalAssignments.length); i++) {
       if (initialAssignmentNumbers[i] !== finalAssignments[i]) {
         operations.push({
@@ -267,7 +267,7 @@ const handleSubmit = async () => {
       }
     }
     
-    // 2. Manejar adiciones (nuevos empleados)
+    // Manejar adiciones (nuevos empleados)
     if (finalAssignments.length > initialAssignmentNumbers.length) {
       // Obtener los nuevos empleados (los que están en finalAssignments pero no en initialAssignmentNumbers)
       const newEmployees = finalAssignments.filter(id => !initialAssignmentNumbers.includes(id));
@@ -280,7 +280,7 @@ const handleSubmit = async () => {
       }
     }
     
-    // 3. Manejar eliminaciones (empleados que ya no están asignados)
+    // Manejar eliminaciones (empleados que ya no están asignados)
     if (initialAssignmentNumbers.length > finalAssignments.length) {
       // Obtener los empleados eliminados (los que están en initialAssignmentNumbers pero no en finalAssignments)
       const removedEmployees = initialAssignmentNumbers.filter(id => !finalAssignments.includes(id));

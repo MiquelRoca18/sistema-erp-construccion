@@ -35,7 +35,6 @@ const fetchTotalProjects = async () => {
     const projects = await getProjects();
     totalProjects.value = projects.length;
   } catch (err: any) {
-    // Error handling
   } finally {
     isLoading.value = false;
   }

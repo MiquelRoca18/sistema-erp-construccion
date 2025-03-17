@@ -23,7 +23,7 @@ class TaskController extends BaseController{
         $result = $this->taskService->getTasks();
         
         if (isset($result['data'])) {
-            saveToCache($cacheKey, $result['data'], 300); // 5 minutos
+            saveToCache($cacheKey, $result['data'], 300); 
         }
         
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
@@ -41,8 +41,7 @@ class TaskController extends BaseController{
         $result = $this->taskService->getTask($id);
         
         if (isset($result['data'])) {
-            saveToCache($cacheKey, $result['data'], 300); // 5 minutos
-        }
+            saveToCache($cacheKey, $result['data'], 300);         }
         
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
     }
@@ -74,7 +73,6 @@ class TaskController extends BaseController{
             apcu_delete("task_" . $id);
             
             // Limpiar también cachés de tareas por empleado
-            // Esto es un enfoque amplio que puede ser refinado
             if (function_exists('apcu_cache_info')) {
                 try {
                     $cache_info = apcu_cache_info();
@@ -85,7 +83,6 @@ class TaskController extends BaseController{
                         }
                     }
                 } catch (\Exception $e) {
-                    // Ignorar errores al limpiar caché
                 }
             }
             
@@ -107,7 +104,6 @@ class TaskController extends BaseController{
             apcu_delete("task_" . $id);
             
             // Limpiar también cachés de tareas por empleado
-            // Enfoque amplio
             if (function_exists('apcu_cache_info')) {
                 try {
                     $cache_info = apcu_cache_info();
@@ -118,7 +114,6 @@ class TaskController extends BaseController{
                         }
                     }
                 } catch (\Exception $e) {
-                    // Ignorar errores al limpiar caché
                 }
             }
         }

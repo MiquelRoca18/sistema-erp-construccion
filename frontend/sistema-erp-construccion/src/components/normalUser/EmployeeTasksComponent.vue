@@ -72,7 +72,6 @@ const fetchTasks = async () => {
     tasks.value = response;
   } catch (err) {
     error.value = 'Error al obtener las tareas pendientes.';
-    // Error handling
   } finally {
     loading.value = false;
   }

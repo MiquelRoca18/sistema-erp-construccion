@@ -133,7 +133,7 @@ class ProjectService extends BaseService {
             $db = $this->model->getDb();
             $db->beginTransaction();
             
-            // 1. Eliminar asociaciones de empleados con tareas del proyecto
+            // Eliminar asociaciones de empleados con tareas del proyecto
             $queryEmpleadosTareas = "
                 DELETE FROM empleados_tareas 
                 WHERE tareas_id IN (
@@ -145,19 +145,19 @@ class ProjectService extends BaseService {
             $stmtEmpleadosTareas->bindParam(':project_id', $projectId, \PDO::PARAM_INT);
             $stmtEmpleadosTareas->execute();
             
-            // 2. Eliminar tareas del proyecto
+            // Eliminar tareas del proyecto
             $queryTareas = "DELETE FROM tareas WHERE proyectos_id = :project_id";
             $stmtTareas = $db->prepare($queryTareas);
             $stmtTareas->bindParam(':project_id', $projectId, \PDO::PARAM_INT);
             $stmtTareas->execute();
             
-            // 3. Eliminar presupuestos del proyecto
+            // Eliminar presupuestos del proyecto
             $queryPresupuestos = "DELETE FROM presupuestos WHERE proyectos_id = :project_id";
             $stmtPresupuestos = $db->prepare($queryPresupuestos);
             $stmtPresupuestos->bindParam(':project_id', $projectId, \PDO::PARAM_INT);
             $stmtPresupuestos->execute();
             
-            // 4. Finalmente eliminar el proyecto
+            // Eliminar el proyecto
             $result = $this->model->delete($projectId);
             
             if ($result) {

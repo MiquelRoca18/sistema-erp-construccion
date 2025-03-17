@@ -105,7 +105,6 @@ const fetchTasksAndRenderChart = async () => {
       },
     });
   } catch (error) {
-    // Error handling
   }
 };
 

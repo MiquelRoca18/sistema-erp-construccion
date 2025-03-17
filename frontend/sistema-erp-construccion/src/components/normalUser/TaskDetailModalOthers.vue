@@ -104,7 +104,7 @@
             </div>
           </div>
     
-          <!-- Empleado asignado (Modificado para mostrar solo empleados asignados) -->
+          <!-- Empleado asignado -->
           <div>
             <label class="block text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300">Empleados asignados</label>
             
@@ -207,11 +207,10 @@ onMounted(async () => {
       isLoading.value = false;
     }, 300);
     
-    // Cargar los empleados (podría ser necesario para otras funcionalidades)
+    // Cargar los empleados
     loadingEmployees.value = true;
     await getEmployees();
   } catch (error) {
-    // Error handling
     errorMessage.value = "Error al cargar la lista de empleados.";
   } finally {
     loadingEmployees.value = false;
@@ -258,7 +257,6 @@ const updateTask = async () => {
     emit('update', updatedTask);
     close();
   } catch (error) {
-    // Error handling
     errorMessage.value = error.message || 'Error al actualizar la tarea';
   } finally {
     isSaving.value = false;

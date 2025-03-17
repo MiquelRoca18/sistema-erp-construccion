@@ -130,7 +130,6 @@ class BaseModel {
             }
             return true;
         } catch (\PDOException $e) {
-            // Log del error si es necesario
             return false;
         }
     }

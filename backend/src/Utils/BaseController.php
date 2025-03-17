@@ -38,7 +38,6 @@ class BaseController {
             }
         }
     
-        // Si no se encuentra el encabezado, devolver null
         return null;
     }
 }

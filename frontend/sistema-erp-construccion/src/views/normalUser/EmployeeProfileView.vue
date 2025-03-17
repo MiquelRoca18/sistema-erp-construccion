@@ -153,7 +153,6 @@ onMounted(async () => {
       employeePhoto.value = defaultEmployeePhoto;
     }
   } catch (error) {
-    // Error handling
     // Puedes agregar una notificación de error aquí
   } finally {
     // Simulamos una breve demora para mostrar el loader incluso en entornos de desarrollo rápidos
@@ -177,7 +176,6 @@ const updateEmployeeData = async () => {
       passwordSuccess.value = false;
     }, 3000);
   } catch (error) {
-    // Error handling
     if (error.message.includes("teléfono")) {
       errors.telefono = error.message;
     }

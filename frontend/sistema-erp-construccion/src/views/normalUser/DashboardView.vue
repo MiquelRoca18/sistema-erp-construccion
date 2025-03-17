@@ -94,7 +94,7 @@ onMounted(async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     
     if (user) {
-      // Obtener los datos del empleado (ahora con caché)
+      // Obtener los datos del empleado 
       const employeeData = await getEmployeeData(user.empleados_id, localStorage.getItem('token'));
       
       // Asignación segura de valores
@@ -103,14 +103,12 @@ onMounted(async () => {
         employeeName.value = employeeData.nombre || "Empleado Desconocido";
         employeePhoto.value = employeeData.photo || defaultEmployeePhoto;
       } else {
-        // Error handling
-        router.push('/');
+            router.push('/');
       }
     } else {
       router.push('/');
     }
   } catch (error) {
-    // Error handling
     router.push('/');
   } finally {
     // Independientemente del resultado, desactivar el loader después de un pequeño retraso para evitar parpadeos
@@ -120,7 +118,7 @@ onMounted(async () => {
   }
 });
 
-// Throttle para el logout (evita múltiples clics accidentales)
+// Throttle para el logout
 const throttledLogout = throttle(() => {
   authLogout();
   employeeId.value = null;

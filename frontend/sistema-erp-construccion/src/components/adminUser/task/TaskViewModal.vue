@@ -1,7 +1,7 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 p-4">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all duration-300 max-h-[85vh] overflow-y-auto">
-      <!-- Encabezado - sticky para que se mantenga visible en scroll -->
+      <!-- Encabezado -->
       <div class="bg-gradient-to-r from-orange-500 to-orange-400 dark:from-orange-700 dark:to-orange-600 p-3 sm:p-4 sticky top-0 z-10">
         <div class="flex justify-between items-center">
           <h2 class="text-white text-lg sm:text-2xl font-bold">Detalles de la Tarea</h2>

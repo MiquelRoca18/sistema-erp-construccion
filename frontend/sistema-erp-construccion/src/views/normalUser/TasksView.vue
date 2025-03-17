@@ -277,7 +277,6 @@ const fetchTasks = async () => {
     
     tasks.value = response;
   } catch (err) {
-    // Error handling
     error.value = err.message || 'Error al obtener las tareas. Por favor, intente nuevamente.';
   } finally {
     loading.value = false;

@@ -23,7 +23,7 @@ class Employee extends BaseModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    // Método nuevo para buscar empleados por nombre (útil para búsquedas)
+    // Método nuevo para buscar empleados por nombre 
     public function searchByName($searchTerm) {
         $query = 'SELECT 
                     empleados_id, 

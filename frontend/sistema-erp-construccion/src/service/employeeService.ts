@@ -23,7 +23,7 @@ export const getEmployees = async () => {
     
     const data = Array.isArray(response.data.data) ? response.data.data : [];
     
-    // Guardar en caché por 10 minutos (600000 ms)
+    // Guardar en caché por 10 minutos
     setLocalStorageWithExpiry('employees-cache', data, 600000);
     
     return data;

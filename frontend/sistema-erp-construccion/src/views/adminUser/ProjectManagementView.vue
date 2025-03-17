@@ -155,7 +155,6 @@ import DeleteProjectModal from '@/components/adminUser/project/DeleteProjectModa
 import ProjectDetailsModal from '@/components/adminUser/project/ProjectDetailsModal.vue';
 import ResponsiveTable from '@/components/ResponsiveTable.vue';
 
-// Define the Project type interface
 interface ProjectType {
   proyectos_id: number;
   nombre_proyecto: string;
@@ -207,7 +206,6 @@ const fetchProjects = async () => {
     projects.value = data as ProjectType[];
   } catch (err: any) {
     error.value = err.message || 'Error al obtener proyectos. Por favor, inténtalo de nuevo.';
-    // Error handling
   } finally {
     loading.value = false;
   }
@@ -287,7 +285,6 @@ const deleteProjectConfirmed = async () => {
     await fetchProjects();
   } catch (err: any) {
     error.value = `Error al eliminar proyecto: ${err.message || 'Inténtalo de nuevo'}`;
-    // Error handling
   } finally {
     operationLoading.value = false;
     projectToDelete.value = null;

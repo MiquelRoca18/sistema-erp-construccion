@@ -38,7 +38,6 @@ const fetchTotalBudgets = async () => {
     const budgets = await getBudgets();
     totalBudgets.value = budgets.length;
   } catch (err: any) {
-    // Error handling
   } finally {
     isLoading.value = false;
   }

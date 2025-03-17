@@ -103,7 +103,6 @@ const confirmDelete = async () => {
     emit('showSuccess', `El proyecto ${props.project.nombre_proyecto} ha sido eliminado exitosamente`);
     closeModal();
   } catch (error: any) {
-    // Error handling
     errorMessage.value = error.message || 'Error al eliminar proyecto. Inténtalo de nuevo.';
     emit('showError', error.message || 'Error al eliminar proyecto. Inténtalo de nuevo.');
     emit('deleted', false); 

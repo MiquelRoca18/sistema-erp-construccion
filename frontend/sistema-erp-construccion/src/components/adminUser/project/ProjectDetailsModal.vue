@@ -110,7 +110,6 @@ const formatDate = (date: string): string => {
       year: 'numeric'
     });
   } catch (error) {
-    // Error handling
     return date; 
   }
 };

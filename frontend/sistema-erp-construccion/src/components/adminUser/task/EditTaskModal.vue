@@ -1,7 +1,7 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 p-4">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all duration-300 max-h-[85vh] overflow-y-auto">
-      <!-- Encabezado - sticky para que se mantenga visible al hacer scroll -->
+      <!-- Encabezado -->
       <div class="bg-gradient-to-r from-orange-500 to-orange-400 dark:from-orange-700 dark:to-orange-600 p-3 sm:p-4 rounded-t-xl flex justify-between items-center sticky top-0 z-10">
         <h2 class="text-white text-lg sm:text-xl font-semibold">Editar Tarea</h2>
         <button @click="close" class="text-white text-2xl hover:text-gray-200 dark:hover:text-gray-300">&times;</button>
@@ -229,7 +229,6 @@ const handleSubmit = async () => {
     emit('showSuccess', `Tarea ${form.value.nombre_tarea} actualizada exitosamente`);
     close();
   } catch (error: any) {
-    // Error handling
     errorMessage.value = error.message || 'Error al actualizar la tarea';
   } finally {
     loading.value = false;
@@ -256,7 +255,6 @@ onMounted(async () => {
     
     projects.value = data;
   } catch (error: any) {
-    // Error handling
     errorMessage.value = `Error al cargar proyectos: ${error.message || 'Error desconocido'}`;
   } finally {
     projectsLoading.value = false;

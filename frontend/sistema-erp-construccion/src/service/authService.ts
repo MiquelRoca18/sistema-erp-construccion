@@ -36,7 +36,6 @@ export const getEmployeeData = async (employeeId: number, token: string) => {
       },
     });
     
-    // Asegúrate de devolver los datos correctos
     return response.data.data; 
   } catch (error: any) {
     console.error('Error al obtener datos del empleado:', error);

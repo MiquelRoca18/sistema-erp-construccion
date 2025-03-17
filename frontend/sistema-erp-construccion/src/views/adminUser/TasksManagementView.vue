@@ -432,9 +432,9 @@ const closeDeleteModal = () => {
 const deleteTaskConfirmed = async () => {
   if (!taskToDelete.value) return;
   try {
-    loading.value = true; // Activar loader durante la eliminación
+    loading.value = true;
     await deleteTask(taskToDelete.value.tareas_id);
-    await fetchTasks(); // Recargamos las tareas después de eliminar
+    await fetchTasks(); 
   } catch (err: any) {
     error.value = `Error al eliminar tarea: ${err.message || 'Error desconocido'}`;
   } finally {

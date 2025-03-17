@@ -101,7 +101,6 @@ const fetchKpiData = async () => {
     const now = new Date();
     lastUpdated.value = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   } catch (err: any) {
-    // Error handling
   }
 };
 

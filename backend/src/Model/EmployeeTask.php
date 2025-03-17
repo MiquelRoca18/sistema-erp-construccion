@@ -166,7 +166,7 @@ class EmployeeTask {
         }
     }
 
-    // Nuevo método para manejar múltiples operaciones de asignación
+    // Método para manejar múltiples operaciones de asignación
     public function manageTaskAssignments($taskId, $operations) {
         try {
             $db = $this->db;

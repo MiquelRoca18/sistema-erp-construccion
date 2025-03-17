@@ -79,10 +79,9 @@
       timer = null;
     }
     
-    // Emitir evento para que el componente padre pueda reaccionar
     setTimeout(() => {
       emit('close');
-    }, 300); // Permitir que la animación termine
+    }, 300); 
   };
   
   onMounted(() => {

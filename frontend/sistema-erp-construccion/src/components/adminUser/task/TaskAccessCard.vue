@@ -35,7 +35,6 @@ const fetchTotalTasks = async () => {
     const tasks = await getAllCompanyTasks();
     totalTasks.value = tasks.length;
   } catch (err: any) {
-    // Error handling
   } finally {
     isLoading.value = false;
   }

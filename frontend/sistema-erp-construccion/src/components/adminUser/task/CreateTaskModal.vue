@@ -148,7 +148,6 @@ const handleSubmit = async () => {
     emit('showSuccess', `Tarea ${form.value.nombre_tarea} creada exitosamente`);
     closeModal();
   } catch (error: any) {
-    // Error handling
     errorMessage.value = error.message || 'Error al crear la tarea. Inténtelo de nuevo.';
   } finally {
     loading.value = false;
@@ -175,7 +174,6 @@ onMounted(async () => {
     
     projects.value = data;
   } catch (error: any) {
-    // Error handling
     errorMessage.value = `Error al cargar proyectos: ${error.message || 'Error desconocido'}`;
   } finally {
     projectsLoading.value = false;

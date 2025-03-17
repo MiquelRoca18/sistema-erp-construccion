@@ -6,7 +6,6 @@
              lg:relative lg:translate-x-0 lg:flex lg:flex-col overflow-hidden"
       :class="{ 'translate-x-full': !sidebarOpen, 'translate-x-0': sidebarOpen }"
     >
-      <!-- Contenedor con scroll -->
       <div class="flex flex-col h-full overflow-y-auto">
         <!-- Sección del usuario con loader -->
         <div class="p-6 flex flex-col items-center border-b border-gray-300 dark:border-gray-700 flex-shrink-0">
@@ -295,7 +294,6 @@ const loadEmployeeData = async () => {
       throw new Error("No se pudo obtener la información del empleado");
     }
   } catch (error) {
-    // Error handling
     dataLoadError.value = true;
     // Si ocurre un error, intentamos otra vez después de un tiempo
     setTimeout(loadEmployeeData, 3000);

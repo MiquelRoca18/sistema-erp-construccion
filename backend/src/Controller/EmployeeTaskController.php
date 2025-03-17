@@ -68,7 +68,7 @@ class EmployeeTaskController extends BaseController {
         $response = $this->service->getTasksByEmployee($employeeId);
         
         if (isset($response['data'])) {
-            saveToCache($cacheKey, $response['data'], 300); // 5 minutos
+            saveToCache($cacheKey, $response['data'], 300); 
             $this->sendResponse($response['status'], $response['message'], $response['data']);
         } else {
             $this->sendResponse($response['status'], $response['message']);
@@ -88,7 +88,7 @@ class EmployeeTaskController extends BaseController {
         $response = $this->service->getEmployeesByTask($taskId);
         
         if (isset($response['data'])) {
-            saveToCache($cacheKey, $response['data'], 300); // 5 minutos
+            saveToCache($cacheKey, $response['data'], 300); 
             $this->sendResponse($response['status'], $response['message'], $response['data']);
         } else {
             $this->sendResponse($response['status'], $response['message']);
@@ -109,7 +109,7 @@ class EmployeeTaskController extends BaseController {
         $response = $this->service->getPendingTasksByEmployee($employeeId, $estado);
         
         if (isset($response['data'])) {
-            saveToCache($cacheKey, $response['data'], 300); // 5 minutos
+            saveToCache($cacheKey, $response['data'], 300); 
             $this->sendResponse($response['status'], $response['message'], $response['data']);
         } else {
             $this->sendResponse($response['status'], $response['message']);
@@ -129,14 +129,14 @@ class EmployeeTaskController extends BaseController {
         $response = $this->service->getTasksByResponsible($employeeId);
         
         if (isset($response['data'])) {
-            saveToCache($cacheKey, $response['data'], 300); // 5 minutos
+            saveToCache($cacheKey, $response['data'], 300); 
             $this->sendResponse($response['status'], $response['message'], $response['data']);
         } else {
             $this->sendResponse($response['status'], $response['message']);
         }
     }
 
-    // Nuevo método: Manejar múltiples asignaciones para una tarea
+    // Manejar múltiples asignaciones para una tarea
     public function manageTaskAssignments($taskId) {
         $data = $this->getRequestData();
         

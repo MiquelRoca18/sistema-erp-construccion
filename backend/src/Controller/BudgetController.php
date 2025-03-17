@@ -22,7 +22,7 @@ class BudgetController extends BaseController{
         $result = $this->budgetService->getBudgets();
         
         if (isset($result['data'])) {
-            saveToCache($cacheKey, $result['data'], 300); // 5 minutos
+            saveToCache($cacheKey, $result['data'], 300); 
         }
         
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
@@ -40,7 +40,7 @@ class BudgetController extends BaseController{
         $result = $this->budgetService->getBudget($id);
         
         if (isset($result['data'])) {
-            saveToCache($cacheKey, $result['data'], 300); // 5 minutos
+            saveToCache($cacheKey, $result['data'], 300); 
         }
         
         $this->sendResponse($result['status'], $result['message'], $result['data'] ?? null);
